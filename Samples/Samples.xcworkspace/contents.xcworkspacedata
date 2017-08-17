@@ -4,10 +4,4 @@
    <FileRef
       location = "group:BlocklySample/BlocklySample.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:BlocklyCodeLab/BlocklyCodeLab.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:BlocklyCodeLab-Starter/BlocklyCodeLabStarter.xcodeproj">
-   </FileRef>
 </Workspace>

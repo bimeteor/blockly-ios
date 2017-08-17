@@ -27,11 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Create window
     let frame = UIScreen.main.bounds
     self.window = UIWindow(frame: frame)
-
-    let navigationController = UINavigationController()
-    navigationController.pushViewController(DemoPickerViewController(), animated: false)
-
-    self.window!.rootViewController = navigationController
+    self.window!.rootViewController = SimpleWorkbenchViewController()
     self.window!.makeKeyAndVisible()
 
     return true
