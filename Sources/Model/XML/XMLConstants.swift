@@ -22,7 +22,7 @@ internal class XMLConstants: NSObject {
   static let TAG_SHADOW = "shadow"
   static let TAG_INPUT_VALUE = "value"
   static let TAG_INPUT_STATEMENT = "statement"
-  static let TAG_NEXT_STATEMENT = "next"
+    static let TAG_NEXT_STATEMENT = "next"    //TODO:discard it
   static let TAG_FIELD = "field"
   static let TAG_COMMENT = "comment"
 

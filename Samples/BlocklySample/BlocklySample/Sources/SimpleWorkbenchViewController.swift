@@ -40,8 +40,17 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     // Load data
     loadBlockFactory()
     loadToolbox()
+    let btn = UIButton.init(type: .system)
+    view.addSubview(btn)
+    btn.setTitle("Tap", for: .normal)
+    btn.frame = CGRect(x:200,y:20,width:100,height:40)
+    btn.addTarget(self, action: #selector(tap), for: .touchUpInside)
   }
 
+    @objc func tap() {
+         print((try? workspace?.toXML())!!)
+    }
+    
   override var prefersStatusBarHidden : Bool {
     return true
   }
