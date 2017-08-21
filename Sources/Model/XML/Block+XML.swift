@@ -85,13 +85,13 @@ extension Block {
       mutator.update(fromXML: xml)
       try mutator.mutateBlock()
     }
-    
+
     for child in xml.children {
       switch child.name.lowercased() {
       case XMLConstants.TAG_INPUT_VALUE, XMLConstants.TAG_INPUT_STATEMENT:
         let blocks = try setInputOnBlock(block, fromXML: child, factory: factory)
         allBlocks.append(contentsOf: blocks)
-      case XMLConstants.TAG_BLOCK:
+      case XMLConstants.TAG_NEXT_STATEMENT:
         let blocks = try setNextBlockOnBlock(block, fromXML: child, factory: factory)
         allBlocks.append(contentsOf: blocks)
       case XMLConstants.TAG_FIELD:
@@ -284,11 +284,12 @@ extension Block {
     }
 
     if nextBlock != nil || nextShadowBlock != nil {
+      let nextChild = blockXML.addChild(name: XMLConstants.TAG_NEXT_STATEMENT)
       if let nextBlock = self.nextBlock {
-        blockXML.addChild(try nextBlock.toXMLElement())
+        nextChild.addChild(try nextBlock.toXMLElement())
       }
       if let nextShadowBlock = self.nextShadowBlock {
-        blockXML.addChild(try nextShadowBlock.toXMLElement())
+        nextChild.addChild(try nextShadowBlock.toXMLElement())
       }
     }
 
