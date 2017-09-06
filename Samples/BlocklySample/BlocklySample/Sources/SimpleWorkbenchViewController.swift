@@ -28,11 +28,8 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     super.init(coder: aDecoder)
   }
 
-  // MARK: - Super
-
   override func viewDidLoad() {
     super.viewDidLoad()
-
     // Don't allow the navigation controller bar cover this view controller
     self.edgesForExtendedLayout = UIRectEdge()
     self.navigationItem.title = "Workbench with Default Blocks"
@@ -51,12 +48,17 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
   private func loadBlockFactory() {
     // Load blocks into the block factory
     blockFactory.load(fromDefaultFiles: .allDefault)
+    do{
+        try blockFactory.load(fromJSONPaths: ["turtle_blocks.json"])
+    }catch let e{
+        print(e)
+    }
   }
 
   private func loadToolbox() {
     // Create a toolbox
     do {
-      let toolboxPath = "SimpleWorkbench/toolbox_basic.xml"
+      let toolboxPath = "toolbox.xml"
       if let bundlePath = Bundle.main.path(forResource: toolboxPath, ofType: nil) {
         let xmlString = try String(contentsOfFile: bundlePath, encoding: String.Encoding.utf8)
         let toolbox = try Toolbox.makeToolbox(xmlString: xmlString, factory: blockFactory)

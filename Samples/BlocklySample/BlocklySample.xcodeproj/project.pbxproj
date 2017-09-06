@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA2F44511E9C6A2D0071C1A3 /* AllFieldsDemo in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444D1E9C6A2D0071C1A3 /* AllFieldsDemo */; };
+		D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */; };
+		D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BF1F5FF3A600050C2D /* toolbox.xml */; };
 		FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */; };
-		FA2F44531E9C6A2D0071C1A3 /* SimpleWorkbench in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444F1E9C6A2D0071C1A3 /* SimpleWorkbench */; };
-		FA2F44541E9C6A2D0071C1A3 /* Turtle in Resources */ = {isa = PBXBuildFile; fileRef = FA2F44501E9C6A2D0071C1A3 /* Turtle */; };
 		FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA2F45261E9C6A910071C1A3 /* LaunchScreen.xib */; };
 		FAA7BEE31EC13BB600CA88CA /* AEXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAA7BED61EC13BA400CA88CA /* AEXML.framework */; };
 		FAA7BEE41EC13BB600CA88CA /* AEXML.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FAA7BED61EC13BA400CA88CA /* AEXML.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -117,10 +116,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		FA2F444D1E9C6A2D0071C1A3 /* AllFieldsDemo */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AllFieldsDemo; path = "Non-Localized/AllFieldsDemo"; sourceTree = "<group>"; };
+		D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = turtle_blocks.json; path = "Non-Localized/turtle_blocks.json"; sourceTree = "<group>"; };
+		D63F06BF1F5FF3A600050C2D /* toolbox.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = toolbox.xml; path = "Non-Localized/toolbox.xml"; sourceTree = "<group>"; };
 		FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Non-Localized/Images.xcassets"; sourceTree = "<group>"; };
-		FA2F444F1E9C6A2D0071C1A3 /* SimpleWorkbench */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SimpleWorkbench; path = "Non-Localized/SimpleWorkbench"; sourceTree = "<group>"; };
-		FA2F44501E9C6A2D0071C1A3 /* Turtle */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Turtle; path = "Non-Localized/Turtle"; sourceTree = "<group>"; };
 		FA2F45271E9C6A910071C1A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Localized/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		FA2F45291E9C6A9D0071C1A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localized/en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		FA2F452A1E9C6AA20071C1A3 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = Localized/fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -201,10 +199,9 @@
 		FA2F444C1E9C6A1C0071C1A3 /* Non-Localized */ = {
 			isa = PBXGroup;
 			children = (
-				FA2F444D1E9C6A2D0071C1A3 /* AllFieldsDemo */,
+				D63F06BF1F5FF3A600050C2D /* toolbox.xml */,
+				D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */,
 				FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */,
-				FA2F444F1E9C6A2D0071C1A3 /* SimpleWorkbench */,
-				FA2F44501E9C6A2D0071C1A3 /* Turtle */,
 			);
 			name = "Non-Localized";
 			sourceTree = "<group>";
@@ -504,10 +501,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */,
-				FA2F44541E9C6A2D0071C1A3 /* Turtle in Resources */,
-				FA2F44531E9C6A2D0071C1A3 /* SimpleWorkbench in Resources */,
+				D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */,
 				FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */,
-				FA2F44511E9C6A2D0071C1A3 /* AllFieldsDemo in Resources */,
+				D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
