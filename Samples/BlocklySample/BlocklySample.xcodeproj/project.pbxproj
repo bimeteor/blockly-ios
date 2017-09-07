@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		800F0D551F6150E300E1DB70 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D541F6150E300E1DB70 /* Security.framework */; };
+		800F0D571F6150E800E1DB70 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D561F6150E800E1DB70 /* SystemConfiguration.framework */; };
+		800F0D5A1F61518E00E1DB70 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D581F61518E00E1DB70 /* Fabric.framework */; };
+		800F0D5B1F61518E00E1DB70 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D591F61518E00E1DB70 /* Crashlytics.framework */; };
 		D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */; };
 		D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BF1F5FF3A600050C2D /* toolbox.xml */; };
 		FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */; };
@@ -116,6 +120,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		800F0D541F6150E300E1DB70 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		800F0D561F6150E800E1DB70 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		800F0D581F61518E00E1DB70 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		800F0D591F61518E00E1DB70 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = turtle_blocks.json; path = "Non-Localized/turtle_blocks.json"; sourceTree = "<group>"; };
 		D63F06BF1F5FF3A600050C2D /* toolbox.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = toolbox.xml; path = "Non-Localized/toolbox.xml"; sourceTree = "<group>"; };
 		FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Non-Localized/Images.xcassets"; sourceTree = "<group>"; };
@@ -187,9 +195,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				800F0D571F6150E800E1DB70 /* SystemConfiguration.framework in Frameworks */,
+				800F0D551F6150E300E1DB70 /* Security.framework in Frameworks */,
 				FAA7BEE31EC13BB600CA88CA /* AEXML.framework in Frameworks */,
 				FAFD37631C93C76C00C77049 /* WebKit.framework in Frameworks */,
 				FAA7BEE71EC13BB600CA88CA /* Blockly.framework in Frameworks */,
+				800F0D5A1F61518E00E1DB70 /* Fabric.framework in Frameworks */,
+				800F0D5B1F61518E00E1DB70 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +265,10 @@
 		FA5F28B51C7578CF008384BE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				800F0D581F61518E00E1DB70 /* Fabric.framework */,
+				800F0D591F61518E00E1DB70 /* Crashlytics.framework */,
+				800F0D561F6150E800E1DB70 /* SystemConfiguration.framework */,
+				800F0D541F6150E300E1DB70 /* Security.framework */,
 				FAFD37621C93C76C00C77049 /* WebKit.framework */,
 			);
 			name = Frameworks;
@@ -320,6 +336,7 @@
 				FA548C271B6312AE008BC59C /* Frameworks */,
 				FA548C281B6312AE008BC59C /* Resources */,
 				FA4BB5621B7BEC36000980E9 /* Embed Frameworks */,
+				800F0D531F61507400E1DB70 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -344,7 +361,7 @@
 				TargetAttributes = {
 					FA548C291B6312AE008BC59C = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = EQHXZ8M8AV;
+						DevelopmentTeam = GLWCRSS83U;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 					};
@@ -508,6 +525,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		800F0D531F61507400E1DB70 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run ce0f3838f147348d1f61bb63bb2aa78827321332 d72ca8607e943f834cbae221e28ed9cd497d46819626a567fd2b50c81c2377e2\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FA548C261B6312AE008BC59C /* Sources */ = {
@@ -693,12 +726,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = EQHXZ8M8AV;
+				DEVELOPMENT_TEAM = GLWCRSS83U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = BlocklySample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.blockly.BlocklySample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ubtechinc.BlocklySample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -715,11 +752,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = EQHXZ8M8AV;
+				DEVELOPMENT_TEAM = GLWCRSS83U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = BlocklySample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.blockly.BlocklySample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ubtechinc.BlocklySample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
