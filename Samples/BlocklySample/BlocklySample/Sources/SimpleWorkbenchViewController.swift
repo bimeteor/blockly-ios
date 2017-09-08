@@ -33,7 +33,9 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     // Don't allow the navigation controller bar cover this view controller
     self.edgesForExtendedLayout = UIRectEdge()
     self.navigationItem.title = "Workbench with Default Blocks"
-
+    redoButton.isHidden = true
+    undoButton.isHidden = true
+    trashCanView.isHidden = true
     // Load data
     loadBlockFactory()
     loadToolbox()
