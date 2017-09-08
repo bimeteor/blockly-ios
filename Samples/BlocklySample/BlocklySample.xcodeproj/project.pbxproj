@@ -11,6 +11,19 @@
 		800F0D571F6150E800E1DB70 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D561F6150E800E1DB70 /* SystemConfiguration.framework */; };
 		800F0D5A1F61518E00E1DB70 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D581F61518E00E1DB70 /* Fabric.framework */; };
 		800F0D5B1F61518E00E1DB70 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D591F61518E00E1DB70 /* Crashlytics.framework */; };
+		D61409E81F62681600B2012E /* ABColorLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E01F62681600B2012E /* ABColorLexer.swift */; };
+		D61409E91F62681600B2012E /* ABParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E11F62681600B2012E /* ABParser.swift */; };
+		D61409EA1F62681600B2012E /* ABPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E21F62681600B2012E /* ABPerformer.swift */; };
+		D61409EB1F62681600B2012E /* ABTranslator.md in Resources */ = {isa = PBXBuildFile; fileRef = D61409E31F62681600B2012E /* ABTranslator.md */; };
+		D61409EC1F62681600B2012E /* ABTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E41F62681600B2012E /* ABTranslator.swift */; };
+		D61409ED1F62681600B2012E /* ABVirtulMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E51F62681600B2012E /* ABVirtulMachine.swift */; };
+		D61409EE1F62681600B2012E /* rules_swift.json in Resources */ = {isa = PBXBuildFile; fileRef = D61409E61F62681600B2012E /* rules_swift.json */; };
+		D61409EF1F62681600B2012E /* XMLNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E71F62681600B2012E /* XMLNode.swift */; };
+		D61409F41F62685300B2012E /* src.xml in Resources */ = {isa = PBXBuildFile; fileRef = D61409F01F62685300B2012E /* src.xml */; };
+		D61409F51F62685300B2012E /* src2.xml in Resources */ = {isa = PBXBuildFile; fileRef = D61409F11F62685300B2012E /* src2.xml */; };
+		D61409F61F62685300B2012E /* src1.xml in Resources */ = {isa = PBXBuildFile; fileRef = D61409F21F62685300B2012E /* src1.xml */; };
+		D61409F71F62685300B2012E /* src3.xml in Resources */ = {isa = PBXBuildFile; fileRef = D61409F31F62685300B2012E /* src3.xml */; };
+		D61409F91F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409F81F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift */; };
 		D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */; };
 		D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BF1F5FF3A600050C2D /* toolbox.xml */; };
 		FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */; };
@@ -124,6 +137,19 @@
 		800F0D561F6150E800E1DB70 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		800F0D581F61518E00E1DB70 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		800F0D591F61518E00E1DB70 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		D61409E01F62681600B2012E /* ABColorLexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABColorLexer.swift; sourceTree = "<group>"; };
+		D61409E11F62681600B2012E /* ABParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABParser.swift; sourceTree = "<group>"; };
+		D61409E21F62681600B2012E /* ABPerformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABPerformer.swift; sourceTree = "<group>"; };
+		D61409E31F62681600B2012E /* ABTranslator.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ABTranslator.md; sourceTree = "<group>"; };
+		D61409E41F62681600B2012E /* ABTranslator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABTranslator.swift; sourceTree = "<group>"; };
+		D61409E51F62681600B2012E /* ABVirtulMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABVirtulMachine.swift; sourceTree = "<group>"; };
+		D61409E61F62681600B2012E /* rules_swift.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = rules_swift.json; sourceTree = "<group>"; };
+		D61409E71F62681600B2012E /* XMLNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLNode.swift; sourceTree = "<group>"; };
+		D61409F01F62685300B2012E /* src.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = src.xml; sourceTree = "<group>"; };
+		D61409F11F62685300B2012E /* src2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = src2.xml; sourceTree = "<group>"; };
+		D61409F21F62685300B2012E /* src1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = src1.xml; sourceTree = "<group>"; };
+		D61409F31F62685300B2012E /* src3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = src3.xml; sourceTree = "<group>"; };
+		D61409F81F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SimpleWorkbenchViewController+Addition.swift"; sourceTree = "<group>"; };
 		D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = turtle_blocks.json; path = "Non-Localized/turtle_blocks.json"; sourceTree = "<group>"; };
 		D63F06BF1F5FF3A600050C2D /* toolbox.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = toolbox.xml; path = "Non-Localized/toolbox.xml"; sourceTree = "<group>"; };
 		FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Non-Localized/Images.xcassets"; sourceTree = "<group>"; };
@@ -208,6 +234,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D61409DF1F62681600B2012E /* ABlockly */ = {
+			isa = PBXGroup;
+			children = (
+				D61409F01F62685300B2012E /* src.xml */,
+				D61409F21F62685300B2012E /* src1.xml */,
+				D61409F11F62685300B2012E /* src2.xml */,
+				D61409F31F62685300B2012E /* src3.xml */,
+				D61409E01F62681600B2012E /* ABColorLexer.swift */,
+				D61409E11F62681600B2012E /* ABParser.swift */,
+				D61409E21F62681600B2012E /* ABPerformer.swift */,
+				D61409E31F62681600B2012E /* ABTranslator.md */,
+				D61409E41F62681600B2012E /* ABTranslator.swift */,
+				D61409E51F62681600B2012E /* ABVirtulMachine.swift */,
+				D61409E61F62681600B2012E /* rules_swift.json */,
+				D61409E71F62681600B2012E /* XMLNode.swift */,
+			);
+			name = ABlockly;
+			path = ../../../../ABlockly;
+			sourceTree = "<group>";
+		};
 		FA2F444C1E9C6A1C0071C1A3 /* Non-Localized */ = {
 			isa = PBXGroup;
 			children = (
@@ -321,6 +367,8 @@
 				FAE2A6441C756AA20085D36B /* AppDelegate.swift */,
 				FAE2A6461C756AA20085D36B /* SampleObjCObject.h */,
 				FAE2A6471C756AA20085D36B /* SimpleWorkbenchViewController.swift */,
+				D61409F81F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift */,
+				D61409DF1F62681600B2012E /* ABlockly */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -518,8 +566,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */,
+				D61409F51F62685300B2012E /* src2.xml in Resources */,
 				D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */,
+				D61409F61F62685300B2012E /* src1.xml in Resources */,
 				FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */,
+				D61409EE1F62681600B2012E /* rules_swift.json in Resources */,
+				D61409F71F62685300B2012E /* src3.xml in Resources */,
+				D61409F41F62685300B2012E /* src.xml in Resources */,
+				D61409EB1F62681600B2012E /* ABTranslator.md in Resources */,
 				D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -547,8 +601,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D61409EA1F62681600B2012E /* ABPerformer.swift in Sources */,
 				FAE2A6491C756AA20085D36B /* SimpleWorkbenchViewController.swift in Sources */,
+				D61409E91F62681600B2012E /* ABParser.swift in Sources */,
 				FAE2A6481C756AA20085D36B /* AppDelegate.swift in Sources */,
+				D61409EC1F62681600B2012E /* ABTranslator.swift in Sources */,
+				D61409E81F62681600B2012E /* ABColorLexer.swift in Sources */,
+				D61409ED1F62681600B2012E /* ABVirtulMachine.swift in Sources */,
+				D61409F91F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift in Sources */,
+				D61409EF1F62681600B2012E /* XMLNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -732,7 +793,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = BlocklySample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ubtechinc.BlocklySample;
@@ -741,7 +802,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -758,7 +819,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = BlocklySample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ubtechinc.BlocklySample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -766,7 +827,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

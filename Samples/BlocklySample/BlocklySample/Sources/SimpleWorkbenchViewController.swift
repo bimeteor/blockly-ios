@@ -22,25 +22,51 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
   init() {
     super.init(style: .defaultStyle)
   }
-
+    
   required init?(coder aDecoder: NSCoder) {
     assertionFailure("Called unsupported initializer")
     super.init(coder: aDecoder)
   }
-
+    
+    let simulator = UIView()
+    let turtle = UIImageView.init(image: UIImage.init(named: "turtle"))
+    var running = false
+    var paused = false
+    var vm:ABVirtulMachine?
   override func viewDidLoad() {
     super.viewDidLoad()
     // Don't allow the navigation controller bar cover this view controller
     self.edgesForExtendedLayout = UIRectEdge()
     self.navigationItem.title = "Workbench with Default Blocks"
-    redoButton.isHidden = true
-    undoButton.isHidden = true
-    trashCanView.isHidden = true
     // Load data
     loadBlockFactory()
     loadToolbox()
+    
+    redoButton.isHidden = true
+    undoButton.isHidden = true
+    trashCanView.isHidden = true
+    view.addSubview(simulator)
+    simulator.isUserInteractionEnabled = false
+    simulator.isHidden = true
+    simulator.frame = CGRect(x:50, y:0, width:view.bounds.width-50, height:view.bounds.height)
+    let mask = UIView.init(frame: simulator.bounds)
+    mask.backgroundColor = .black
+    mask.alpha = 0.5
+    simulator.addSubview(mask)
+    simulator.addSubview(turtle)
+    turtle.bounds = CGRect(x:0, y:0, width:40, height:40)
+    
+    let play = UIButton.init(type: .system)
+    view.addSubview(play)
+    play.setImage(UIImage.init(named: "turtle"), for: .normal)
+    play.frame = CGRect(x:view.bounds.width-50, y:0, width:40, height:40)
+    play.addTarget(self, action: #selector(act), for: .touchUpInside)
   }
 
+    @objc func act() {
+        
+    }
+    
   override var prefersStatusBarHidden : Bool {
     return true
   }

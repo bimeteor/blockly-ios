@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+    <block x="7" type="controls_if" id="91BCFF42-EF89-4520-8C26-245A29304D7B" y="67">
+        <mutation else="1" elseif="0" />
+        <value name="IF0">
+            <block type="logic_compare" id="77AF2EFC-AAAE-44E8-8AA8-E8D60024E917">
+                <value name="A">
+                    <block type="math_number" id="541A910C-6DE1-49BC-BF3C-2E387825157E">
+                        <field name="NUM">5</field>
+                    </block>
+                </value>
+                <value name="B">
+                    <block type="math_number" id="DD2B946F-4FF4-4242-9026-DF3B7DD7EFAC">
+                        <field name="NUM">5</field>
+                    </block>
+                </value>
+                <field name="OP">=</field>
+            </block>
+        </value>
+        <statement name="DO0">
+            <block type="turtle_move" id="094D2525-2DE5-4EAA-844D-AAD0AD27E431">
+                <value name="VALUE">
+                    <block type="math_arithmetic" id="41C80E2C-6056-4A81-B109-A6A7D64DED10">
+                        <value name="A">
+                            <shadow type="math_number" id="3D4A08EE-3543-470A-8DF4-7F71AAD3B91A">
+                                <field name="NUM">12</field>
+                            </shadow>
+                        </value>
+                        <value name="B">
+                            <shadow type="math_number" id="CCB504EE-03A3-4BF8-AA4A-4572767A8C65">
+                                <field name="NUM">18</field>
+                            </shadow>
+                        </value>
+                        <field name="OP">+</field>
+                    </block>
+                    <shadow type="math_number" id="2741EF8C-EC5A-4EB4-9DFA-5DA2375467E0">
+                        <field name="NUM">50</field>
+                    </shadow>
+                </value>
+                <field name="DIR">forward</field>
+            </block>
+        </statement>
+        <statement name="ELSE">
+            <block type="turtle_turn" id="4A2EE154-7ABC-4F87-852E-A88ED4B6EED4">
+                <value name="VALUE">
+                    <shadow type="math_number" id="F24B39CE-6905-4EFF-A38A-099FB67A3F93">
+                        <field name="NUM">90</field>
+                    </shadow>
+                </value>
+                <field name="DIR">right</field>
+            </block>
+        </statement>
+    </block>
+</xml>

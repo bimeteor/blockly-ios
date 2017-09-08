@@ -1,0 +1,19 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+    <block x="207" type="procedures_defnoreturn" id="BE28B08B-93E1-4000-BED2-1CB65356BF83" y="103">
+        <mutation statements="true" />
+        <field name="NAME">fun</field>
+        <statement name="STACK">
+            <block type="variables_set" id="2FB2E403-8BDC-41C1-BAB6-046647666972">
+                <value name="VALUE">
+                    <block type="math_number" id="43B16B69-1B50-44E4-9C2E-74BB55C4F231">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+                <field name="VAR">a</field>
+            </block>
+        </statement>
+    </block>
+    <block x="42" type="procedures_callnoreturn" id="D7CE8745-C5E9-4DBF-A821-6D981CD2175E" y="52">
+        <mutation name="fun" />
+    </block>
+</xml>

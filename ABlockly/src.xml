@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+    <block x="27" y="79" type="start" id="386CF391-DAD4-42C8-B48F-6262AB23A3FD">
+        <next>
+            <block type="controls_repeat_ext" id="386CF391-DAD4-42C8-B48F-6262AB22A3FD">
+                <value name="TIMES">
+                    <shadow type="math_number" id="5276C42F-8354-435A-A350-288B9ED2C45E">
+                        <field name="NUM">2</field>
+                    </shadow>
+                </value>
+                <statement name="DO">
+                    <block type="turtle_move" id="74C54324-0B54-4A8B-A5CF-1B06CC060C9B">
+                        <value name="VALUE">
+                            <shadow type="math_number" id="074E3E73-C223-4212-9DE6-AB3FEA733EAD">
+                                <field name="NUM">50</field>
+                            </shadow>
+                        </value>
+                        <field name="DIR">moveForward</field>
+                        <next>
+                            <block type="turtle_turn" id="458B34C0-D1C5-48B6-BAE9-2AA72163A16E">
+                                <value name="VALUE">
+                                    <shadow type="math_number" id="10C9C28B-D0F7-47F5-96F2-5739E1B70202">
+                                        <field name="NUM">90</field>
+                                    </shadow>
+                                </value>
+                                <field name="DIR">turnRight</field>
+                                <next>
+                                    <block type="turtle_colour" id="E9F08A35-5686-4EB1-9381-B9C367587F5D">
+                                        <value name="COLOUR">
+                                            <block type="colour_random" id="DAF52566-28F1-4862-84DB-164832DEBC43" />
+                                            <shadow type="colour_picker" id="FE428042-4D07-4866-B33F-7A301A2B985C">
+                                                <field name="COLOUR">#ff0000</field>
+                                            </shadow>
+                                        </value>
+                                    </block>
+                                </next>
+                            </block>
+                        </next>
+                    </block>
+                </statement>
+            </block>
+        </next>
+    </block>
+</xml>

@@ -1,0 +1,15 @@
+{
+    "controls_repeat_ext":"for _ in 0..<\\(value[name=TIMES]$0)\n{\\(statement[name=DO])\n}",
+    "controls_repeat_always":"while true\n{\\(statement[name=DO])\n}",
+    "controls_if":"if \\(value[name=IF0]$false)\n{\\(statement[name=DO0])\n}",
+    "controls_if_else":"if \\(value[name=IF0])\n{\\(statement[name=DO0])\n}else\n{\n\\(statement[name=ELSE])\n}",
+    "turtle_turn":"turn(dir:\\(field[name=DIR]), angle:\\(value[name=VALUE]$0))",
+    "turtle_move":"move(dir:\\(field[name=DIR), dist:\\(value[name=VALUE]$0))",
+    "turtle_colour":"",
+    "math_number":"\\(field[name=NUM])",
+    "logic_compare":"\\(value[name=A]$0) \\(field[name=OP]) \\(value[name=B]$0)",
+    "math_arithmetic":"\\(value[name=A]$0) \\(field[name=OP]) \\(value[name=B]$0)",
+    "procedures_callnoreturn":"\\(field[name=NAME])()",
+    "procedures_defnoreturn":"func \\(field[name=NAME])()\n{\\(statement[name=STACK])\n}",
+    "variables_set":"\\(field[name=VAR]) = \\(value[name=VALUE])"
+}
