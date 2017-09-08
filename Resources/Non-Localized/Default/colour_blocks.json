@@ -1,6 +1,6 @@
 [
   {
-    "type": "colour_picker",
+    "type": "color_picker",
     "message0": "%1",
     "args0": [
       {
@@ -15,7 +15,7 @@
     "tooltip": "%{BKY_COLOUR_PICKER_TOOLTIP}"
   },
   {
-    "type": "colour_random",
+    "type": "color_random",
     "message0": "%{BKY_COLOUR_RANDOM_TITLE}",
     "output": "Colour",
     "colour": "%{BKY_COLOUR_HUE}",

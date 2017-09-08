@@ -5,7 +5,7 @@
     "controls_if_else":"if \\(value[name=IF0])\n{\\(statement[name=DO0])\n}else\n{\n\\(statement[name=ELSE])\n}",
     "turtle_turn":"turn(dir:\\(field[name=DIR]), angle:\\(value[name=VALUE]$0))",
     "turtle_move":"move(dir:\\(field[name=DIR), dist:\\(value[name=VALUE]$0))",
-    "turtle_colour":"",
+    "turtle_color":"color(color:\\())",
     "math_number":"\\(field[name=NUM])",
     "logic_compare":"\\(value[name=A]$0) \\(field[name=OP]) \\(value[name=B]$0)",
     "math_arithmetic":"\\(value[name=A]$0) \\(field[name=OP]) \\(value[name=B]$0)",

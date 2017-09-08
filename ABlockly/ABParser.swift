@@ -31,11 +31,11 @@ public class ABParser: NSObject {
         var b = [XMLNode]()
         node.children.forEach{
             switch $0.attributes["type"] ?? ""{
-            case "start":   //TODO:start
+            case "start":
                 t = $0
             case "procedures_defnoreturn":
                 defs.append($0)
-            case let x where x.hasPrefix(""):  //TODO:start
+            case let x where x.hasPrefix("start"):  //TODO:start
                 b.append($0)
             default:
                 Void()

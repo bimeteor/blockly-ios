@@ -25,10 +25,10 @@
                                 </value>
                                 <field name="DIR">turnRight</field>
                                 <next>
-                                    <block type="turtle_colour" id="E9F08A35-5686-4EB1-9381-B9C367587F5D">
+                                    <block type="turtle_color" id="E9F08A35-5686-4EB1-9381-B9C367587F5D">
                                         <value name="COLOUR">
-                                            <block type="colour_random" id="DAF52566-28F1-4862-84DB-164832DEBC43" />
-                                            <shadow type="colour_picker" id="FE428042-4D07-4866-B33F-7A301A2B985C">
+                                            <block type="color_random" id="DAF52566-28F1-4862-84DB-164832DEBC43" />
+                                            <shadow type="color_picker" id="FE428042-4D07-4866-B33F-7A301A2B985C">
                                                 <field name="COLOUR">#ff0000</field>
                                             </shadow>
                                         </value>

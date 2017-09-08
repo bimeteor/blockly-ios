@@ -10,7 +10,7 @@ import Foundation
 public protocol ABPerformerDelegate:class {
     func highlight(_ id:String)
     func unhighlight(_ id:String)
-    func begin(_ array:[String])
+    func begin(_ cmd:String, values:[String])
     func end()
 }
 
@@ -73,15 +73,22 @@ extension ABPerformer{
             }
         case "control_repeat_times", "control_repeat_until", "control_repeat_always", "control_if", "control_if_else", "restart":
             endCurrent()
-        case "motion_move":
-            delegate?.begin([])
+        case "turtle_move":
+            guard let n = node["|block.value[name=VALUE].block"] else {endCurrent(); return}
+            delegate?.begin("turtle_move", values: ["\(evaluate(n))"])
+        case "turtle_turn":
+            guard let n = node["|block.value[name=VALUE].block"] else {endCurrent(); return}
+            delegate?.begin("turtle_turn", values: ["\(evaluate(n))"])
+        case "turtle_color":
+            guard let n = node["|block.value[name=COLOUR].block"] else {endCurrent(); return}
+            delegate?.begin("turtle_color", values: ["\(evaluate(n))"])
         default:
             endCurrent()
         }
     }
     //expr
     func evaluate(_ node:XMLNode)->Int{
-        if node.children.isEmpty {
+        if node.name == "field" {
             return Int(node.value) ?? 0
         }
         guard let type = node.attributes["type"] else{return 0}
@@ -115,8 +122,13 @@ extension ABPerformer{
             default:return 0
             }
         case "math_number":
-            guard let field = node.children.first, let val = Int(field.value) else{return 0}
-            return val
+            guard let field = node.children.first else{return 0}
+            return evaluate(field)
+        case "color_picker":    //#ff0000
+            guard let val = node.children.first?.value, val.count>1 else {return 0}
+            return Int(String(val[val.index(after: val.startIndex)...])) ?? 0
+        case "color_random":
+            return Int(arc4random()%0xffffff)
         default:
             return 0
         }

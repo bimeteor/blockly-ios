@@ -127,8 +127,8 @@ extension ABVirtulMachine{
                     }
                 }
             }else if type == "controls_repeat_ext"{
-                if context.status == .push || context.status == .update{
-                    if let limit = node["|block.value[name=TIMES].block"], performer.evaluate(limit) > context.int0, let stmt = node["|block.statement[name=DO].block"]{
+                if context.status == .push || context.status == .update{//TODO:frank <field name="number">10</field>
+                    if let limit = node["|block.field[name=number]"], performer.evaluate(limit) > context.int0, let stmt = node["|block.statement[name=DO].block"]{
                         stack.last?.status = .update
                         stack.last?.int0 += 1
                         tryPush(stmt, stack: &stack)

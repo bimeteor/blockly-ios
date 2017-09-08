@@ -24,6 +24,7 @@
 		D61409F61F62685300B2012E /* src1.xml in Resources */ = {isa = PBXBuildFile; fileRef = D61409F21F62685300B2012E /* src1.xml */; };
 		D61409F71F62685300B2012E /* src3.xml in Resources */ = {isa = PBXBuildFile; fileRef = D61409F31F62685300B2012E /* src3.xml */; };
 		D61409F91F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409F81F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift */; };
+		D61409FB1F62AC6200B2012E /* turtle.xml in Resources */ = {isa = PBXBuildFile; fileRef = D61409FA1F62AC6200B2012E /* turtle.xml */; };
 		D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */; };
 		D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BF1F5FF3A600050C2D /* toolbox.xml */; };
 		FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */; };
@@ -150,6 +151,7 @@
 		D61409F21F62685300B2012E /* src1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = src1.xml; sourceTree = "<group>"; };
 		D61409F31F62685300B2012E /* src3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = src3.xml; sourceTree = "<group>"; };
 		D61409F81F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SimpleWorkbenchViewController+Addition.swift"; sourceTree = "<group>"; };
+		D61409FA1F62AC6200B2012E /* turtle.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = turtle.xml; path = "Non-Localized/turtle.xml"; sourceTree = "<group>"; };
 		D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = turtle_blocks.json; path = "Non-Localized/turtle_blocks.json"; sourceTree = "<group>"; };
 		D63F06BF1F5FF3A600050C2D /* toolbox.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = toolbox.xml; path = "Non-Localized/toolbox.xml"; sourceTree = "<group>"; };
 		FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Non-Localized/Images.xcassets"; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				D63F06BF1F5FF3A600050C2D /* toolbox.xml */,
+				D61409FA1F62AC6200B2012E /* turtle.xml */,
 				D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */,
 				FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */,
 			);
@@ -567,6 +570,7 @@
 			files = (
 				FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */,
 				D61409F51F62685300B2012E /* src2.xml in Resources */,
+				D61409FB1F62AC6200B2012E /* turtle.xml in Resources */,
 				D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */,
 				D61409F61F62685300B2012E /* src1.xml in Resources */,
 				FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */,

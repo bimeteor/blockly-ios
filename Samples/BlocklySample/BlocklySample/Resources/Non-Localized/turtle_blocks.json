@@ -197,7 +197,7 @@
     "blockFactoryUrl": "https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#wkz8h4"
   },
   {
-    "type": "turtle_colour",
+    "type": "turtle_color",
     "message0": "set colour to %1",
     "args0": [
       {
@@ -228,7 +228,7 @@
  
 
  {
- "type": "start_click",
+ "type": "start",
  "message0": "当开始按钮被点击",
  "previousStatement": null,
  "nextStatement": null,
@@ -645,7 +645,7 @@
  "blockFactoryUrl": "https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#metkk9"
  },
  {
- "type": "controls_repeat_execute",
+ "type": "controls_repeat_ext",
  "message0": "重复%1次",
  "args0": [
            {
@@ -700,7 +700,7 @@
  "helpUrl": "%{BKY_CONTROLS_WHILEUNTIL_HELPURL}"
  },
  {
- "type": "controls_if_then",
+ "type": "controls_if",
  "message0": "如果 %1",
  "args0": [
            {
@@ -723,7 +723,7 @@
  "tooltip": "If a value is true, then do some statements."
  },
  {
- "type": "controls_if_then_else",
+ "type": "controls_if_else",
  "message0": "如果 %1",
  "args0": [
            {

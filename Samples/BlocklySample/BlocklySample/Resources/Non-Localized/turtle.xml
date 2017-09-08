@@ -17,17 +17,11 @@
     <category name="开始" colour="#009688">
         <block type="start"></block>
         <block type="start_tilt"></block>
-        <block type="start_barrier"></block>
-        <block type="start_barrier_space"></block>
     </category>
     <category name="运动" colour="%{BKY_COLOUR_HUE}">
-        <block type="move_speed_duration"></block>
-        <block type="move_speed"></block>
-        <block type="move_action"></block>
-        <block type="move_stop"></block>
-        <block type="move_myaction_duration"></block>
-        <block type="move_machine_rotate_duration"></block>
-        <block type="move_machine_rotate_speed"></block>
+        <block type="turtle_move"></block>
+        <block type="turtle_turn"></block>
+        <block type="turtle_color"></block>
     </category>
     <category name="控制" colour="%{BKY_LOGIC_HUE}">
         <block type="controls_wait"></block>
@@ -35,18 +29,10 @@
         <block type="controls_if"></block>
         <block type="controls_if_else"></block>
         <block type="controls_wait_until"></block>
-        <block type="controls_restart"></block>
     </category>
     <category name="声光" colour="%{BKY_LOOPS_HUE}">
-        <block type="light_playvoice_pat"></block>
-        <block type="light_play_sound"></block>
-        <block type="light_myvoice"></block>
-        <block type="light_stop"></block>
-        <block type="light_color_duration"></block>
-        <block type="light_left_right"></block>
-        <block type="light_eyelight_emoji_times"></block>
-        <block type="light_scenelight__times"></block>
-        <block type="light_customlight__duration"></block>
+        <block type="color_picker"></block>
+        <block type="color_random"></block>
     </category>
     <category name="感知" colour="%{BKY_VARIABLES_HUE}">
 <!--        <block type="controls_repeat_ext">-->

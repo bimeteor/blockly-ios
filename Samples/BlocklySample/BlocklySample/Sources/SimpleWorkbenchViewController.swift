@@ -29,10 +29,12 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
   }
     
     let simulator = UIView()
-    let turtle = UIImageView.init(image: UIImage.init(named: "turtle"))
+    let turtle = UIImageView.init(image: UIImage.init(named: "turtle")?.withRenderingMode(.alwaysTemplate))
+    
     var running = false
     var paused = false
     var vm:ABVirtulMachine?
+    var timer:Timer?
   override func viewDidLoad() {
     super.viewDidLoad()
     // Don't allow the navigation controller bar cover this view controller
@@ -45,28 +47,16 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     redoButton.isHidden = true
     undoButton.isHidden = true
     trashCanView.isHidden = true
-    view.addSubview(simulator)
-    simulator.isUserInteractionEnabled = false
-    simulator.isHidden = true
-    simulator.frame = CGRect(x:50, y:0, width:view.bounds.width-50, height:view.bounds.height)
-    let mask = UIView.init(frame: simulator.bounds)
-    mask.backgroundColor = .black
-    mask.alpha = 0.5
-    simulator.addSubview(mask)
-    simulator.addSubview(turtle)
-    turtle.bounds = CGRect(x:0, y:0, width:40, height:40)
     
-    let play = UIButton.init(type: .system)
+    let play = UIButton.init(type: .custom)
     view.addSubview(play)
-    play.setImage(UIImage.init(named: "turtle"), for: .normal)
-    play.frame = CGRect(x:view.bounds.width-50, y:0, width:40, height:40)
+    play.setImage(UIImage.init(named: "arrow"), for: .normal)
+    play.frame = CGRect(x:view.bounds.width-50, y:0, width:50, height:50)
     play.addTarget(self, action: #selector(act), for: .touchUpInside)
+    
+    loadSimulator()
   }
 
-    @objc func act() {
-        
-    }
-    
   override var prefersStatusBarHidden : Bool {
     return true
   }
@@ -86,7 +76,7 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
   private func loadToolbox() {
     // Create a toolbox
     do {
-      let toolboxPath = "toolbox.xml"
+      let toolboxPath = "turtle.xml"
       if let bundlePath = Bundle.main.path(forResource: toolboxPath, ofType: nil) {
         let xmlString = try String(contentsOfFile: bundlePath, encoding: String.Encoding.utf8)
         let toolbox = try Toolbox.makeToolbox(xmlString: xmlString, factory: blockFactory)
