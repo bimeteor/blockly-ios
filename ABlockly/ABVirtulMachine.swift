@@ -111,7 +111,7 @@ extension ABVirtulMachine{
         reset()
         return nil   //first time on trunk
     }
-    //introspect or traverse
+    //inside or outside
     private func next(_ node:XMLNode, stack:inout[StackContext]) -> XMLNode? {
         guard let type = node.attributes["type"] else { return nil }
         var next = node
@@ -151,6 +151,10 @@ extension ABVirtulMachine{
                     tryPush(stmt, stack: &stack)
                     return stmt
                 }
+            }else if type == "start_tilt"{
+                if performer.evaluate(node) == 1{
+                    return traverse(node, stack:&stack)
+                }
             }
             stack.removeLast()
         }else if type == "restart"{
@@ -162,12 +166,13 @@ extension ABVirtulMachine{
         }
         return traverse(next, stack: &stack)
     }
+    //brother or parent
     private func traverse(_ node:XMLNode, stack:inout[StackContext])->XMLNode?{
         if let n = node["|block.next.block"]{   //find its own next
             tryPush(n, stack: &stack)
             return n
         }
-        if let context = stack.last {   //find parents' next
+        if let context = stack.last {
             switch context.node.attributes["type"] ?? ""{
             case "":
                 return nil

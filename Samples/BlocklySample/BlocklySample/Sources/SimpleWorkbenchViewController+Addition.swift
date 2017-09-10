@@ -8,6 +8,9 @@
 
 import Foundation
 import UIKit
+import CoreMotion
+
+var mm:CMDeviceMotion?
 
 extension SimpleWorkbenchViewController{
     func run() {
@@ -42,6 +45,63 @@ extension SimpleWorkbenchViewController{
         }
         lbl.attributedText = str
     }
+    
+    func tilt() {
+        mm = CMDeviceMotion.init()
+        motionManager = CMMotionManager.init()
+        motionManager?.accelerometerUpdateInterval = 1.0/20
+        motionManager?.startAccelerometerUpdates(to: OperationQueue.main) {
+            if $1 == nil, let acc = $0{
+                let x = acc.acceleration.x
+                let y = acc.acceleration.y
+                let cut = 0.4
+                var res = ""
+                if abs(x) >= cut || abs(y) >= cut{
+                    let dir = UIDevice.current.orientation
+                    if abs(x) > abs(y){
+                        if x >= cut{
+                            switch dir{
+                            case .portrait:res = "r"
+                            case .portraitUpsideDown:res = "l"
+                            case .landscapeLeft:res = "u"
+                            case .landscapeRight:res = "d"
+                            default: res = ""
+                            }
+                        }else{
+                            switch dir{
+                            case .portrait:res = "l"
+                            case .portraitUpsideDown:res = "r"
+                            case .landscapeLeft:res = "d"
+                            case .landscapeRight:res = "u"
+                            default: res = ""
+                            }
+                        }
+                    }else{//y
+                        if y >= cut{
+                            switch dir{
+                            case .portrait:res = "u"
+                            case .portraitUpsideDown:res = "d"
+                            case .landscapeLeft:res = "l"
+                            case .landscapeRight:res = "r"
+                            default: res = ""
+                            }
+                        }else{
+                            switch dir{
+                            case .portrait:res = "d"
+                            case .portraitUpsideDown:res = "u"
+                            case .landscapeLeft:res = "r"
+                            case .landscapeRight:res = "l"
+                            default: res = ""
+                            }
+                        }
+                    }
+                }
+                self.vm?.performer.update(1, type: "phont_tilt", id: 1)
+            }
+            
+            print("\($0) \($1)")
+        }
+    }
 }
 
 extension SimpleWorkbenchViewController{
@@ -66,6 +126,7 @@ extension SimpleWorkbenchViewController{
         }else{
             simulator.isHidden = false
             running = true
+            tilt()
             if case let str?? = try? workspace?.toXML(){
                 vm?.performer.delegate = nil
                 vm?.stop()

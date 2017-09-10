@@ -6,6 +6,7 @@
 //  Copyright © 2017年 WG. All rights reserved.
 //
 import Foundation
+import UIKit
 
 public protocol ABPerformerDelegate:class {
     func highlight(_ id:String)
@@ -18,6 +19,7 @@ public final class ABPerformer: NSObject {
     public weak var delegate:ABPerformerDelegate?
     
     private weak var vm:ABVirtulMachine?
+    private var variables = [String:[Int:Int]]()
     private var timer:Timer?
     private var timeInterval = 0.2
     private var current:XMLNode?
@@ -34,6 +36,11 @@ public final class ABPerformer: NSObject {
         }else{
             endSoon()
         }
+    }
+    public func update(_ value:Int, type:String, id:Int){
+        var dict = variables[type] ?? [Int:Int]()
+        dict[id] = value
+        variables[type] = dict
     }
     init(_ vm:ABVirtulMachine) {
         super.init()
@@ -129,6 +136,12 @@ extension ABPerformer{
             return Int(String(val[val.index(after: val.startIndex)...])) ?? 0
         case "color_random":
             return Int(arc4random()%0xffffff)
+        case "start_tilt":
+            if let val = variables["phone_tilt"]{//TODO:frank
+                return 1
+            }
+//            return UIDevice.current.orientation == .landscapeLeft
+            return 0
         default:
             return 0
         }

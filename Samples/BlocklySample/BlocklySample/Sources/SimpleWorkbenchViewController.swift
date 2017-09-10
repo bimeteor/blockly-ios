@@ -15,6 +15,7 @@
 
 import UIKit
 import Blockly
+import CoreMotion
 
 class SimpleWorkbenchViewController: WorkbenchViewController {
   // MARK: - Initializers
@@ -35,6 +36,7 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     var paused = false
     var vm:ABVirtulMachine?
     var timer:Timer?
+    var motionManager:CMMotionManager?
   override func viewDidLoad() {
     super.viewDidLoad()
     // Don't allow the navigation controller bar cover this view controller
