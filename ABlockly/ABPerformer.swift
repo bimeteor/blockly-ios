@@ -93,57 +93,57 @@ extension ABPerformer{
             endCurrent()
         }
     }
-    //expr
-    func evaluate(_ node:XMLNode)->Int{
+    //expr return: "left", "234", "true"/"false"
+    func evaluate(_ node:XMLNode)->String{
         if node.name == "field" {
-            return Int(node.value) ?? 0
+            return node.value
         }
-        guard let type = node.attributes["type"] else{return 0}
+        guard let type = node.attributes["type"] else{return ""}
         switch type{
         case "logic_compare":
-            guard let a = node["|block.value[name=A].block"], let b = node["|block.value[name=B].block"], let op = node["|block.field"] else {return 0}
-            switch op.value{
-            case "=":return Int(evaluate(a) == evaluate(b))
-            case ">":return Int(evaluate(a) > evaluate(b))
-            case ">=":return Int(evaluate(a) >= evaluate(b))
-            case "<":return Int(evaluate(a) < evaluate(b))
-            case "<=":return Int(evaluate(a) <= evaluate(b))
-            default:return 0
+            guard let a = node["|block.value[name=A].block"], let b = node["|block.value[name=B].block"], let op = node["|block.field"] else {return "false"}
+            switch evaluate(op){
+            case "=":return String(evaluate(a) == evaluate(b))
+            case ">":return String(Int(evaluate(a)) ?? 0 > Int(evaluate(b)) ?? 1)
+            case ">=":return String(Int(evaluate(a)) ?? 0 >= Int(evaluate(b)) ?? 1)
+            case "<":return String(Int(evaluate(a)) ?? 1 < Int(evaluate(b)) ?? 0)
+            case "<=":return String(Int(evaluate(a)) ?? 1 <= Int(evaluate(b)) ?? 0)
+            default:return "false"
             }
         case "math_arithmetic":
-            guard let a = node["|block.value[name=A].block"], let b = node["|block.value[name=B].block"], let op = node["|block.field"] else {return 0}
-            switch op.value{
-            case "+":return evaluate(a) + evaluate(b)
-            case "-":return evaluate(a) - evaluate(b)
-            case "*":return evaluate(a) * evaluate(b)
+            guard let a = node["|block.value[name=A].block"], let b = node["|block.value[name=B].block"], let op = node["|block.field"] else {return "0"}
+            switch evaluate(op){
+            case "+":return String((Int(evaluate(a)) ?? 0) + (Int(evaluate(b)) ?? 0))
+            case "-":return String((Int(evaluate(a)) ?? 0) - (Int(evaluate(b)) ?? 0))
+            case "*":return String((Int(evaluate(a)) ?? 0) * (Int(evaluate(b)) ?? 0))
             case "/":
-                let d = evaluate(b)
-                return d == 0 ? 39999999 : evaluate(a) / d
-            default:return 0
+                let d = Int(evaluate(b)) ?? 1
+                return String(d == 0 ? 39999999 : (Int(evaluate(a)) ?? 0) / d)
+            default:return "0"
             }
         case "logic_operation":
-            guard let a = node["|block.value[name=A].block"], let b = node["|block.value[name=B].block"], let op = node["|block.field"] else {return 0}
-            switch op.value{
-            case "AND":return Int(evaluate(a) == 1 && evaluate(b) == 1)
-            case "OR":return Int(evaluate(a) == 1 || evaluate(b) == 1)
-            default:return 0
+            guard let a = node["|block.value[name=A].block"], let b = node["|block.value[name=B].block"], let op = node["|block.field"] else {return "false"}
+            switch evaluate(op){
+            case "AND":return String(evaluate(a) == "true" && evaluate(b) == "true")
+            case "OR":return String(evaluate(a) == "true" || evaluate(b) == "true")
+            default:return "false"
             }
         case "math_number":
-            guard let field = node.children.first else{return 0}
+            guard let field = node.children.first else{return "0"}
             return evaluate(field)
         case "color_picker":    //#ff0000
-            guard let val = node.children.first?.value, val.count>1 else {return 0}
-            return Int(String(val[val.index(after: val.startIndex)...])) ?? 0
+            guard let val = node.children.first?.value, val.count>1 else {return "0"}
+            return String(val[val.index(after: val.startIndex)...])
         case "color_random":
-            return Int(arc4random()%0xffffff)
+            return String(arc4random()%0xffffff)
         case "start_tilt":
             if let val = variables["phone_tilt"]{//TODO:frank
-                return 1
+                return "1"
             }
 //            return UIDevice.current.orientation == .landscapeLeft
-            return 0
+            return "0"
         default:
-            return 0
+            return "0"
         }
     }
     func end() {

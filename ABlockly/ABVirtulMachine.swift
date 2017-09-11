@@ -120,7 +120,7 @@ extension ABVirtulMachine{
             next = context.node
             if type == "controls_if" || type == "controls_if_else"{
                 if context.status == .push{
-                    if let value = node["|block.value[name=IF0].block"], let stmt = node[performer.evaluate(value) == 1 ? "|block.statement[name=DO0].block" : "|block.statement[name=ELSE].block"]{
+                    if let value = node["|block.value[name=IF0].block"], let stmt = node[performer.evaluate(value) == "true" ? "|block.statement[name=DO0].block" : "|block.statement[name=ELSE].block"]{
                         stack.last?.status = .update
                         tryPush(stmt, stack: &stack)
                         return stmt
@@ -128,7 +128,7 @@ extension ABVirtulMachine{
                 }
             }else if type == "controls_repeat_ext"{
                 if context.status == .push || context.status == .update{//TODO:frank <field name="number">10</field>
-                    if let limit = node["|block.field[name=number]"], performer.evaluate(limit) > context.int0, let stmt = node["|block.statement[name=DO].block"]{
+                    if let limit = node["|block.value[name=TIMES].block"], Int(performer.evaluate(limit)) ?? 0 > context.int0, let stmt = node["|block.statement[name=DO].block"]{
                         stack.last?.status = .update
                         stack.last?.int0 += 1
                         tryPush(stmt, stack: &stack)
@@ -152,7 +152,7 @@ extension ABVirtulMachine{
                     return stmt
                 }
             }else if type == "start_tilt"{
-                if performer.evaluate(node) == 1{
+                if performer.evaluate(node) == "1"{
                     return traverse(node, stack:&stack)
                 }
             }
