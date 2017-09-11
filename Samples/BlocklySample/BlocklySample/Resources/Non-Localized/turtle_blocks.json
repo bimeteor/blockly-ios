@@ -146,6 +146,7 @@
         "name": "VALUE"
       }
     ],
+ "inputsInline": true,
     "previousStatement": null,
     "nextStatement": null,
     "colour": "#009688",
@@ -175,6 +176,7 @@
         "name": "VALUE"
       }
     ],
+     "inputsInline": true,
     "previousStatement": null,
     "nextStatement": null,
     "colour": "#009688",
@@ -206,6 +208,7 @@
         "check": "Colour"
       }
     ],
+ "inputsInline": true,
     "previousStatement": null,
     "nextStatement": null,
     "colour": "%{BKY_COLOUR_HUE}",
@@ -631,44 +634,17 @@
  "message0": "等待%1秒",
  "args0": [
            {
-           "type": "field_number",
-           "name": "number",
-           "precision": 1,
-           "min": 0,
-           "value": 10
+           "type": "input_value",
+           "name": "TIME",
+           "check": "Number"
            }
            ],
+ "inputsInline": true,
  "previousStatement": null,
  "nextStatement": null,
  "colour": "#009688",
  "tooltip": "Move the turtle forward or backward",
  "blockFactoryUrl": "https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#metkk9"
- },
- {
- "type": "controls_repeat_ext",
- "message0": "重复%1次",
- "args0": [
-           {
-           "type": "field_number",
-           "name": "number",
-           "precision": 1,
-           "min": 0,
-           "value": 10
-           }
-           ],
- "message1": "执行 %1",
- "args1": [
-           {
-           "type": "input_statement",
-           "name": "DO"
-           }
-           ],
- "previousStatement": null,
- "nextStatement": null,
- "colour": "%{BKY_LOOPS_HUE}",
- "inputsInline": true,
- "tooltip": "%{BKY_CONTROLS_REPEAT_TOOLTIP}",
- "helpUrl": "%{BKY_CONTROLS_REPEAT_HELPURL}"
  },
  {
  "type": "controls_whileUntil",
@@ -754,27 +730,17 @@
  },
  {
  "type": "controls_wait_until",
- "message0": "等待直到%1",
+ "message0": "重复%1",
  "args0": [{
            "type": "input_statement",
            "name": "DO"
-           }],
- "previousStatement": null,
- "nextStatement": null,
- "colour": "%{BKY_LOOPS_HUE}",
- "tooltip": "While a value is false, then do some statements.",
- "helpUrl": "%{BKY_CONTROLS_WHILEUNTIL_HELPURL}"
- },
- {
- "type": "controls_wait_until",
- "message0": "重复%1直到%2",
- "args0": [{
-           "type": "input_statement",
-           "name": "DO"
-           },
-           {
-           "type": "input_statement",
-           "name": "DO"
+           }
+           ],
+ "message1": "直到%1",
+ "args1": [{
+           "type": "input_value",
+           "name": "IF0",
+           "check": "Boolean"
            }
            ],
  "previousStatement": null,

@@ -26,6 +26,12 @@
 14. issues & release notes
 5. Kotlin版本
 
+## owners:
+|module|owner|
+|:-:|:-:|
+|UI|覃文周|
+|运行及代码|王刚|
+|数据及配置|陈小雨|
 
 ## Comparison:
 ### Introduction:

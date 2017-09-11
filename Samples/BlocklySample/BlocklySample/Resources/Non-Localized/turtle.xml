@@ -19,13 +19,43 @@
         <block type="start_tilt"></block>
     </category>
     <category name="运动" colour="%{BKY_COLOUR_HUE}">
-        <block type="turtle_move"></block>
-        <block type="turtle_turn"></block>
-        <block type="turtle_color"></block>
+        <block type="turtle_move">
+            <value name="VALUE">
+                <shadow type="math_number">
+                    <field name="NUM">10</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="turtle_turn">
+            <value name="VALUE">
+                <shadow type="math_number">
+                    <field name="NUM">30</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="turtle_color">
+            <value name="COLOUR">
+                <shadow type="color_picker">
+                    <field name="COLOUR">#ff0000</field>
+                </shadow>
+            </value>
+        </block>
     </category>
     <category name="控制" colour="%{BKY_LOGIC_HUE}">
-        <block type="controls_wait"></block>
-        <block type="controls_repeat_ext"></block>
+        <block type="controls_wait">
+            <value name="TIME">
+                <shadow type="math_number">
+                    <field name="NUM">2</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="controls_repeat_ext">
+            <value name="TIMES">
+                <shadow type="math_number">
+                    <field name="NUM">3</field>
+                </shadow>
+            </value>
+        </block>
         <block type="controls_if"></block>
         <block type="controls_if_else"></block>
         <block type="controls_wait_until"></block>
