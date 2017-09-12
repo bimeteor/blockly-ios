@@ -52,54 +52,53 @@ extension SimpleWorkbenchViewController{
         motionManager?.accelerometerUpdateInterval = 1.0/20
         motionManager?.startAccelerometerUpdates(to: OperationQueue.main) {
             if $1 == nil, let acc = $0{
-                let x = acc.acceleration.x
-                let y = acc.acceleration.y
-                let cut = 0.4
+                let x = acc.acceleration.x/acc.acceleration.z
+                let y = acc.acceleration.y/acc.acceleration.z
+                let cutX = 0.35
+                let cutY = 0.3
                 var res = ""
-                if abs(x) >= cut || abs(y) >= cut{
-                    let dir = UIDevice.current.orientation
-                    if abs(x) > abs(y){
-                        if x >= cut{
+                if abs(x) >= cutX || abs(y) >= cutY{
+                    let dir = UIApplication.shared.statusBarOrientation
+                    if abs(x)/cutX > abs(y)/cutY{
+                        if x >= cutX{
                             switch dir{
-                            case .portrait:res = "r"
-                            case .portraitUpsideDown:res = "l"
-                            case .landscapeLeft:res = "u"
-                            case .landscapeRight:res = "d"
+                            case .portrait:res = "right"
+                            case .portraitUpsideDown:res = "left"
+                            case .landscapeLeft:res = "forward"
+                            case .landscapeRight:res = "backward"
                             default: res = ""
                             }
                         }else{
                             switch dir{
-                            case .portrait:res = "l"
-                            case .portraitUpsideDown:res = "r"
-                            case .landscapeLeft:res = "d"
-                            case .landscapeRight:res = "u"
+                            case .portrait:res = "left"
+                            case .portraitUpsideDown:res = "right"
+                            case .landscapeLeft:res = "backward"
+                            case .landscapeRight:res = "forward"
                             default: res = ""
                             }
                         }
                     }else{//y
-                        if y >= cut{
+                        if y >= cutY{
                             switch dir{
-                            case .portrait:res = "u"
-                            case .portraitUpsideDown:res = "d"
-                            case .landscapeLeft:res = "l"
-                            case .landscapeRight:res = "r"
+                            case .portrait:res = "forward"
+                            case .portraitUpsideDown:res = "backward"
+                            case .landscapeLeft:res = "left"
+                            case .landscapeRight:res = "right"
                             default: res = ""
                             }
                         }else{
                             switch dir{
-                            case .portrait:res = "d"
-                            case .portraitUpsideDown:res = "u"
-                            case .landscapeLeft:res = "r"
-                            case .landscapeRight:res = "l"
+                            case .portrait:res = "backward"
+                            case .portraitUpsideDown:res = "forward"
+                            case .landscapeLeft:res = "right"
+                            case .landscapeRight:res = "left"
                             default: res = ""
                             }
                         }
                     }
                 }
-                self.vm?.performer.update(1, type: "phont_tilt", id: 1)
+                self.vm?.performer.update(ABPerformer.Direction.init(res)?.rawValue ?? 0, type: "phone_tilt", id: 1)
             }
-            
-            print("\($0) \($1)")
         }
     }
 }
@@ -119,7 +118,8 @@ extension SimpleWorkbenchViewController{
         turtle.center = CGPoint.init(x: simulator.bounds.width/2, y: simulator.bounds.height/2)
     }
     @objc func act() {
-        timer?.invalidate()
+        vm?.performer.delegate = nil
+        vm?.stop()
         if running{
             simulator.isHidden = true
             running = false
@@ -128,22 +128,12 @@ extension SimpleWorkbenchViewController{
             running = true
             tilt()
             if case let str?? = try? workspace?.toXML(){
-                vm?.performer.delegate = nil
-                vm?.stop()
                 vm = ABVirtulMachine.init(str)
                 vm?.performer.delegate = self
                 vm?.start()
             }
             turtle.transform = CGAffineTransform.identity
             turtle.center = CGPoint.init(x: simulator.bounds.width/2, y: simulator.bounds.height/2)
-//            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {_ in
-//                switch arc4random()%3{
-//                case 0:self.move(40)
-//                case 1:self.turn(50)
-//                case 2:self.color(Int(arc4random()%0xffffff))
-//                default:Void()
-//                }
-//            }
         }
     }
     func move(_ step:Int) {

@@ -151,12 +151,13 @@ extension ABVirtulMachine{
                     tryPush(stmt, stack: &stack)
                     return stmt
                 }
-            }else if type == "start_tilt"{
-                if performer.evaluate(node) == "1"{
-                    return traverse(node, stack:&stack)
-                }
             }
             stack.removeLast()
+        }else if type == "start_tilt"{
+            if performer.evaluate(node) == "true"{
+                return traverse(node, stack:&stack)
+            }
+            return nil
         }else if type == "restart"{
             let root = (stack.first?.node ?? node).root
             stack.removeAll()

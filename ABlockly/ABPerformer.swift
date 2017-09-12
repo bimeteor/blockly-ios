@@ -17,7 +17,23 @@ public protocol ABPerformerDelegate:class {
 
 public final class ABPerformer: NSObject {
     public weak var delegate:ABPerformerDelegate?
-    
+    enum Direction:Int {
+        case forward = 1, backward, left, right
+        init?(_ str:String){
+            switch str {
+            case "forward":
+                self.init(rawValue: 1)
+            case "backward":
+                self.init(rawValue: 2)
+            case "left":
+                self.init(rawValue: 3)
+            case "right":
+                self.init(rawValue: 4)
+            default:
+                self.init(rawValue: 0)
+            }
+        }
+    }
     private weak var vm:ABVirtulMachine?
     private var variables = [String:[Int:Int]]()
     private var timer:Timer?
@@ -137,13 +153,13 @@ extension ABPerformer{
         case "color_random":
             return String(arc4random()%0xffffff)
         case "start_tilt":
-            if let val = variables["phone_tilt"]{//TODO:frank
-                return "1"
+            guard let n = node["|block.field[name=DIR]"] else{return "false"}
+            if let val = variables["phone_tilt"]?[1], val > 0{
+                return String(val == Direction.init(evaluate(n))?.rawValue)
             }
-//            return UIDevice.current.orientation == .landscapeLeft
-            return "0"
+            return "false"
         default:
-            return "0"
+            return ""
         }
     }
     func end() {

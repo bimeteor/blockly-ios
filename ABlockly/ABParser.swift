@@ -35,15 +35,11 @@ public class ABParser: NSObject {
                 t = $0
             case "procedures_defnoreturn":
                 defs.append($0)
-            case let x where x.hasPrefix("start"):  //TODO:start
+            case let x where x.hasPrefix("start"):
                 b.append($0)
             default:
                 Void()
             }
-        }
-        if b.count == 1{
-            t = b[0]
-            b.removeAll()
         }
         guard let tt = t else{ return nil }
         trunk = tt

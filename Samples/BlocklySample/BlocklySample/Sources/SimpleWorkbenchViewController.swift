@@ -35,7 +35,6 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     var running = false
     var paused = false
     var vm:ABVirtulMachine?
-    var timer:Timer?
     var motionManager:CMMotionManager?
   override func viewDidLoad() {
     super.viewDidLoad()
