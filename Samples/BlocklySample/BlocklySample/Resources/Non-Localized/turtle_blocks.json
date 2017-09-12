@@ -1,105 +1,5 @@
 [
   {
-    "type": "turtle_move_internal",
-    "message0": "move %1 %2",
-    "args0": [
-      {
-        "type": "field_dropdown",
-        "name": "DIR",
-        "options": [
-          [
-            "forward by",
-            "moveForward"
-          ],
-          [
-            "backward by",
-            "moveBackward"
-          ]
-        ]
-      },
-      {
-        "type": "field_dropdown",
-        "name": "VALUE",
-        "options": [
-          [
-            "20",
-            "20"
-          ],
-          [
-            "50",
-            "50"
-          ],
-          [
-            "100",
-            "100"
-          ],
-          [
-            "150",
-            "150"
-          ]
-        ]
-      }
-    ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": "#009688",
-    "tooltip": "Moves the turtle forward or backward by the specified amount."
-  },
-  {
-    "type": "turtle_turn_internal",
-    "message0": "turn %1 %2",
-    "args0": [
-      {
-        "type": "field_dropdown",
-        "name": "DIR",
-        "options": [
-          [
-            "right \u21BB by",
-            "turnRight"
-          ],
-          [
-            "left \u21BA by",
-            "turnLeft"
-          ]
-        ]
-      },
-      {
-        "type": "field_dropdown",
-        "name": "VALUE",
-        "options": [
-          [
-            "1\u00B0",
-            "1"
-          ],
-          [
-            "45\u00B0",
-            "45"
-          ],
-          [
-            "72\u00B0",
-            "72"
-          ],
-          [
-            "90\u00B0",
-            "90"
-          ],
-          [
-            "120\u00B0",
-            "120"
-          ],
-          [
-            "144\u00B0",
-            "144"
-          ]
-        ]
-      }
-    ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": "#009688",
-    "tooltip": "Turns the turtle left or right by the specified number of degrees."
-  },
-  {
     "type": "turtle_pen",
     "message0": "pen %1",
     "args0": [
@@ -109,11 +9,11 @@
         "options": [
           [
             "up",
-            "penUp"
+            "up"
           ],
           [
             "down",
-            "penDown"
+            "down"
           ]
         ]
       }
@@ -136,7 +36,7 @@
             "forward"
           ],
           [
-            "backxx",
+            "backward",
             "backward"
           ]
         ]
@@ -231,7 +131,6 @@
   {
     "type": "start",
     "message0": "当开始按钮被点击",
-    "previousStatement": null,
     "nextStatement": null,
     "colour": "#009688",
     "tooltip": "Move the turtle forward or backward",
@@ -256,7 +155,6 @@
         ]
       }
     ],
-    "previousStatement": null,
     "nextStatement": null,
     "colour": "#009688",
     "tooltip": "Move the turtle forward or backward",
@@ -265,7 +163,6 @@
   {
     "type": "start_barrier",
     "message0": "前方有障碍物",
-    "previousStatement": null,
     "nextStatement": null,
     "colour": "#009688",
     "tooltip": "Move the turtle forward or backward",
@@ -304,7 +201,6 @@
         "value": 10
       }
     ],
-    "previousStatement": null,
     "nextStatement": null,
     "colour": "#009688",
     "tooltip": "Move the turtle forward or backward",

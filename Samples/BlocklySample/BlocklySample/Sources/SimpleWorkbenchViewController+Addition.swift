@@ -120,6 +120,7 @@ extension SimpleWorkbenchViewController{
     @objc func act() {
         vm?.performer.delegate = nil
         vm?.stop()
+        unhighlightAllBlocks()
         if running{
             simulator.isHidden = true
             running = false
