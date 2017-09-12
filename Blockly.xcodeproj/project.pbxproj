@@ -618,13 +618,13 @@
 		FA548C5E1B63144A008BC59C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				FA548C601B63144A008BC59C /* Info.plist */,
 				3064BAB21DAF3DC1006425A2 /* ObjC */,
 				FAA86FF21C64272C000C7C61 /* Common */,
 				FA548C851B66E861008BC59C /* Model */,
 				FA2726741B83C54900777B49 /* Layout */,
 				FAE5576C1BE0219C0019D0D4 /* Control */,
 				FA4BB4B31B7575FE000980E9 /* UI */,
-				FA548C601B63144A008BC59C /* Info.plist */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
