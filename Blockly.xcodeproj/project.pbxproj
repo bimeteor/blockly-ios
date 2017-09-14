@@ -465,7 +465,7 @@
 		FA2726741B83C54900777B49 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
-				FAD6523A1CB7210C00F73F11 /* Default */,
+				FA2726781B83C54900777B49 /* Layout.swift */,
 				FA2726751B83C54900777B49 /* BlockLayout.swift */,
 				FA27268C1B8687A200777B49 /* BlockGroupLayout.swift */,
 				FAD652501CB7266100F73F11 /* InputLayout.swift */,
@@ -480,7 +480,6 @@
 				FAC034FD1D5167210017C1C8 /* FieldLabelLayout.swift */,
 				FAFAEE621CDAE4DB00698179 /* FieldNumberLayout.swift */,
 				FAC035101D5170B20017C1C8 /* FieldVariableLayout.swift */,
-				FA2726781B83C54900777B49 /* Layout.swift */,
 				FA715BD81BF82F7600D83410 /* LayoutBuilder.swift */,
 				FA4E83EA1CACF00A009FB0CD /* LayoutEngine.swift */,
 				FA271CE91B8E6D430015CE38 /* LayoutConfig.swift */,
@@ -495,6 +494,7 @@
 				FA2726791B83C54900777B49 /* WorkspaceLayout.swift */,
 				FACBAB581D8371220063A975 /* WorkspaceLayoutCoordinator.swift */,
 				FA9D2FBC1C111A1300D0E528 /* WorkspaceFlowLayout.swift */,
+				FAD6523A1CB7210C00F73F11 /* Default */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -513,11 +513,11 @@
 		FA4BB4B31B7575FE000980E9 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				FAA870131C642805000C7C61 /* View Controllers */,
-				FA4BB5681B7C03EA000980E9 /* Views */,
-				30DC64DA1D875C88002D2186 /* BlocklyPanGestureRecognizer.swift */,
 				FA2CA3521EA84F990054924E /* PathHelper.swift */,
 				FAA870111C64276A000C7C61 /* WorkspaceBezierPath.swift */,
+				30DC64DA1D875C88002D2186 /* BlocklyPanGestureRecognizer.swift */,
+				FA4BB5681B7C03EA000980E9 /* Views */,
+				FAA870131C642805000C7C61 /* View Controllers */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -525,11 +525,10 @@
 		FA4BB5681B7C03EA000980E9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				FAD6524B1CB7211500F73F11 /* Default */,
-				FA59BC501ED62D6B00EF1646 /* AnglePicker.swift */,
-				FAB67C6C1BFDB75900E75453 /* BezierPathLayer.swift */,
+				FAB551AB1BD5A06F00EFB09E /* LayoutView.swift */,
 				FA4BB56A1B7C03EA000980E9 /* BlockView.swift */,
 				FA8425191D3459DD0092CDDC /* BlockGroupView.swift */,
+				FA59BC501ED62D6B00EF1646 /* AnglePicker.swift */,
 				FAB31CE11C571F730071EBF8 /* FieldView.swift */,
 				FA10E3F41C696A9F0095F088 /* FieldAngleView.swift */,
 				FA42D7F41C61B448000C8EB4 /* FieldCheckboxView.swift */,
@@ -542,7 +541,6 @@
 				FAFAEE521CDABED400698179 /* FieldNumberView.swift */,
 				FA1631791CE54F89008DDBC8 /* FieldVariableView.swift */,
 				FA84251B1D3459EC0092CDDC /* InputView.swift */,
-				FAB551AB1BD5A06F00EFB09E /* LayoutView.swift */,
 				FAFA81F61E1C513A00BA50E9 /* MutatorIfElseView.swift */,
 				FA56E3661E317C0700A53631 /* MutatorProcedureDefinitionView.swift */,
 				FA56E35E1E298E9C00A53631 /* NumberIncrementerView.swift */,
@@ -553,6 +551,8 @@
 				FAE557751BE028840019D0D4 /* ViewManager.swift */,
 				FA4BB56D1B7C03EA000980E9 /* WorkspaceView.swift */,
 				FAA4D4E61D07D6BF007312BD /* ZIndexedGroupView.swift */,
+				FAB67C6C1BFDB75900E75453 /* BezierPathLayer.swift */,
+				FAD6524B1CB7211500F73F11 /* Default */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -720,11 +720,11 @@
 				786ABAA01F6A80AC00022465 /* FieldColorPickerController.swift */,
 				FAA870141C642805000C7C61 /* FieldColorPickerViewController.swift */,
 				FA59BC541ED6634900EF1646 /* NumberPadViewController.swift */,
-				FAFD379C1C9B90B100C77049 /* ToolboxCategoryListViewController.swift */,
-				FA16C2851D407E6500BAAFA2 /* ToolboxCategoryViewController.swift */,
-				FAA870161C642805000C7C61 /* TrashCanViewController.swift */,
-				FAA870171C642805000C7C61 /* WorkbenchViewController.swift */,
 				FA8425211D35D4140092CDDC /* WorkspaceViewController.swift */,
+				FAA870161C642805000C7C61 /* TrashCanViewController.swift */,
+				FA16C2851D407E6500BAAFA2 /* ToolboxCategoryViewController.swift */,
+				FAFD379C1C9B90B100C77049 /* ToolboxCategoryListViewController.swift */,
+				FAA870171C642805000C7C61 /* WorkbenchViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -746,9 +746,9 @@
 		FAD6523A1CB7210C00F73F11 /* Default */ = {
 			isa = PBXGroup;
 			children = (
-				FAD6523B1CB7210C00F73F11 /* DefaultBlockGroupLayout.swift */,
 				FAD6523D1CB7210C00F73F11 /* DefaultBlockLayout.swift */,
 				FAD6523C1CB7210C00F73F11 /* DefaultBlockLayout+Background.swift */,
+				FAD6523B1CB7210C00F73F11 /* DefaultBlockGroupLayout.swift */,
 				FAD6523E1CB7210C00F73F11 /* DefaultInputLayout.swift */,
 				FAD652731CB87B2200F73F11 /* DefaultLayoutEngine.swift */,
 				FAD652771CB88FEF00F73F11 /* DefaultLayoutConfig.swift */,
