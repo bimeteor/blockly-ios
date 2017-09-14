@@ -489,7 +489,7 @@ open class WorkbenchViewController: UIViewController {
     if style == .alternate {
       // Position the button inside the trashCanView to be `(iconPadding, iconPadding)`
       // away from the top-trailing corner.
-      trashCanView.setButtonPadding(top: iconPadding, leading: 0, bottom: 0, trailing: iconPadding)
+      //trashCanView.setButtonPadding(top: iconPadding, leading: 0, bottom: 0, trailing: iconPadding)
       constraints = [
         // Position the toolbox category list along the bottom margin, and let the workspace view
         // fill the rest of the space
@@ -508,17 +508,17 @@ open class WorkbenchViewController: UIViewController {
         "V:|-(iconPadding)-[undoButton]",
         "V:|-(iconPadding)-[redoButton]",
         // Position the trash can button along the top-trailing margin
-        "H:[trashCanView]|",
-        "V:|[trashCanView]",
+        "H:|[trashCanView]|",
+        "V:|[trashCanView(==toolboxCategoriesListView)]",
         // Position the trash can folder view on the trailing edge of the view, between the toolbox
         // category view and trash can button
-        "H:[trashCanFolderView]|",
-        "V:[trashCanView]-(iconPadding)-[trashCanFolderView]-[toolboxCategoryView]",
+        //"H:[trashCanFolderView]|",
+        //"V:[trashCanView]-(iconPadding)-[trashCanFolderView]-[toolboxCategoryView]",
       ]
     } else {
       // Position the button inside the trashCanView to be `(iconPadding, iconPadding)`
       // away from the bottom-trailing corner.
-      trashCanView.setButtonPadding(top: 0, leading: 0, bottom: iconPadding, trailing: iconPadding)
+      //trashCanView.setButtonPadding(top: 0, leading: 0, bottom: iconPadding, trailing: iconPadding)
       constraints = [
         // Position the toolbox category list along the leading margin, and let the workspace view
         // fill the rest of the space
@@ -537,12 +537,12 @@ open class WorkbenchViewController: UIViewController {
         "V:[undoButton]-(iconPadding)-|",
         "V:[redoButton]-(iconPadding)-|",
         // Position the trash can button along the bottom-trailing margin
-        "H:[trashCanView]|",
-        "V:[trashCanView]|",
+        "H:|[trashCanView(==toolboxCategoriesListView)]",
+        "V:|[trashCanView]|",
         // Position the trash can folder view on the bottom of the view, between the toolbox
         // category view and trash can button
-        "H:[toolboxCategoryView]-[trashCanFolderView]-(iconPadding)-[trashCanView]",
-        "V:[trashCanFolderView]|",
+        //"H:[toolboxCategoryView]-[trashCanFolderView]-(iconPadding)-[trashCanView]",
+        //"V:[trashCanFolderView]|",
       ]
     }
 
@@ -600,8 +600,9 @@ open class WorkbenchViewController: UIViewController {
     super.viewDidLoad()
 
     // Hide/show trash can
-    setTrashCanViewVisible(enableTrashCan)
-
+    //setTrashCanViewVisible(enableTrashCan)
+    trashCanViewController.view.isHidden = true
+    
     refreshView()
   }
 
@@ -1639,86 +1640,88 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
         EventManager.shared.pushNewGroup()
       }
 
-      let inToolbox = blockView.bky_isDescendant(of: toolboxCategoryViewController.view)
-      let inTrash = blockView.bky_isDescendant(of: trashCanViewController.view)
-      // If the touch is in the toolbox, copy the block over to the workspace first.
-      if inToolbox {
-        guard let newBlock = copyBlockToWorkspace(blockView) else {
-          return
+        let inToolbox = blockView.bky_isDescendant(of: toolboxCategoryViewController.view)
+        let inTrash = blockView.bky_isDescendant(of: trashCanViewController.view)
+        // If the touch is in the toolbox, copy the block over to the workspace first.
+        if inToolbox {
+            guard let newBlock = copyBlockToWorkspace(blockView) else {
+                return
+            }
+            gesture.replaceBlock(block, with: newBlock)
+            blockView = newBlock
+        } else if inTrash {
+            let oldBlock = blockView
+            
+            guard let newBlock = copyBlockToWorkspace(blockView) else {
+                return
+            }
+            gesture.replaceBlock(block, with: newBlock)
+            blockView = newBlock
+            removeBlockFromTrash(oldBlock)
         }
-        gesture.replaceBlock(block, with: newBlock)
-        blockView = newBlock
-      } else if inTrash {
-        let oldBlock = blockView
-
-        guard let newBlock = copyBlockToWorkspace(blockView) else {
-          return
-        }
-        gesture.replaceBlock(block, with: newBlock)
-        blockView = newBlock
-        removeBlockFromTrash(oldBlock)
-      }
 
       guard let blockLayout = blockView.blockLayout?.draggableBlockLayout else {
         return
       }
 
-      addUIStateValue(.draggingBlock)
-      do {
-        try _dragger.startDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
-      } catch let error {
-        bky_assertionFailure("Could not start dragging block layout: \(error)")
-
-        // This shouldn't happen in practice. Cancel the gesture to be safe.
-        gesture.cancelAllTouches()
-      }
+        addUIStateValue(.draggingBlock)
+        do {
+            try _dragger.startDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
+        } catch let error {
+            bky_assertionFailure("Could not start dragging block layout: \(error)")
+            
+            // This shouldn't happen in practice. Cancel the gesture to be safe.
+            gesture.cancelAllTouches()
+        }
     } else if touchState == .changed || touchState == .ended {
-      addUIStateValue(.draggingBlock)
-      _dragger.continueDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
-
-      if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
-        addUIStateValue(.trashCanHighlighted)
-      } else {
-        removeUIStateValue(.trashCanHighlighted)
-      }
+        addUIStateValue(.draggingBlock)
+        _dragger.continueDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
+        
+        if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
+            toolboxCategoryListViewController.view.isHidden = true
+            addUIStateValue(.trashCanHighlighted)
+        } else {
+            toolboxCategoryListViewController.view.isHidden = false
+            removeUIStateValue(.trashCanHighlighted)
+        }
     }
 
     if touchState == .ended {
-      let touchTouchingTrashCan = isTouchTouchingTrashCan(touchPosition,
-        fromView: workspaceView.scrollView)
-      if touchTouchingTrashCan && blockLayout.block.deletable {
-        // This block is being "deleted" -- cancel the drag and copy the block into the trash can
-        _dragger.cancelDraggingBlockLayout(blockLayout)
-
-        do {
-          // Keep a reference of all blocks that are getting transferred over so they don't go
-          // out of memory.
-          var allBlocksToRemove = blockLayout.block.allBlocksForTree()
-
-          try _workspaceLayoutCoordinator?.removeBlockTree(blockLayout.block)
-          try trashCanViewController.workspaceLayoutCoordinator?.addBlockTree(blockLayout.block)
-
-          allBlocksToRemove.removeAll()
-        } catch let error {
-          bky_assertionFailure("Could not copy block to trash can: \(error)")
-        }
-      } else {
-        _dragger.finishDraggingBlockLayout(blockLayout)
-      }
-
-      if _dragger.numberOfActiveDrags == 0 {
-        // Update the UI state
-        removeUIStateValue(.draggingBlock)
-        if !isGestureTouchingTrashCan(gesture) {
-          removeUIStateValue(.trashCanHighlighted)
+        let touchTouchingTrashCan = isTouchTouchingTrashCan(touchPosition,
+                                                            fromView: workspaceView.scrollView)
+        if touchTouchingTrashCan && blockLayout.block.deletable {
+            // This block is being "deleted" -- cancel the drag and copy the block into the trash can
+            _dragger.cancelDraggingBlockLayout(blockLayout)
+            
+            do {
+                // Keep a reference of all blocks that are getting transferred over so they don't go
+                // out of memory.
+                var allBlocksToRemove = blockLayout.block.allBlocksForTree()
+                
+                try _workspaceLayoutCoordinator?.removeBlockTree(blockLayout.block)
+                try trashCanViewController.workspaceLayoutCoordinator?.addBlockTree(blockLayout.block)
+                
+                allBlocksToRemove.removeAll()
+            } catch let error {
+                bky_assertionFailure("Could not copy block to trash can: \(error)")
+            }
+        } else {
+            _dragger.finishDraggingBlockLayout(blockLayout)
         }
 
-        EventManager.shared.popGroup()
-      }
-
-      // Always fire pending events after a finger has been lifted. All grouped events will
-      // eventually get grouped together regardless if they were fired in batches.
-      EventManager.shared.firePendingEvents()
+        if _dragger.numberOfActiveDrags == 0 {
+            // Update the UI state
+            removeUIStateValue(.draggingBlock)
+            if !isGestureTouchingTrashCan(gesture) {
+                removeUIStateValue(.trashCanHighlighted)
+            }
+            
+            EventManager.shared.popGroup()
+        }
+        
+        // Always fire pending events after a finger has been lifted. All grouped events will
+        // eventually get grouped together regardless if they were fired in batches.
+        EventManager.shared.firePendingEvents()
     }
   }
 }

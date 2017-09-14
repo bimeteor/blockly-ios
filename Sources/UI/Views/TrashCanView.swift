@@ -47,6 +47,8 @@ public final class TrashCanView: UIView {
   public required init(imageNamed imageName: String, size: CGSize? = nil) {
     super.init(frame: CGRect.zero)
 
+    self.backgroundColor = UIColor(white: 0.85, alpha: 1.0)
+    
     if let imageSize = size {
       _imageSize = imageSize
     }
@@ -60,15 +62,15 @@ public final class TrashCanView: UIView {
     }
 
     // Forces the image to completely fill the button
-    button.imageView?.contentMode = .scaleAspectFit
-    button.contentHorizontalAlignment = .fill
-    button.contentVerticalAlignment = .fill
+//    button.imageView?.contentMode = .scaleAspectFit
+//    button.contentHorizontalAlignment = .fill
+//    button.contentVerticalAlignment = .fill
 
     // Add the button and its constraints
     let views: [String: UIView] = ["button": button]
     let constraints = [
       "H:|-[button]-|",
-      "V:|-[button]-|"
+      "V:|-20-[button]"
     ]
     bky_addSubviews(Array(views.values))
     bky_addVisualFormatConstraints(constraints, metrics: nil, views: views)
@@ -118,6 +120,19 @@ public final class TrashCanView: UIView {
 
     _highlighted = highlighted
 
+    if self._highlighted {
+        UIView.animate(withDuration: 0.25) {
+            self.backgroundColor = UIColor(white: 0.7, alpha: 1.0)
+            self.button.transform = self.button.transform.scaledBy(x: 1.3, y: 1.3)
+        }
+    } else {
+        UIView.animate(withDuration: 0.25) {
+            self.backgroundColor = UIColor(white: 0.85, alpha: 1.0)
+            self.button.transform = CGAffineTransform.identity
+        }
+    }
+    
+    /*
     bky_updateConstraints(animated: animated, update: {
       if self._highlighted {
         self._trashCanHeightConstraint.constant = self._imageSize.height * 2
@@ -129,5 +144,6 @@ public final class TrashCanView: UIView {
         self.layer.opacity = 1.0
       }
     })
+     */
   }
 }

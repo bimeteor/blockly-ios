@@ -47,7 +47,6 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     
     redoButton.isHidden = true
     undoButton.isHidden = true
-    trashCanView.isHidden = true
     
     let play = UIButton.init(type: .custom)
     view.addSubview(play)

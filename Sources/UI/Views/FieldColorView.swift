@@ -85,34 +85,58 @@ open class FieldColorView: FieldView {
     button.backgroundColor = UIColor.clear
   }
 
-  // MARK: - Private
-
-  fileprivate dynamic func didTapButton(_ sender: UIButton) {
-    // Show the color picker
-    let viewController = FieldColorPickerViewController()
-    viewController.color = fieldColorLayout?.color
-    viewController.delegate = self
-    popoverDelegate?
-      .layoutView(self, requestedToPresentPopoverViewController: viewController, fromView: self)
-  }
+    // MARK: - Private
+    
+    fileprivate dynamic func didTapButton(_ sender: UIButton) {
+        // Show the color picker
+        /*
+         let viewController = FieldColorPickerViewController()
+         viewController.color = fieldColorLayout?.color
+         viewController.delegate = self
+         popoverDelegate?
+         .layoutView(self, requestedToPresentPopoverViewController: viewController, fromView: self)
+         */
+        let viewController = FieldColorPickerController()
+        viewController.delegate = self
+        viewController.color = fieldColorLayout?.color
+        viewController.modalPresentationStyle = .overCurrentContext
+        viewController.modalTransitionStyle = .crossDissolve
+        popoverDelegate?.layoutView(self, requestedToPresentViewController: viewController)
+    }
 }
 
 // MARK: - FieldLayoutMeasurer implementation
 
 extension FieldColorView: FieldLayoutMeasurer {
-  public static func measureLayout(_ layout: FieldLayout, scale: CGFloat) -> CGSize {
-    if !(layout is FieldColorLayout) {
-      bky_assertionFailure("`layout` is of type `\(type(of: layout))`. " +
-        "Expected type `FieldColorLayout`.")
-      return CGSize.zero
+    public static func measureLayout(_ layout: FieldLayout, scale: CGFloat) -> CGSize {
+        if !(layout is FieldColorLayout) {
+            bky_assertionFailure("`layout` is of type `\(type(of: layout))`. " +
+                "Expected type `FieldColorLayout`.")
+            return CGSize.zero
+        }
+        
+        var size = layout.config.viewSize(for: LayoutConfig.FieldColorButtonSize)
+        size.height = max(size.height, layout.config.viewUnit(for: LayoutConfig.FieldMinimumHeight))
+        return size
     }
-
-    var size = layout.config.viewSize(for: LayoutConfig.FieldColorButtonSize)
-    size.height = max(size.height, layout.config.viewUnit(for: LayoutConfig.FieldMinimumHeight))
-    return size
-  }
 }
 
+// MARK: - FieldColorPickerControllerDelegate implementation
+
+extension FieldColorView: FieldColorPickerControllerDelegate {
+    public func fieldColorPickerController(_ controller: FieldColorPickerController, didSelect color: UIColor) {
+        EventManager.shared.groupAndFireEvents {
+            fieldColorLayout?.updateColor(color)
+            popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: controller, animated: true)
+        }
+    }
+    
+    public func fieldColorPickerControllerDidCancel(_ controller: FieldColorPickerController) {
+        popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: controller, animated: true)
+    }
+}
+
+/*
 // MARK: - FieldColorPickerViewControllerDelegate implementation
 
 extension FieldColorView: FieldColorPickerViewControllerDelegate {
@@ -126,3 +150,4 @@ extension FieldColorView: FieldColorPickerViewControllerDelegate {
     }
   }
 }
+ */
