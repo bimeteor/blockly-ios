@@ -14,11 +14,11 @@
   -->
 
 <xml>
-    <category name="开始" colour="#009688">
+    <category icon="28" name="开始" colour="#009688">
         <block type="start"></block>
         <block type="start_tilt"></block>
     </category>
-    <category name="运动" colour="%{BKY_COLOUR_HUE}">
+    <category icon="28" name="运动" colour="%{BKY_COLOUR_HUE}">
         <block type="turtle_move">
             <value name="VALUE">
                 <shadow type="math_number">
@@ -41,7 +41,7 @@
             </value>
         </block>
     </category>
-    <category name="控制" colour="%{BKY_LOGIC_HUE}">
+    <category icon="28" name="控制" colour="%{BKY_LOGIC_HUE}">
         <block type="controls_wait">
             <value name="TIME">
                 <shadow type="math_number">
@@ -60,11 +60,11 @@
         <block type="controls_if_else"></block>
         <block type="controls_wait_until"></block>
     </category>
-    <category name="声光" colour="%{BKY_LOOPS_HUE}">
+    <category icon="28" name="声光" colour="%{BKY_LOOPS_HUE}">
         <block type="color_picker"></block>
         <block type="color_random"></block>
     </category>
-    <category name="感知" colour="%{BKY_VARIABLES_HUE}">
+    <category icon="28" name="感知" colour="%{BKY_VARIABLES_HUE}">
 <!--        <block type="controls_repeat_ext">-->
 <!--            <value name="TIMES">-->
 <!--                <shadow type="math_number">-->
@@ -90,7 +90,7 @@
 <!--            </value>-->
 <!--        </block>-->
     </category>
-    <category name="数学" colour="%{BKY_MATH_HUE}">
+    <category icon="28" name="数学" colour="%{BKY_MATH_HUE}">
         <block type="logic_compare"></block>
         <block type="logic_operation"></block>
         <block type="logic_negate"></block>
@@ -172,8 +172,8 @@
         </block>
         <block type="math_random_float"></block>
     </category>
-    <category name="变量" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE" />
-    <category name="函数" colour="%{BKY_PROCEDURES_HUE}">
+    <category icon="28" name="变量" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE" />
+    <category icon="28" name="函数" colour="%{BKY_PROCEDURES_HUE}">
         <block type="procedures_defnoreturn"></block>
     </category>
 </xml>
