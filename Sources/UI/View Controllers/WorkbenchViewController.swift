@@ -1647,6 +1647,7 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
         }
         gesture.replaceBlock(block, with: newBlock)
         blockView = newBlock
+        
       } else if inTrash {
         let oldBlock = blockView
         
@@ -1658,7 +1659,9 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
         removeBlockFromTrash(oldBlock)
         
       } else {
-        self.toolboxCategoryListViewController.view.isHidden = true
+        if !toolboxCategoryListViewController.view.isHidden {
+          toolboxCategoryListViewController.view.isHidden = true // 让垃圾筐显示出来
+        }
       }
 
       guard let blockLayout = blockView.blockLayout?.draggableBlockLayout else {
@@ -1678,11 +1681,14 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
         addUIStateValue(.draggingBlock)
         _dragger.continueDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
         
-        if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
-            addUIStateValue(.trashCanHighlighted)
-        } else {
-            removeUIStateValue(.trashCanHighlighted)
+      if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
+        if !toolboxCategoryListViewController.view.isHidden {
+          toolboxCategoryListViewController.view.isHidden = true // 让垃圾筐显示出来
         }
+        addUIStateValue(.trashCanHighlighted)
+      } else {
+        removeUIStateValue(.trashCanHighlighted)
+      }
     }
 
     if touchState == .ended {
@@ -1708,7 +1714,9 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
         _dragger.finishDraggingBlockLayout(blockLayout)
       }
       
-      toolboxCategoryListViewController.view.isHidden = false
+      if toolboxCategoryListViewController.view.isHidden {
+        toolboxCategoryListViewController.view.isHidden = false // // 隐藏垃圾筐
+      }
       
       if _dragger.numberOfActiveDrags == 0 {
         // Update the UI state
