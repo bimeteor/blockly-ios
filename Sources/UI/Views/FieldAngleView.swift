@@ -108,20 +108,18 @@ extension FieldAngleView: UITextFieldDelegate {
     }
 
     // Don't actually edit the text field with the keyboard, but show the angle picker instead.
-    let pickerOptions = fieldAngleLayout.config.untypedValue(
-      for: LayoutConfig.FieldAnglePickerOptions) as? AnglePicker.Options
+    let pickerOptions = fieldAngleLayout.config.untypedValue(for: LayoutConfig.FieldAnglePickerOptions) as? AnglePicker.Options
     let viewController = AnglePickerViewController(options: pickerOptions)
+    viewController.modalDelegate = self
     viewController.delegate = self
+    viewController.shouldShowOkButton = true
+    viewController.modalContentSize = .medium
     viewController.angle = fieldAngleLayout.angle
 
     // Start a new event group for this edit.
     _eventGroupID = UUID().uuidString
 
-    popoverDelegate?
-      .layoutView(self, requestedToPresentPopoverViewController: viewController, fromView: self)
-
-    // Set the delegate so we can prioritize arrow directions
-    viewController.popoverPresentationController?.delegate = self
+    popoverDelegate?.layoutView(self, requestedToPresentViewController: viewController)
 
     // Hide keyboard
     endEditing(true)
@@ -158,26 +156,23 @@ extension FieldAngleView: FieldLayoutMeasurer {
 
 // MARK: - AnglePickerViewControllerDelegate
 
+extension FieldAngleView: TranslucentModalViewControllerDelegate {
+    public func didTapOK(_ viewController: TranslucentModalViewController) {
+        popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: viewController, animated: true)
+    }
+    
+    public func didTapBackground(_ viewController: TranslucentModalViewController) {
+        popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: viewController, animated: true)
+    }
+}
+
 extension FieldAngleView: AnglePickerViewControllerDelegate {
-  public func anglePickerViewController(
-    _ viewController: AnglePickerViewController, didUpdateAngle angle: Double) {
+  public func anglePickerViewController(_ viewController: AnglePickerViewController, didUpdateAngle angle: Double) {
     EventManager.shared.groupAndFireEvents(groupID: _eventGroupID) {
       fieldAngleLayout?.updateAngle(angle)
 
       // Update the text from the layout
       updateTextFieldFromLayout()
     }
-  }
-}
-
-// MARK: - UIPopoverPresentationControllerDelegate
-
-extension FieldAngleView: UIPopoverPresentationControllerDelegate {
-  public func prepareForPopoverPresentation(
-    _ popoverPresentationController: UIPopoverPresentationController) {
-    guard let rtl = self.fieldAngleLayout?.engine.rtl else { return }
-
-    // Prioritize arrow directions, so it won't obstruct the view of the field
-    popoverPresentationController.bky_prioritizeArrowDirections([.up, .down, .right], rtl: rtl)
   }
 }

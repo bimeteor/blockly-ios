@@ -89,18 +89,12 @@ open class FieldColorView: FieldView {
     
     fileprivate dynamic func didTapButton(_ sender: UIButton) {
         // Show the color picker
-        /*
-         let viewController = FieldColorPickerViewController()
-         viewController.color = fieldColorLayout?.color
-         viewController.delegate = self
-         popoverDelegate?
-         .layoutView(self, requestedToPresentPopoverViewController: viewController, fromView: self)
-         */
         let viewController = FieldColorPickerController()
+        viewController.modalDelegate = self
         viewController.delegate = self
+        viewController.shouldShowOkButton = false
+        viewController.modalContentSize = .medium
         viewController.color = fieldColorLayout?.color
-        viewController.modalPresentationStyle = .overCurrentContext
-        viewController.modalTransitionStyle = .crossDissolve
         popoverDelegate?.layoutView(self, requestedToPresentViewController: viewController)
     }
 }
@@ -123,6 +117,16 @@ extension FieldColorView: FieldLayoutMeasurer {
 
 // MARK: - FieldColorPickerControllerDelegate implementation
 
+extension FieldColorView: TranslucentModalViewControllerDelegate {
+    public func didTapOK(_ viewController: TranslucentModalViewController) {
+        popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: viewController, animated: true)
+    }
+    
+    public func didTapBackground(_ viewController: TranslucentModalViewController) {
+        popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: viewController, animated: true)
+    }
+}
+
 extension FieldColorView: FieldColorPickerControllerDelegate {
     public func fieldColorPickerController(_ controller: FieldColorPickerController, didSelect color: UIColor) {
         EventManager.shared.groupAndFireEvents {
@@ -130,24 +134,4 @@ extension FieldColorView: FieldColorPickerControllerDelegate {
             popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: controller, animated: true)
         }
     }
-    
-    public func fieldColorPickerControllerDidCancel(_ controller: FieldColorPickerController) {
-        popoverDelegate?.layoutView(self, requestedToDismissPopoverViewController: controller, animated: true)
-    }
 }
-
-/*
-// MARK: - FieldColorPickerViewControllerDelegate implementation
-
-extension FieldColorView: FieldColorPickerViewControllerDelegate {
-  public func fieldColorPickerViewController(
-    _ viewController: FieldColorPickerViewController, didPickColor color: UIColor)
-  {
-    EventManager.shared.groupAndFireEvents {
-      fieldColorLayout?.updateColor(color)
-      popoverDelegate?.layoutView(
-        self, requestedToDismissPopoverViewController: viewController, animated: true)
-    }
-  }
-}
- */

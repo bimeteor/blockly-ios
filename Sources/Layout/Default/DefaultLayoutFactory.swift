@@ -49,62 +49,52 @@ open class DefaultLayoutFactory: NSObject {
     // Register layout creators for default fields
     registerLayoutCreator(forFieldType: FieldAngle.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldAngleLayout(
-        fieldAngle: field as! FieldAngle, engine: engine, measurer: FieldAngleView.self)
+      return FieldAngleLayout(fieldAngle: field as! FieldAngle, engine: engine, measurer: FieldAngleView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldCheckbox.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldCheckboxLayout(
-        fieldCheckbox: field as! FieldCheckbox, engine: engine, measurer: FieldCheckboxView.self)
+      return FieldCheckboxLayout(fieldCheckbox: field as! FieldCheckbox, engine: engine, measurer: FieldCheckboxView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldColor.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldColorLayout(
-        fieldColor: field as! FieldColor, engine: engine, measurer: FieldColorView.self)
+      return FieldColorLayout(fieldColor: field as! FieldColor, engine: engine, measurer: FieldColorView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldDate.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldDateLayout(
-        fieldDate: field as! FieldDate, engine: engine, measurer: FieldDateView.self)
+      return FieldDateLayout(fieldDate: field as! FieldDate, engine: engine, measurer: FieldDateView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldDropdown.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldDropdownLayout(
-        fieldDropdown: field as! FieldDropdown, engine: engine, measurer: FieldDropdownView.self)
+      return FieldDropdownLayout(fieldDropdown: field as! FieldDropdown, engine: engine, measurer: FieldDropdownView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldImage.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldImageLayout(
-        fieldImage: field as! FieldImage, engine: engine, measurer: FieldImageView.self)
+      return FieldImageLayout(fieldImage: field as! FieldImage, engine: engine, measurer: FieldImageView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldInput.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldInputLayout(
-        fieldInput: field as! FieldInput, engine: engine, measurer: FieldInputView.self)
+      return FieldInputLayout(fieldInput: field as! FieldInput, engine: engine, measurer: FieldInputView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldLabel.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldLabelLayout(
-        fieldLabel: field as! FieldLabel, engine: engine, measurer: FieldLabelView.self)
+      return FieldLabelLayout(fieldLabel: field as! FieldLabel, engine: engine, measurer: FieldLabelView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldNumber.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldNumberLayout(
-        fieldNumber: field as! FieldNumber, engine: engine, measurer: FieldNumberView.self)
+      return FieldNumberLayout(fieldNumber: field as! FieldNumber, engine: engine, measurer: FieldNumberView.self)
     }
 
     registerLayoutCreator(forFieldType: FieldVariable.self) {
       (field: Field, engine: LayoutEngine) throws -> FieldLayout in
-      return FieldVariableLayout(
-        fieldVariable: field as! FieldVariable, engine: engine, measurer: FieldVariableView.self)
+      return FieldVariableLayout(fieldVariable: field as! FieldVariable, engine: engine, measurer: FieldVariableView.self)
     }
 
     // Register layout creators for mutators
@@ -116,20 +106,17 @@ open class DefaultLayoutFactory: NSObject {
 
     registerLayoutCreator(forMutatorType: MutatorProcedureCaller.self) {
       (mutator: Mutator, engine: LayoutEngine) -> MutatorLayout in
-      return MutatorProcedureCallerLayout(
-        mutator: mutator as! MutatorProcedureCaller, engine: engine)
+      return MutatorProcedureCallerLayout(mutator: mutator as! MutatorProcedureCaller, engine: engine)
     }
 
     registerLayoutCreator(forMutatorType: MutatorProcedureDefinition.self) {
       (mutator: Mutator, engine: LayoutEngine) -> MutatorLayout in
-      return MutatorProcedureDefinitionLayout(
-        mutator: mutator as! MutatorProcedureDefinition, engine: engine)
+      return MutatorProcedureDefinitionLayout(mutator: mutator as! MutatorProcedureDefinition, engine: engine)
     }
 
     registerLayoutCreator(forMutatorType: MutatorProcedureIfReturn.self) {
       (mutator: Mutator, engine: LayoutEngine) -> MutatorLayout in
-      return MutatorProcedureIfReturnLayout(
-        mutator: mutator as! MutatorProcedureIfReturn, engine: engine)
+      return MutatorProcedureIfReturnLayout(mutator: mutator as! MutatorProcedureIfReturn, engine: engine)
     }
   }
 

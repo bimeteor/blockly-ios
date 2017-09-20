@@ -20,75 +20,79 @@ import Foundation
  */
 @objc(BKYAnglePickerViewControllerDelegate)
 public protocol AnglePickerViewControllerDelegate: class {
-  /**
-   Event that is called when the angle has been updated from the angle picker.
-
-   - parameter viewController: The view controller where this event occurred.
-   - parameter angle: The updated angle.
-   */
-  func anglePickerViewController(
-    _ viewController: AnglePickerViewController, didUpdateAngle angle: Double)
+    /**
+     Event that is called when the angle has been updated from the angle picker.
+     
+     - parameter viewController: The view controller where this event occurred.
+     - parameter angle: The updated angle.
+     */
+    func anglePickerViewController(
+        _ viewController: AnglePickerViewController, didUpdateAngle angle: Double)
 }
 
 /**
  View controller for selecting an angle.
  */
 @objc(BKYAnglePickerViewController)
-public class AnglePickerViewController: UIViewController {
-  // MARK: - Properties
-
-  /// The current angle value.
-  public var angle: Double = 0 {
-    didSet {
-      anglePicker.angle = angle
+public class AnglePickerViewController: TranslucentModalViewController {
+    
+    // MARK: - Properties
+    
+    /// The current angle value.
+    public var angle: Double = 0 {
+        didSet {
+            anglePicker.angle = angle
+        }
     }
-  }
-
-  /// Delegate for events that occur on this controller.
-  public weak var delegate: AnglePickerViewControllerDelegate?
-
-  /// Angle picker control.
-  public private(set) lazy var anglePicker: AnglePicker = {
-    let anglePicker = AnglePicker(frame: .zero, options: self._anglePickerOptions)
-    anglePicker.angle = self.angle
-    anglePicker.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    anglePicker.addTarget(self, action: #selector(anglePickerValueChanged(_:)), for: .valueChanged)
-    return anglePicker
-  }()
-
-  /// Options used when initializing the angle picker.
-  private var _anglePickerOptions = AnglePicker.Options()
-
-  // MARK: - Initializers
-
-  public init(options: AnglePicker.Options? = nil) {
-    if let options = options {
-      _anglePickerOptions = options
+    
+    /// Delegate for events that occur on this controller.
+    public weak var delegate: AnglePickerViewControllerDelegate?
+    
+    /// Angle picker control.
+    public private(set) lazy var anglePicker: AnglePicker = {
+        let anglePicker = AnglePicker(frame: .zero, options: self._anglePickerOptions)
+        anglePicker.angle = self.angle
+        anglePicker.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        anglePicker.addTarget(self, action: #selector(anglePickerValueChanged(_:)), for: .valueChanged)
+        return anglePicker
+    }()
+    
+    /// Options used when initializing the angle picker.
+    private var _anglePickerOptions = AnglePicker.Options()
+    
+    
+    // MARK: - Initializers
+    
+    public init(options: AnglePicker.Options? = nil) {
+        if let options = options {
+            _anglePickerOptions = options
+        }
+        super.init(nibName: nil, bundle: nil)
     }
-    super.init(nibName: nil, bundle: nil)
-  }
-
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-
-  // MARK: - Super
-
-  public override func viewDidLoad() {
-    super.viewDidLoad()
-
-    anglePicker.frame =
-      CGRect(x: 10, y: 10, width: view.bounds.width - 20, height: view.bounds.height - 20)
-    view.addSubview(anglePicker)
-
-    preferredContentSize = CGSize(width: 200, height: 200)
-  }
-
-  // MARK: - Private
-
-  private dynamic func anglePickerValueChanged(_ anglePicker: AnglePicker) {
-    angle = anglePicker.angle
-
-    delegate?.anglePickerViewController(self, didUpdateAngle: angle)
-  }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    
+    // MARK: - View life cycle
+    
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        contentView.addSubview(anglePicker)
+    }
+    
+    public override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        anglePicker.frame = contentView.bounds
+    }
+    
+    
+    // MARK: - On value changed
+    
+    private dynamic func anglePickerValueChanged(_ anglePicker: AnglePicker) {
+        angle = anglePicker.angle
+        
+        delegate?.anglePickerViewController(self, didUpdateAngle: angle)
+    }
 }

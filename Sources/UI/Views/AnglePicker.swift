@@ -21,410 +21,420 @@ import QuartzCore
  */
 @objc(BKYAnglePicker)
 public class AnglePicker: UIControl {
-
-  /**
-   Options for configuring the behavior of the angle picker.
-   */
-  public struct Options {
-    /// The color of the ticks.
-    public var tickColor: UIColor = ColorPalette.green.tint300
-
-    /// The fill color of the angle.
-    public var angleColor: UIColor = ColorPalette.green.tint600
-
-    /// The fill color of the background circle.
-    public var circleColor: UIColor = ColorPalette.grey.tint100
-
-    /// The total number of ticks to render. These ticks act as snappable hotspots, whose
-    /// behavior can be configured via `self.snapToThreshold` and `self.snapAwayThreshold`.
-    public var numberOfTicks: Int = 24
-
-    /// The number of major ticks to render. These ticks are larger in appearance.
-    /// They are evenly distributed based on the total number of ticks, rounded down.
-    public var numberOfMajorTicks: Int = 8
-
-    /// The direction in which the angle increases.
-    /// `true` for clockwise, or `false` for counterclockwise (the default).
-    public var clockwise = false
-
-    /// Offset the location of 0° (and all angles) by a constant.
-    /// Usually either `0` (0° = right) or `90` (0° = up), for clockwise. Defaults to `0`.
-    public var offset: Double = 0
-
-    /// How close, in degrees, before the chosen angle should snap to a hotspot tick.
-    public var snapToThreshold: Double = 0
-
-    /// How far, in degrees, before the chosen angle should snap away from a hotspot tick.
-    public var snapAwayThreshold: Double = 5
-
-    /// Maximum allowed angle before wrapping.
-    /// Usually either 360 (for 0 to 359.9) or 180 (for -179.9 to 180).
-    public var wrap: Double = 360
-
-    public init() {
+    
+    /**
+     Options for configuring the behavior of the angle picker.
+     */
+    public struct Options {
+        /// The fill color of the angle.
+        public var angleColor: UIColor = ColorPalette.green.tint600
+        
+        /// The fill color of the background circle.
+        public var circleColor: UIColor = ColorPalette.grey.tint100
+        
+        /// The direction in which the angle increases.
+        /// `true` for clockwise, or `false` for counterclockwise (the default).
+        public var clockwise = true
+        
+        /// Offset the location of 0° (and all angles) by a constant.
+        /// Usually either `0` (0° = right) or `90` (0° = up), for clockwise. Defaults to `0`.
+        public var offset: Double = -90
+        
+        /// 步进值，单位是°
+        public var step: Double = 1
+        
+        /// Maximum allowed angle before wrapping.
+        /// Usually either 360 (for 0 to 359.9) or 180 (for -179.9 to 180).
+        public var wrap: Double = 360
+        
+        /// 最大值是否为360度。如果不是，那么就是-118到118度
+        public var is360 = true
+        
+        public init() {
+        }
     }
-  }
-
-  // MARK: - Properties
-
-  /// The angle in degrees.
-  public var angle = Double(0) {
-    didSet {
-      if angle == oldValue {
-        return
-      }
-
-      renderAngle()
-
-      // Notify of changes to the control.
-      sendActions(for: .valueChanged)
+    
+    // MARK: - Properties
+    
+    /// The angle in degrees.
+    public var angle = Double(0) {
+        didSet {
+            if angle == oldValue {
+                return
+            }
+            
+            renderAngle()
+            
+            // Notify of changes to the control.
+            sendActions(for: .valueChanged)
+        }
     }
-  }
-
-  /// The configurable options of the angle picker.
-  public let options: Options
-
-  /// Layer for rendering the angle.
-  fileprivate lazy var _angleLayer: CAShapeLayer = {
-    let layer = CAShapeLayer()
-    layer.allowsEdgeAntialiasing = true
-    layer.fillColor = self.options.angleColor.cgColor
-    layer.strokeColor = self.options.angleColor.cgColor
-    layer.lineWidth = 1
-    return layer
-  }()
-
-  /// Layer for rendering the background circle.
-  fileprivate lazy var _backgroundCircleLayer: CAShapeLayer = {
-    let layer = CAShapeLayer()
-    layer.allowsEdgeAntialiasing = true
-    layer.drawsAsynchronously = true
-    layer.fillColor = self.options.circleColor.cgColor
-    layer.strokeColor = nil
-    layer.lineWidth = 0
-    return layer
-  }()
-
-  /// Layer for rendering the ticks.
-  fileprivate lazy var _tickLayer: CAShapeLayer = {
-    let layer = CAShapeLayer()
-    layer.allowsEdgeAntialiasing = true
-    layer.drawsAsynchronously = true
-    layer.strokeColor = self.options.tickColor.cgColor
-    layer.fillColor = self.options.tickColor.cgColor
-    layer.lineWidth = 2
-    return layer
-  }()
-
-  /// The last hotspot angle that was touched.
-  fileprivate var _lastHotspotTouched: Double?
-
-  /// The number of degrees separating each tick.
-  fileprivate var _tickSeparation: Double {
-    return 360.0 / Double(options.numberOfTicks)
-  }
-
-  /// The radius of the angle picker.
-  private var _radius: CGFloat {
-    return min(bounds.width, bounds.height) / CGFloat(2)
-  }
-
-  // MARK: - Initializer
-
-  public override init(frame: CGRect) {
-    self.options = Options()
-    super.init(frame: frame)
-    commonInit()
-  }
-
-  public init(frame: CGRect, options: Options) {
-    self.options = options
-    super.init(frame: frame)
-    commonInit()
-  }
-
-  public required init?(coder aDecoder: NSCoder) {
-    self.options = Options()
-    super.init(coder: aDecoder)
-    commonInit()
-  }
-
-  private func commonInit() {
-    // Add render layers
-    _backgroundCircleLayer.addSublayer(_angleLayer)
-    _backgroundCircleLayer.addSublayer(_tickLayer)
-    layer.addSublayer(_backgroundCircleLayer)
-
-    // Render each layer
-    renderBackground()
-    renderTicks()
-    renderAngle()
-  }
-
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-
-    if _backgroundCircleLayer.frame == self.bounds {
-      return
+    
+    /// The configurable options of the angle picker.
+    public let options: Options
+    
+    /// Layer for rendering the background circle.
+    fileprivate lazy var _backgroundCircleLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.allowsEdgeAntialiasing = true
+        layer.drawsAsynchronously = true
+        layer.fillColor = nil
+        layer.strokeColor = self.options.circleColor.cgColor
+        layer.lineWidth = 40
+        layer.lineCap = kCALineCapRound
+        return layer
+    }()
+    
+    /// Layer for rendering the angle.
+    fileprivate lazy var _angleLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.allowsEdgeAntialiasing = true
+        layer.fillColor = nil
+        layer.strokeColor = self.options.angleColor.cgColor
+        layer.lineWidth = 40
+        return layer
+    }()
+    
+    /// Layer for rendering the cursor.
+    fileprivate lazy var _cursorLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.allowsEdgeAntialiasing = true
+        layer.fillColor = UIColor.red.cgColor
+        layer.strokeColor = UIColor.yellow.cgColor
+        layer.lineWidth = 10
+        layer.path = UIBezierPath(ovalIn:
+            CGRect(x: 0, y: 0, width: 30, height: 30)).cgPath
+        layer.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        return layer
+    }()
+    
+    /// The radius of the angle picker.
+    private var _radius: CGFloat {
+        return min(bounds.width, bounds.height) / CGFloat(2) * 0.6
     }
-
-    _backgroundCircleLayer.frame = self.bounds
-
-    renderBackground()
-    renderTicks()
-    renderAngle()
-  }
-
-  // MARK: - Render Operations
-
-  fileprivate func renderBackground() {
-    let diameter = _radius * 2
-    let frame = CGRect(x: (bounds.width - diameter) / 2,
-                       y: (bounds.height - diameter) / 2,
-                       width: diameter,
-                       height: diameter)
-    let circlePath = UIBezierPath(ovalIn: frame)
-    _backgroundCircleLayer.path = circlePath.cgPath
-    _backgroundCircleLayer.setNeedsDisplay()
-    setNeedsDisplay()
-  }
-
-  fileprivate func renderTicks() {
-    let numberOfTicks = options.numberOfTicks
-    let numberOfMajorTicks = options.numberOfMajorTicks
-    let clockwise = options.clockwise
-    let offset = options.offset
-    let majorTickStart = _radius - 24
-    let majorTickEnd = _radius - 8
-    let minorTickStart = _radius - 20
-    let minorTickEnd = _radius - 12
-    let radiansPerTick = CGFloat(Double.pi) * 2.0 / CGFloat(numberOfTicks)
-    let circleCenter = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-
-    var majorTickRate = -1
-    if numberOfMajorTicks > 0 {
-      majorTickRate = numberOfTicks / min(numberOfMajorTicks, numberOfTicks)
+    
+    /// The angle label
+    private var _angleLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 30)
+        return label
+    }()
+    
+    
+    
+    // MARK: - Initializer
+    
+    public override init(frame: CGRect) {
+        self.options = Options()
+        super.init(frame: frame)
+        commonInit()
     }
-
-    let tickPath = UIBezierPath(rect: CGRect.zero)
-    for i in 0 ..< numberOfTicks {
-      let isMajorTick = majorTickRate > 0 && i % majorTickRate == 0
-      let tickStart = isMajorTick ? majorTickStart : minorTickStart
-      let tickEnd = isMajorTick ? majorTickEnd : minorTickEnd
-      let radian = (CGFloat(i) * radiansPerTick * (clockwise ? 1 : -1)) + CGFloat(toRadians(offset))
-      let x1 = cos(radian) * tickStart + circleCenter.x
-      let y1 = sin(radian) * tickStart + circleCenter.y
-      let x2 = cos(radian) * tickEnd + circleCenter.x
-      let y2 = sin(radian) * tickEnd + circleCenter.y
-      tickPath.move(to: CGPoint(x: x1, y: y1))
-      tickPath.addLine(to: CGPoint(x: x2, y: y2))
+    
+    public init(frame: CGRect, options: Options) {
+        self.options = options
+        super.init(frame: frame)
+        commonInit()
     }
-    _tickLayer.path = tickPath.cgPath
-    _tickLayer.setNeedsDisplay()
-    setNeedsDisplay()
-  }
-
-  fileprivate func renderAngle() {
-    // Create bezier path of angle
-    let clockwise = options.clockwise
-    let offset = options.offset
-    let startAngle = offset.truncatingRemainder(dividingBy: 360)
-    let endAngle = (startAngle + angle).truncatingRemainder(dividingBy: 360)
-
-    let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-    let startingPoint = CGPoint(
-      x: cos(CGFloat(toRadians(startAngle)) * (clockwise ? 1: -1)) * _radius + center.x,
-      y: sin(CGFloat(toRadians(startAngle)) * (clockwise ? 1: -1)) * _radius + center.y)
-
-    let anglePath = UIBezierPath(rect: CGRect.zero)
-    anglePath.move(to: center)
-    anglePath.addLine(to: startingPoint)
-    anglePath.addArc(
-      withCenter: center,
-      radius: _radius,
-      startAngle: CGFloat(toRadians(startAngle)) * (clockwise ? 1: -1),
-      endAngle: CGFloat(toRadians(endAngle)) * (clockwise ? 1: -1),
-      clockwise: clockwise)
-    anglePath.close()
-
-    // Set the path
-    _angleLayer.path = anglePath.cgPath
-
-    // Make the line width thicker if it's a 0° angle.
-    _angleLayer.lineWidth = startAngle == endAngle ? 2 : 1
-
-    _angleLayer.setNeedsDisplay()
-
-    setNeedsDisplay()
-  }
-
-  // MARK: - Angle Calculations
-
-  fileprivate func toRadians(_ degrees: Double) -> Double {
-    return degrees * .pi / 180.0
-  }
-
-  /**
-   Returns the angle of a given point, relative to the center of the view.
-   */
-  fileprivate func angleRelativeToCenter(of point: CGPoint) -> Double {
-    let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-    let dx = point.x - center.x
-    let dy = (point.y - center.y) * (options.clockwise ? 1: -1)
-    var angle = Double(atan(dy/dx)) / .pi * 180.0
-
-    if dx < 0 {
-      // Adjust the angle if it's obtuse
-      angle += 180
+    
+    public required init?(coder aDecoder: NSCoder) {
+        self.options = Options()
+        super.init(coder: aDecoder)
+        commonInit()
     }
+    
+    private func commonInit() {
+        // Add render layers
+        _backgroundCircleLayer.addSublayer(_angleLayer)
+        _backgroundCircleLayer.addSublayer(_cursorLayer)
+        layer.addSublayer(_backgroundCircleLayer)
 
-    // Remove the original offset from the angle
-    angle -= options.offset
-
-    // Round to the nearest degree.
-    angle = round(angle)
-
-    return clampedAngle(angle)
-  }
-
-  /**
-   Returns the closest hotspot angle to a given angle, within a certain threshold.
-
-   - parameter angle: The angle to check.
-   - parameter within: The threshold.
-   - returns: The closest hotspot, or `nil` if none could be found based on the parameters.
-   */
-  fileprivate func hotspotAngle(for angle: Double, within: Double) -> Double? {
-    guard options.numberOfTicks > 0 else {
-      return nil
+        // Render each layer
+        renderBackground()
+        renderAngle()
+        
+        // Add angle label
+        self.addSubview(_angleLabel)
+        
+        // Add tick labels
+        _addTickLabels()
     }
-
-    // Calculate the normalized version of this angle, and the two hotspot angles surrounding this
-    // angle.
-    let normalized = normalizedAngle(angle)
-    let lowerAngle = floor(normalized / _tickSeparation) * _tickSeparation
-    let higherAngle = (floor(normalized / _tickSeparation) + 1) * _tickSeparation
-
-    // Figure out which hotspot is closer and within the threshold.
-    let lowerDifference = abs(normalized - lowerAngle)
-    let higherDifference = abs(normalized - higherAngle)
-
-    guard lowerDifference <= within || higherDifference <= within else {
-      // Both hotspots aren't within the threshold.
-      return nil
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if _backgroundCircleLayer.frame == self.bounds {
+            return
+        }
+        
+        _backgroundCircleLayer.frame = self.bounds
+        
+        renderBackground()
+        renderAngle()
+        
+        _angleLabel.frame = self.bounds
+        _layoutTickLabels()
     }
-
-    let hotspotAngle = lowerDifference < higherDifference ? lowerAngle : higherAngle
-    return clampedAngle(hotspotAngle)
-  }
-
-  /**
-   Normalizes a given angle to be within 0 and 360 degrees.
-   */
-  fileprivate func normalizedAngle(_ angle: Double) -> Double {
-    let normalized = angle.truncatingRemainder(dividingBy: 360)
-    return normalized > 0 ? normalized : (normalized + 360)
-  }
-
-  /**
-   Returns the normalized difference between two angles.
-   */
-  fileprivate func differenceBetweenAngles(_ angle1: Double, _ angle2: Double) -> Double {
-    let normalized1 = normalizedAngle(angle1)
-    let normalized2 = normalizedAngle(angle2)
-    let difference = abs(normalized1 - normalized2)
-    return difference > 180 ? abs(difference - 360) : difference
-  }
-
-  /**
-   Clamps the given angle so it's between the range defined by `self.options.wrap`.
-   */
-  fileprivate func clampedAngle(_ angle: Double) -> Double {
-    var clamped = normalizedAngle(angle)
-
-    if clamped < 0 {
-      clamped += 360
+    
+    // MARK: - Show Tick Labels
+    
+    private func _addTickLabels() {
+        if self.options.is360 {
+            _addTickLabels(at: [0, 90, 180, 270])
+        } else {
+            _addTickLabels(at: [0, (90+(180-118)), (90-(180-118))])
+        }
     }
-    if clamped >= options.wrap {
-      clamped -= 360
+    
+    private func _addTickLabels(at angles: [Int]) {
+        func _tickLabel(for angle: Int) -> UILabel {
+            let label = UILabel()
+            label.backgroundColor = .clear
+            label.textColor = .black
+            label.text = "\(angle)°"
+            label.font = UIFont.systemFont(ofSize: 11)
+            return label
+        }
+        
+        for angle in angles {
+            let tagOffset = 10000
+            let label = _tickLabel(for: angle)
+            label.tag = angle + tagOffset
+            self.addSubview(label)
+        }
     }
-    if clamped == 0 {
-      // Edge case where angle could be "-0.0".
-      clamped = abs(clamped)
+    
+    private func _layoutTickLabels() {
+        let tagOffset = 10000
+        for v in self.subviews {
+            if v.tag >= tagOffset, v is UILabel {
+                let label = v as! UILabel
+                label.sizeToFit()
+                
+                var tickAngle = Double(label.tag - tagOffset)
+                tickAngle = offsetAngle(for: tickAngle)
+                let point = pointForAngle(tickAngle, radius: _radius+35,
+                                          clockwise: options.clockwise)
+                label.center = point
+            }
+        }
     }
+    
+    // MARK: - Render Operations
+    
+    fileprivate func renderBackground() {
+        var startAngle: Double = 0
+        var endAngle: Double = 360
+        if !options.is360 {
+            startAngle = -90+(180-118)
+            endAngle = 270-(180-118)
+        }
+        
+        let startPoint = pointForAngle(startAngle, radius: _radius, clockwise: false)
+        let circlePath = UIBezierPath()
+        circlePath.move(to: startPoint)
+        circlePath.addArc(
+            withCenter: center,
+            radius:     _radius,
+            startAngle: CGFloat(toRadians(startAngle)) * (false ? 1: -1),
+            endAngle:   CGFloat(toRadians(endAngle)) * (false ? 1: -1),
+            clockwise:  false)
+        
+        _backgroundCircleLayer.path = circlePath.cgPath
+        _backgroundCircleLayer.setNeedsDisplay()
+    }
+    
+    fileprivate func renderAngle() {
+        // Create bezier path of angle
+        let clockwise = options.clockwise
+        let startAngle = offsetAngle(for: 0)
+        let endAngle = offsetAngle(for: angle)
+        
+        let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        let startingPoint = pointForAngle(startAngle, radius: _radius, clockwise: clockwise)
+        let endedPoint = pointForAngle(endAngle, radius: _radius, clockwise: clockwise)
+        
+        let anglePath = UIBezierPath(rect: CGRect.zero)
+        anglePath.move(to: startingPoint)
+        anglePath.addArc(
+            withCenter: center,
+            radius:     _radius,
+            startAngle: CGFloat(toRadians(startAngle)) * (clockwise ? 1: -1),
+            endAngle:   CGFloat(toRadians(endAngle)) * (clockwise ? 1: -1),
+            clockwise:  clockwise)
+          
+        // Set the path
+        _angleLayer.path = anglePath.cgPath
+        
+        _angleLayer.setNeedsDisplay()
+        setNeedsDisplay()
+        
+        // Update cursor position
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        _cursorLayer.position = endedPoint
+        CATransaction.commit()
+        
+        // Update angle label
+        _angleLabel.text = displayAngle(for: angle)
+    }
+    
+    // MARK: - Angle Calculations
+    
+    fileprivate func toRadians(_ degrees: Double) -> Double {
+        return degrees * .pi / 180.0
+    }
+    
+    /**
+     * 根据角度求点的坐标
+     */
+    fileprivate func pointForAngle(_ angle: Double, radius: CGFloat, clockwise: Bool) -> CGPoint {
+        let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        return CGPoint(
+            x: cos(CGFloat(toRadians(angle)) * (clockwise ? 1: -1)) * radius + center.x,
+            y: sin(CGFloat(toRadians(angle)) * (clockwise ? 1: -1)) * radius + center.y)
+    }
+    
+    /**
+     * reallyAngle: 真实坐标角度
+     * return: 加入偏移量后的角度
+     */
+    fileprivate func offsetAngle(for reallyAngle: Double) -> Double {
+        let offset = options.offset
+        let startAngle = offset.truncatingRemainder(dividingBy: 360) // 浮点数取模
+        let endAngle = (startAngle + reallyAngle).truncatingRemainder(dividingBy: 360)
+        return endAngle
+    }
+    
+    /**
+     * reallyAngle: 真实坐标角度
+     * return: 格式化后的文本（用于显示需要）
+     */
+    fileprivate func displayAngle(for reallyAngle: Double) -> String {
+        if options.is360 {
+            return "\(Int(reallyAngle))°"
+        } else {
+            return "\(Int(reallyAngle))°"
+        }
+    }
+    
+    /**
+     Normalizes a given angle to be within 0 and 360 degrees.
+     */
+    fileprivate func normalizedAngle(_ angle: Double) -> Double {
+        let normalized = angle.truncatingRemainder(dividingBy: 360)
+        return normalized > 0 ? normalized : (normalized + 360)
+    }
+    
+    /**
+     Clamps the given angle so it's between the range defined by `self.options.wrap`.
+     */
+    fileprivate func clampedAngle(_ angle: Double) -> Double {
+        var clamped = normalizedAngle(angle)
+        
+        if clamped < 0 {
+            clamped += 360
+        }
+        if clamped >= options.wrap {
+            clamped -= 360
+        }
+        if clamped == 0 {
+            // Edge case where angle could be "-0.0".
+            clamped = abs(clamped)
+        }
+        
+        return clamped
+    }
+    
+    /**
+     Returns the angle of a given point, relative to the center of the view.
+     */
+    fileprivate func angleRelativeToCenter(of point: CGPoint) -> Double {
+        let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        let dx = point.x - center.x
+        let dy = (point.y - center.y) * (options.clockwise ? 1: -1)
+        var angle = Double(atan(dy/dx)) / .pi * 180.0
+        
+        if dx < 0 {
+            // Adjust the angle if it's obtuse
+            angle += 180
+        }
+        
+        // Remove the original offset from the angle
+        angle -= options.offset
+        
+        // Round to the nearest degree.
+        angle = round(angle)
+        
+        return clampedAngle(angle)
+    }
+    
+    /**
+     Returns the closest hotspot angle to a given angle, within a step.
+     
+     - parameter angle: The angle to check.
+     - parameter step: The step.
+     - returns: The closest hotspot.
+     */
+    fileprivate func hotspotAngle(for angle: Double, step: Double) -> Double {
+        // Calculate the normalized version of this angle, and the two hotspot angles surrounding this
+        // angle.
+        let normalized = normalizedAngle(angle)
+        let lowerAngle = floor(normalized / step) * step
+        let higherAngle = (floor(normalized / step) + 1) * step
+        
+        // Figure out which hotspot is closer and within the threshold.
+        let lowerDifference = abs(normalized - lowerAngle)
+        let higherDifference = abs(normalized - higherAngle)
 
-    return clamped
-  }
+        let hotspotAngle = lowerDifference < higherDifference ? lowerAngle : higherAngle
+        return clampedAngle(hotspotAngle)
+    }
+    
+    fileprivate func angleForTouch(at point: CGPoint) -> Double {
+        let originAngle = angleRelativeToCenter(of: point)
+        return hotspotAngle(for: originAngle, step: options.step)
+    }
 }
 
 extension AnglePicker {
-  // MARK: - Touch Tracking
-
-  public override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-    let relativeLocation = touch.location(in: self)
-
-    guard let bezierPath = _backgroundCircleLayer.path,
-      bezierPath.contains(relativeLocation) else {
-      // Touch is outside the background circle, do nothing.
-      return false
+    
+    // MARK: - Touch event
+    
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
     }
-
-    var angle = angleRelativeToCenter(of: relativeLocation)
-
-    // Check if this angle is close enough to a hotspot (both snap-to and snap-away thresholds
-    // are used here to prevent weird snapping UX).
-    let threshold = max(options.snapToThreshold, options.snapAwayThreshold)
-    if let hotspot = hotspotAngle(for: angle, within: threshold) {
-      angle = hotspot
-      _lastHotspotTouched = angle
-    } else {
-      _lastHotspotTouched = nil
+    
+    // MARK: - Touch Tracking
+    
+    public override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        let relativeLocation = touch.location(in: self)
+        
+        // 只有触点落在光标的热区内才允许拖动
+        let hotRadius: CGFloat = 60
+        let hotPoint = _cursorLayer.position
+        let hotRect = CGRect(x: hotPoint.x-hotRadius/2, y: hotPoint.y-hotRadius/2,
+                             width: hotRadius, height: hotRadius)
+        if !hotRect.contains(relativeLocation) {
+            return false
+        }
+        
+        self.angle = angleForTouch(at: relativeLocation)
+        return true
     }
-
-    self.angle = angle
-
-    return true
-  }
-
-  public override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-    let relativeLocation = touch.location(in: self)
-    var angle = angleRelativeToCenter(of: relativeLocation)
-
-    if let lastHotspotTouched = _lastHotspotTouched,
-      differenceBetweenAngles(angle, lastHotspotTouched) < options.snapAwayThreshold {
-      // The angle is still close to a hotspot, keep it as-is.
-      return true
+    
+    public override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        let relativeLocation = touch.location(in: self)
+        self.angle = angleForTouch(at: relativeLocation)
+        return true
     }
-
-    // We've moved away from a hotspot. See if it's within a new hotspot.
-    if let hotspot = hotspotAngle(for: angle, within: options.snapToThreshold) {
-      angle = hotspot
-      _lastHotspotTouched = hotspot
-    } else {
-      _lastHotspotTouched = nil
+    
+    public override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        if let relativeLocation = touch?.location(in: self) {
+            self.angle = angleForTouch(at: relativeLocation)
+        }
     }
-
-    self.angle = angle
-
-    return true
-  }
-
-  public override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-    if let relativeLocation = touch?.location(in: self) {
-      let angle = angleRelativeToCenter(of: relativeLocation)
-
-      if let lastHotspotTouched = _lastHotspotTouched,
-        differenceBetweenAngles(angle, lastHotspotTouched) < options.snapAwayThreshold {
-        // The angle is still close to a hotspot, keep it as-is.
-      } else {
-        self.angle = angle
-      }
-    }
-
-    _lastHotspotTouched = nil
-  }
-
-  public override func cancelTracking(with event: UIEvent?) {
-    _lastHotspotTouched = nil
-  }
 }
+
