@@ -38,15 +38,32 @@
 ### Introduction:
 Another Blockly is a visual coding module provided by Jimu team. It's based on Google Blockly, with the same UI architecture but different running and code generating architectures
 
+### ABlockly vs Blockly
 
 |Items|Google Blockly|Jimu ABlockly|
 |:-:|:-:|:-:|
 |内存占用|10分钟内耗尽|可忽略|
-|内存泄漏|长期持有数10m内存|离开页面即释放|
-|运行稳定性|差而难以解决|非常稳定|
+|内存泄漏|长期持有数10m内存|离开页面立刻释放|
+|稳定性|多分支出错概率高|非常稳定|
+|输入问题|存在表情及全半角bug|无此问题|
+|交互体验|web体验差|原生体验好|
+|蓝牙通信|一次问答需要web与原生语言交互两次|直接通信|
 |同时连接多个设备|不支持|支持|
 |语法高亮|难|简单|
-|交互体验|web体验差|原生体验好|
 |自定义交互|难|简单|
 |自定义运行规则|难|简单|
-|输入问题|存在表情及全半角bug|无此问题|
+
+### Language
+#### Why it's Swift & Kotlin
+1. CPP
+    1. iOS和Android库不兼容，比如xml库
+    2. 不可以直接跟界面和蓝牙交互，需要iOS和Android提供兼容接口
+    3. 在Android项目中必须以库的形式存在，不利于调试
+    4. 相比于现代的Swift和Kotlin语言，CPP学习曲线陡峭，所以开发和维护成本高
+2. Typescript
+    1. 不可以直接跟界面和蓝牙交互，需要iOS和Android建立Javascript和原生互通的桥梁
+    2. 内存占用比iOS和Android高
+3. Swift & Kotlin
+    1. 更现代的语言，简单，高效
+    2. 语法相似度高，一个人维护可以同时维护两个平台
+    3. 直接跟界面和蓝牙交互
