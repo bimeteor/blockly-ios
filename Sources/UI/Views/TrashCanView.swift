@@ -123,7 +123,7 @@ public final class TrashCanView: UIView {
     if self._highlighted {
         UIView.animate(withDuration: 0.25) {
             self.backgroundColor = UIColor(white: 0.7, alpha: 1.0)
-            self.button.transform = self.button.transform.scaledBy(x: 1.3, y: 1.3)
+            self.button.transform = self.button.transform.scaledBy(x: 1.8, y: 1.8)
         }
     } else {
         UIView.animate(withDuration: 0.25) {
