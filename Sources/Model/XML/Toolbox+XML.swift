@@ -100,13 +100,6 @@ extension Toolbox {
           let noReturnBlock = try factory.makeBlock(name: "procedures_defnoreturn")
           (noReturnBlock.firstField(withName: "NAME") as? FieldInput)?.text =
             message(forKey: "BKY_PROCEDURES_DEFNORETURN_PROCEDURE")
-            noReturnBlock.editable = false
-            if let mutator = noReturnBlock.mutator as? MutatorProcedureDefinition {
-                mutator.allowStatements = true
-                mutator.layout?.userInteractionEnabled
-                try mutator.mutateBlock()
-            }
-            
           try category.addBlockTree(noReturnBlock)
 
           let returnBlock = try factory.makeBlock(name: "procedures_defreturn")
