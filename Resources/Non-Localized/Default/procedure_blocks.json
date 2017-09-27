@@ -1,23 +1,25 @@
 [
-  {
-    "type": "procedures_defnoreturn",
-    "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE} %1 %2",
-    "args0": [
-      {
-        "type": "field_input",
-        "name": "NAME",
-        "text": ""
-      },
-      {
-        "type": "field_label",
-        "name": "PARAMS"
-      }
-    ],
-    "mutator": "procedures_defnoreturn_mutator",
-    "colour": "%{BKY_PROCEDURES_HUE}",
-    "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
-    "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}"
-  },
+ {
+ "type": "procedures_defnoreturn",
+ "message0": "func %1",
+ "args0": [
+           {
+           "type": "field_input",
+           "name": "NAME",
+           "text": ""
+           }
+           ],
+ "message1": "%1",
+ "args1": [
+           {
+           "type": "input_statement",
+           "name": "DO"
+           }
+           ],
+ "colour": "%{BKY_PROCEDURES_HUE}",
+ "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
+ "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}"
+ },
   {
     "type": "procedures_defreturn",
     "message0": "%{BKY_PROCEDURES_DEFRETURN_TITLE} %1 %2",

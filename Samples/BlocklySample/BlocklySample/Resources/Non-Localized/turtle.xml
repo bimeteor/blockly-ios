@@ -173,7 +173,7 @@
         <block type="math_random_float"></block>
     </category>
     <category icon="28" name="变量" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE" />
-    <category icon="28" name="函数" colour="%{BKY_PROCEDURES_HUE}">
-        <block type="procedures_defnoreturn"></block>
+    <category icon="28" name="函数" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE">
     </category>
+<!--    <category icon="28" name="函数" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE" />-->
 </xml>
