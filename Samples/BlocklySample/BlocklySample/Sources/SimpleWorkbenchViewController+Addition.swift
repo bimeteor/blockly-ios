@@ -21,9 +21,9 @@ extension SimpleWorkbenchViewController{
         }
     }
     func translate() {
-        if let path = Bundle.main.path(forResource: "src", ofType: "xml"), let str = try? String.init(contentsOfFile: path){
-            if let url = Bundle.main.url(forResource: "rules_swift", withExtension: "json"), let data = try? Data.init(contentsOf: url), let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:String], let js = json {
-                print(ABTranslator.init(str, rules: js)?.codes ?? "")
+        if let path = Bundle.main.path(forResource: "src4", ofType: "xml"), let str = try? String.init(contentsOfFile: path){
+            if let path = Bundle.main.path(forResource: "rules_swift", ofType: nil), let rule = try? String.init(contentsOfFile: path) {
+                print(ABTranslator.init(str, rules: ABTranslator.parse(str: rule))?.codes ?? "")
             }
         }
     }

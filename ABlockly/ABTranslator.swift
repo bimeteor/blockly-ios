@@ -8,7 +8,7 @@
 
 import Foundation
 
-private let tab = "  "
+private let tab = "   "
 
 public final class ABTranslator: ABParser {
     public private(set) var codes = ""
@@ -24,6 +24,16 @@ public final class ABTranslator: ABParser {
         str.append("//trunk\n" + code(trunk, depth: 0))
         branches.enumerated().forEach{str.append("\n//branch \($0+1)\n" + code($1, depth: 0))}
         codes = str
+    }
+    public static func parse(str:String)->[String:String]{
+        var map = [String:String]()
+        str.components(separatedBy: ",\n").forEach{
+            let arr = $0.components(separatedBy: ":\n")
+            if arr.count > 1{
+                map[arr[0]] = arr[1]
+            }
+        }
+        return map
     }
     private let rules:[String:String]
 }
