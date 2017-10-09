@@ -129,6 +129,7 @@ extension SimpleWorkbenchViewController{
             running = true
             tilt()
             if case let str?? = try? workspace?.toXML(){
+                print(str)
                 vm = ABVirtulMachine.init(str)
                 vm?.performer.delegate = self
                 vm?.start()

@@ -1,4 +1,5 @@
 {
+    "start":"func main()\n{\\(next)\n}",
     "controls_repeat_ext":"for _ in 0..<\\(value[name=TIMES]$0)\n{\\(statement[name=DO])\n}",
     "controls_repeat_always":"while true\n{\\(statement[name=DO])\n}",
     "controls_if":"if \\(value[name=IF0]$false)\n{\\(statement[name=DO0])\n}",

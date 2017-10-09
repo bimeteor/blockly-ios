@@ -17,12 +17,10 @@ import UIKit
 import Fabric
 import Crashlytics
 
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
-
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
@@ -33,7 +31,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     self.window!.rootViewController = SimpleWorkbenchViewController()
     self.window!.makeKeyAndVisible()
     Fabric.with([Crashlytics.self])
-
+//    let a:Int? = 9
+//    var str = "#123"
+//    print(str.trimmingCharacters(in: CharacterSet.init(charactersIn: "#")))
+//    print(str)
+    
     return true
   }
 }

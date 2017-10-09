@@ -100,6 +100,24 @@ public final class XMLNode:NSObject {
     }
 }
 
+extension Optional{
+    @inline(__always) public func map(_ block1:(Wrapped)->Void, block2:()->Void){
+        if case let t? = self {
+            block1(t)
+        }else{
+            block2()
+        }
+    }
+}
+
+public func repeated<T>(_ times:Int, initial:T, block:(T)->T)->T{
+    var res = initial
+    for i in 0..<times {
+        res = block(res)
+    }
+    return res
+}
+
 //MARK: internal
 
 fileprivate class XMLParse:NSObject {
@@ -135,7 +153,7 @@ extension XMLNode{
     fileprivate func string(_ depth:Int)->String{
         var str = ""
         if depth > 0 {
-            str.append("\n\(repeatElement("  ", count: depth).joined())")
+            str.append("\n" + repeated(depth, initial:""){$0 + " "})
         }
         str.append("<\(name)")
         attributes.forEach{str.append(" \($0)=\"\($1)\"")}
@@ -144,7 +162,7 @@ extension XMLNode{
             str.append("\(value)</\(name)>")
         }else{  //node with a child at least:<name>\n...\n</name>
             children.forEach{str.append($0.string(depth + 1))}
-            str.append("\n\(repeatElement("  ", count: depth).joined())</\(name)>")
+            str.append("\n" + repeated(depth, initial:""){$0 + " "} + "</\(name)>")
         }
         return str
     }
@@ -161,12 +179,7 @@ extension XMLParse:XMLParserDelegate{
         let node = XMLNode()
         node.name = elementName
         node.attributes = attributeDict
-        if let c = current {    //first node excluded
-            c.children.append(node)
-            node.parent = c
-        }else{  //first node as root
-            root = node
-        }
+        current.map({$0.children.append(node); node.parent = $0}){root = node}//first node excluded or first node as root
         current = node
         value.removeAll()
     }

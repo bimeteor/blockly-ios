@@ -28,9 +28,8 @@
 		D6140A081F6599C400B2012E /* schedule.md in Resources */ = {isa = PBXBuildFile; fileRef = D6140A071F6599C400B2012E /* schedule.md */; };
 		D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */; };
 		D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */ = {isa = PBXBuildFile; fileRef = D63F06BF1F5FF3A600050C2D /* toolbox.xml */; };
-		D68BC33F1F7A2F7E008FB564 /* Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68BC3351F7A2F7E008FB564 /* Bluetooth.swift */; };
-		D68BC3401F7A2F7E008FB564 /* Meebot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68BC3361F7A2F7E008FB564 /* Meebot.swift */; };
-		D68BC3411F7A2F7E008FB564 /* Robot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68BC3371F7A2F7E008FB564 /* Robot.swift */; };
+		D68BC33F1F7A2F7E008FB564 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68BC3351F7A2F7E008FB564 /* BluetoothManager.swift */; };
+		D68BC3401F7A2F7E008FB564 /* Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68BC3361F7A2F7E008FB564 /* Bluetooth.swift */; };
 		FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */; };
 		FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA2F45261E9C6A910071C1A3 /* LaunchScreen.xib */; };
 		FAA7BEE31EC13BB600CA88CA /* AEXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAA7BED61EC13BA400CA88CA /* AEXML.framework */; };
@@ -159,9 +158,8 @@
 		D6140A071F6599C400B2012E /* schedule.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = schedule.md; sourceTree = "<group>"; };
 		D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = turtle_blocks.json; path = "Non-Localized/turtle_blocks.json"; sourceTree = "<group>"; };
 		D63F06BF1F5FF3A600050C2D /* toolbox.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = toolbox.xml; path = "Non-Localized/toolbox.xml"; sourceTree = "<group>"; };
-		D68BC3351F7A2F7E008FB564 /* Bluetooth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bluetooth.swift; sourceTree = "<group>"; };
-		D68BC3361F7A2F7E008FB564 /* Meebot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Meebot.swift; sourceTree = "<group>"; };
-		D68BC3371F7A2F7E008FB564 /* Robot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Robot.swift; sourceTree = "<group>"; };
+		D68BC3351F7A2F7E008FB564 /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		D68BC3361F7A2F7E008FB564 /* Bluetooth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bluetooth.swift; sourceTree = "<group>"; };
 		FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Non-Localized/Images.xcassets"; sourceTree = "<group>"; };
 		FA2F45271E9C6A910071C1A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Localized/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		FA2F45291E9C6A9D0071C1A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localized/en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -268,9 +266,8 @@
 		D68BC3341F7A2F7E008FB564 /* Robot */ = {
 			isa = PBXGroup;
 			children = (
-				D68BC3351F7A2F7E008FB564 /* Bluetooth.swift */,
-				D68BC3361F7A2F7E008FB564 /* Meebot.swift */,
-				D68BC3371F7A2F7E008FB564 /* Robot.swift */,
+				D68BC3351F7A2F7E008FB564 /* BluetoothManager.swift */,
+				D68BC3361F7A2F7E008FB564 /* Bluetooth.swift */,
 			);
 			name = Robot;
 			path = ../../../../Robot;
@@ -631,14 +628,13 @@
 				FAE2A6491C756AA20085D36B /* SimpleWorkbenchViewController.swift in Sources */,
 				D61409E91F62681600B2012E /* ABParser.swift in Sources */,
 				FAE2A6481C756AA20085D36B /* AppDelegate.swift in Sources */,
-				D68BC3411F7A2F7E008FB564 /* Robot.swift in Sources */,
 				D61409EC1F62681600B2012E /* ABTranslator.swift in Sources */,
 				D61409E81F62681600B2012E /* ABColorLexer.swift in Sources */,
-				D68BC33F1F7A2F7E008FB564 /* Bluetooth.swift in Sources */,
+				D68BC33F1F7A2F7E008FB564 /* BluetoothManager.swift in Sources */,
 				D61409ED1F62681600B2012E /* ABVirtulMachine.swift in Sources */,
 				D61409F91F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift in Sources */,
 				D61409EF1F62681600B2012E /* XMLNode.swift in Sources */,
-				D68BC3401F7A2F7E008FB564 /* Meebot.swift in Sources */,
+				D68BC3401F7A2F7E008FB564 /* Bluetooth.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

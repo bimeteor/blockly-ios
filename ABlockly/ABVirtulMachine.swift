@@ -8,8 +8,10 @@
 
 import Foundation
 
+fileprivate let stackTypes = ["controls_if", "controls_if_else", "controls_repeat_ext", "procedures_callnoreturn", "procedures_defnoreturn"]
+
 public final class ABVirtulMachine: ABParser {
-    public var performer:ABPerformer!
+    public private(set) var performer:ABPerformer!
     private var paused = false
     private var running = false
     private var variables = [String:Int]()
@@ -17,7 +19,6 @@ public final class ABVirtulMachine: ABParser {
     private var branckCurrent:XMLNode?
     private var trunkStack = [StackContext]()  //if, if-else, for, func
     private var branchStack = [StackContext]()
-    private let stackTypes = ["controls_if", "controls_if_else", "controls_repeat_ext", "procedures_callnoreturn", "procedures_defnoreturn"]
     public func start(){
         reset()
         running = true
@@ -66,11 +67,7 @@ extension ABVirtulMachine{
         }
     }
     private func check(){
-        if let n = next(){
-            performer.begin(n)
-        }else{
-            stop()
-        }
+        next().map({performer.begin($0)}){stop()}
     }
     private func reset(){
         trunkStack.removeAll()
@@ -78,7 +75,7 @@ extension ABVirtulMachine{
         trunkCurrent = nil
         branckCurrent = nil
         paused = false
-        running = true
+        running = false
     }
 
     private func next()->XMLNode?{
@@ -108,7 +105,6 @@ extension ABVirtulMachine{
             trunkCurrent = n
             return n
         }
-        reset()
         return nil   //first time on trunk
     }
     //inside or outside

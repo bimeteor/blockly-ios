@@ -37,7 +37,7 @@ public final class ABPerformer: NSObject {
     private weak var vm:ABVirtulMachine?
     private var variables = [String:[Int:Int]]()
     private var timer:Timer?
-    private var timeInterval = 0.2
+    private let timeInterval = 0.2
     private var current:XMLNode?
     private var replied = false
     private var beginTime = 0.0
@@ -86,14 +86,14 @@ extension ABPerformer{
             timer = Timer.scheduledTimer(withTimeInterval: max(Double(itv) ?? 0, timeInterval), repeats: false){[unowned self] _ in
                 self.endSoon()
             }
-        case "control_wait_until":
-            timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true){
-                [unowned self] t in
-                if true{
-                    t.invalidate()
-                    self.endSoon()
-                }
-            }
+        case "control_wait_until":Void()//TODO:frank
+//            timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true){
+//                [unowned self] t in
+//                if true{
+//                    t.invalidate()
+//                    self.endSoon()
+//                }
+//            }
         case "control_repeat_times", "control_repeat_until", "control_repeat_always", "control_if", "control_if_else", "restart":
             endCurrent()
         case "turtle_move":
@@ -147,11 +147,10 @@ extension ABPerformer{
         case "math_number":
             guard let field = node.children.first else{return "0"}
             return evaluate(field)
-        case "color_picker":    //#ff0000
-            guard let val = node.children.first?.value, val.count>1 else {return "0"}
-            return String(val[val.index(after: val.startIndex)...])
+        case "color_picker":
+            return node.children.first?.value.replacingOccurrences(of: "#", with: "") ?? "0"
         case "color_random":
-            return String(arc4random()%0xffffff)
+            return String(arc4random() & 0xffffff)
         case "start_tilt":
             guard let n = node["|block.field[name=DIR]"] else{return "false"}
             if let val = variables["phone_tilt"]?[1], val > 0{

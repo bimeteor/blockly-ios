@@ -12,8 +12,8 @@ public class ABParser: NSObject {
     let trunk:XMLNode
     let branches:[XMLNode]
     init?(_ xml:String) {
-        guard let node = XMLNode.node(xml) else{return nil}
-        node.forEach{
+        guard let root = XMLNode.node(xml) else{return nil}
+        root.forEach{
             if $0.name == "shadow"{
                 $0.name = "block"
             }else if $0.attributes["type"] == "procedures_callnoreturn"{
@@ -26,15 +26,15 @@ public class ABParser: NSObject {
             }
         }
         
-        var defs = [XMLNode]()
+        var f = [XMLNode]()
         var t:XMLNode? = nil
         var b = [XMLNode]()
-        node.children.forEach{
+        root.children.forEach{
             switch $0.attributes["type"] ?? ""{
             case "start":
                 t = $0
             case "procedures_defnoreturn":
-                defs.append($0)
+                f.append($0)
             case let x where x.hasPrefix("start"):
                 b.append($0)
             default:
@@ -43,7 +43,7 @@ public class ABParser: NSObject {
         }
         guard let tt = t else{ return nil }
         trunk = tt
-        funtions = defs
+        funtions = f
         branches = b
         super.init()
     }

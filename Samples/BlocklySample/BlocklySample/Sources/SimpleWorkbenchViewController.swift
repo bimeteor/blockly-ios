@@ -54,7 +54,8 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     play.frame = CGRect(x:view.bounds.width-50, y:0, width:50, height:50)
     play.addTarget(self, action: #selector(act), for: .touchUpInside)
     
-    loadSimulator()
+//    loadSimulator()
+    translate()
   }
 
   override var prefersStatusBarHidden : Bool {
