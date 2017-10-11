@@ -56,7 +56,7 @@ public final class XMLNode:NSObject {
         while true {
             if hit{    //before matching or the former components matches well
                 if node.match(comps[depth]){ //match the current node & component
-                    if depth == comps.count - 1{    //the last component matches well
+                    if depth >= comps.count - 1{    //the last component matches well
                         return node
                     }else{
                         if node.children.isEmpty{   //flag to match uncle
@@ -78,7 +78,7 @@ public final class XMLNode:NSObject {
                     return res
                 }else{
                     guard node != self, let p = node.parent, let i = p.children.index(of: node) else{return nil}
-                    if i == p.children.count - 1{   //the last brother fails
+                    if i >= p.children.count - 1{   //the last brother fails
                         node = p    //back to the parent
                         depth -= 1
                     }else{  //continue to match the next brother
@@ -112,7 +112,7 @@ extension Optional{
 
 public func repeated<T>(_ times:Int, initial:T, block:(T)->T)->T{
     var res = initial
-    for i in 0..<times {
+    for _ in 0..<times {
         res = block(res)
     }
     return res

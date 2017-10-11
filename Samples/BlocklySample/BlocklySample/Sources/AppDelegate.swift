@@ -31,11 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     self.window!.rootViewController = SimpleWorkbenchViewController()
     self.window!.makeKeyAndVisible()
     Fabric.with([Crashlytics.self])
-//    let a:Int? = 9
-//    var str = "#123"
-//    print(str.trimmingCharacters(in: CharacterSet.init(charactersIn: "#")))
-//    print(str)
-    
+
     return true
   }
 }

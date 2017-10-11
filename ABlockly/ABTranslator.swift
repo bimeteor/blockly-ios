@@ -30,12 +30,36 @@ public final class ABTranslator: ABParser {
         str.components(separatedBy: ",\n").forEach{
             let arr = $0.components(separatedBy: ":\n")
             if arr.count > 1{
-                map[arr[0]] = arr[1]
+                map[arr[0].trimMargin()] = arr[1].trimMargin()
             }
         }
         return map
     }
     private let rules:[String:String]
+}
+
+extension String{
+    public func trimStart()->String{
+        if let idx = index(where: {$0 != " " && $0 != "\n"}) {
+            return String(self[idx...])
+        }else{
+            return ""
+        }
+    }
+    public func trimEnd()->String{
+        if let idx = reversed().index(where: {$0 != " " && $0 != "\n"})?.base {
+            return String(self[..<idx])
+        }else{
+            return ""
+        }
+    }
+    public func trimMargin()->String{
+        if let idx1 = index(where: {$0 != " " && $0 != "\n"}), let idx2 = reversed().index(where: {$0 != " " && $0 != "\n"})?.base {
+            return String(self[idx1..<idx2])
+        }else{
+            return ""
+        }
+    }
 }
 
 extension ABTranslator{
@@ -61,7 +85,7 @@ extension ABTranslator{
 
                 var repl = ""
                 node[path].map{
-                    if $0.children.count == 0 {    //it's a field
+                    if $0.name == "field" {    //it's a field
                         repl = $0.value
                     }else if path.contains("statement") || type.hasPrefix("start"){
                         let c = code($0, depth: depth + 1)
