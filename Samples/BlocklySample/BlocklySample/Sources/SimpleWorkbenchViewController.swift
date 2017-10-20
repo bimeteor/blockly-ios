@@ -55,7 +55,8 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     play.addTarget(self, action: #selector(act), for: .touchUpInside)
     
 //    loadSimulator()
-    translate()
+//    translate()
+    color()
   }
 
   override var prefersStatusBarHidden : Bool {

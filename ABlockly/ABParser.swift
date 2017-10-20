@@ -19,7 +19,7 @@ public class ABParser: NSObject {
             }else if $0.attributes["type"] == "procedures_callnoreturn"{
                 let n = XMLNode()
                 n.name = "field"
-                n.attributes = ["name":"NAME"]
+                n.attributes["name"] = "NAME"
                 n.value = $0["mutation[name]"]?.attributes["name"] ?? ""
                 n.parent = $0
                 $0.children.append(n)

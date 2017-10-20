@@ -27,7 +27,7 @@ public final class ABColorLexer: NSObject {
     init(_ codes:String, keywords:[String]) {
         super.init()
         var offset = codes.startIndex
-        while true {
+        while offset < codes.endIndex {
             if let r = codes.range(of: Kind.comment.regex, options: .regularExpression, range: offset..<codes.endIndex){
                 colors.append((NSRange.init(location: r.lowerBound.encodedOffset, length:r.upperBound.encodedOffset-r.lowerBound.encodedOffset), .comment))
                 offset = r.upperBound
@@ -47,11 +47,7 @@ public final class ABColorLexer: NSObject {
                 colors.append((NSRange.init(location: r.lowerBound.encodedOffset, length:r.upperBound.encodedOffset-r.lowerBound.encodedOffset), .number))
                 offset = r.upperBound
             }else{
-                if offset >= codes.endIndex{
-                    break
-                }else{
-                    offset = codes.index(after: offset)
-                }
+                offset = codes.index(after: offset)
             }
         }
     }

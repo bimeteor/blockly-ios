@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     self.window!.rootViewController = SimpleWorkbenchViewController()
     self.window!.makeKeyAndVisible()
     Fabric.with([Crashlytics.self])
-
+    
     return true
   }
 }
