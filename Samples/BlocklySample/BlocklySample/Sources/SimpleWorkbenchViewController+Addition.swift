@@ -28,7 +28,7 @@ extension SimpleWorkbenchViewController{
         }
     }
     func color() {
-        let lex = ABColorLexer.init(codes, keywords: keywordsSwift)
+        let lex = ABColorLexer.init(codes, keywords: ABColorLexer.keywordsSwift)
         let lbl = UILabel.init(frame: CGRect(x:20, y:20, width:400, height:400))
         view.addSubview(lbl)
         lbl.numberOfLines = 0
@@ -202,4 +202,94 @@ extension SimpleWorkbenchViewController:ABPerformerDelegate{
         }
     }
     func end(){unhighlightAllBlocks(); print("end \(#line)")}
+}
+
+extension SimpleWorkbenchViewController:UIPopoverPresentationControllerDelegate{
+    @objc func popupConnect() {
+        let ctr = ConnectViewControler(bleManager)
+        connectCtr = ctr
+        ctr.modalPresentationStyle = .popover
+        ctr.popoverPresentationController?.sourceView = connectBtn
+        ctr.popoverPresentationController?.sourceRect = connectBtn.bounds
+        ctr.preferredContentSize = CGSize(width: 200, height: view.bounds.height * 0.8)
+        ctr.popoverPresentationController?.permittedArrowDirections = .any
+        ctr.popoverPresentationController?.delegate = self
+        present(ctr, animated: true, completion: nil)
+    }
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        
+    }
+    
+    func popoverPresentationControllerShouldDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) -> Bool {
+        return true
+    }
+}
+
+extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
+    func managerDidUpdate(error: PhoneStateError?) {
+        if let e = error {
+            print(e);
+        }else{
+            bleManager.scan()
+        }
+    }
+    
+    func managerDidScan(_ uuid: UUID, name: String) {
+        
+    }
+    
+    func managerDidConnect(_ uuid: UUID, error: ConnectError?) {
+        
+    }
+    
+    func managerDidDisconnect(_ uuid: UUID, error: DisconnectError?) {
+        
+    }
+}
+
+extension SimpleWorkbenchViewController{
+    @objc func popupCode(){
+        if case let str?? = try? workspace?.toXML(){
+            let ctr = CodeViewControler(str)
+            codeCtr = ctr
+            ctr.modalPresentationStyle = .popover
+            ctr.popoverPresentationController?.sourceView = codeBtn
+            ctr.popoverPresentationController?.sourceRect = codeBtn.bounds
+            ctr.preferredContentSize = CGSize(width: view.bounds.width * 0.8, height: view.bounds.height * 0.8)
+            ctr.popoverPresentationController?.permittedArrowDirections = .any
+            ctr.popoverPresentationController?.delegate = self
+            present(ctr, animated: true, completion: nil)
+        }
+    }
+}
+
+extension SimpleWorkbenchViewController:BluetoothDelegate{
+    func bluetoothDidVerify(_ error: VerifyError?) {
+        
+    }
+    
+    func bluetoothDidWrite(_ error: WriteError?) {
+        
+    }
+    
+    func bluetoothDidRead(_ data: (UInt8, [UInt8])?, error: ReadError?) {
+        
+    }
+    
+    func bluetoothDidCancelAllWriting() {
+        
+    }
+    
+    func bluetoothDidHandshake(_ result: Bool) {
+        
+    }
+    
+    func bluetoothDidUpdateInfo(_ info: DeviceInfo) {
+        
+    }
 }

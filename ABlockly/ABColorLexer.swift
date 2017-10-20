@@ -8,7 +8,11 @@
 
 import Foundation
 
-public let keywordsSwift = ["func", "for", "while", "in", "if", "else", "true", "false", "var"]
+extension ABColorLexer{
+    public static let keywordsSwift = ["func", "for", "while", "switch", "in", "if", "else", "True", "False", "var"]
+    public static let keywordsPython = ["def", "for", "while", "in", "if", "else", "true", "false"]
+    public static let keywordsKotlin = ["fun", "for", "while", "when", "in", "if", "else", "true", "false", "var", "until"]
+}
 
 public final class ABColorLexer: NSObject {
     var colors = [(NSRange, Kind)]()

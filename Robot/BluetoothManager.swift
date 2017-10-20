@@ -15,7 +15,7 @@ import CoreBluetooth
 
 final class BluetoothManager: NSObject {
     
-    public weak var delegate:BluetoothManagerProtocol?
+    public weak var delegate:BluetoothManagerDelegate?
     public var nameFilter:((String)->Bool)?
     fileprivate var manager:CBCentralManager!
     fileprivate lazy var scannedPeers = Set<CBPeripheral>()//被扫描过的，元素只增不减，防止连接和断开时的系统错误
@@ -105,7 +105,7 @@ public enum DisconnectError:Int{
     case systemError    = 1
 }
 
-protocol BluetoothManagerProtocol: NSObjectProtocol{
+protocol BluetoothManagerDelegate: class{
     func managerDidUpdate(error:PhoneStateError?)
     func managerDidScan(_ uuid:UUID, name:String)
     func managerDidConnect(_ uuid:UUID, error:ConnectError?)

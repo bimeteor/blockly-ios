@@ -32,11 +32,19 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     let simulator = UIView()
     let turtle = UIImageView.init(image: UIImage.init(named: "turtle")?.withRenderingMode(.alwaysTemplate))
     
+    let bleManager = BluetoothManager.init()
+    var bles:Bluetooth?
+    var connectCtr:ConnectViewControler?
+    var codeCtr:CodeViewControler?
+    
+    let connectBtn = UIButton.init(type: .custom)
+    let codeBtn = UIButton.init(type: .custom)
+    
     var running = false
     var paused = false
     var vm:ABVirtulMachine?
     var motionManager:CMMotionManager?
-  override func viewDidLoad() {
+    override func viewDidLoad() {
     super.viewDidLoad()
     // Don't allow the navigation controller bar cover this view controller
     self.edgesForExtendedLayout = UIRectEdge()
@@ -48,15 +56,23 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     redoButton.isHidden = true
     undoButton.isHidden = true
     
-    let play = UIButton.init(type: .custom)
-    view.addSubview(play)
-    play.setImage(UIImage.init(named: "arrow"), for: .normal)
-    play.frame = CGRect(x:view.bounds.width-50, y:0, width:50, height:50)
-    play.addTarget(self, action: #selector(act), for: .touchUpInside)
+    let btn = UIButton.init(type: .custom)
+    view.addSubview(btn)
+    btn.setImage(UIImage.init(named: "arrow"), for: .normal)
+    btn.frame = CGRect(x:view.bounds.width-50, y:0, width:50, height:50)
+    btn.addTarget(self, action: #selector(act), for: .touchUpInside)
     
+    view.addSubview(connectBtn)
+    connectBtn.setImage(UIImage.init(named: "arrow"), for: .normal)
+    connectBtn.frame = CGRect(x:view.bounds.width-50, y:55, width:50, height:50)
+    connectBtn.addTarget(self, action: #selector(popupConnect), for: .touchUpInside)
+    
+    view.addSubview(codeBtn)
+    codeBtn.setImage(UIImage.init(named: "arrow"), for: .normal)
+    codeBtn.frame = CGRect(x:view.bounds.width-50, y:110, width:50, height:50)
+    codeBtn.addTarget(self, action: #selector(popupCode), for: .touchUpInside)
 //    loadSimulator()
 //    translate()
-    color()
   }
 
   override var prefersStatusBarHidden : Bool {

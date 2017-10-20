@@ -20,6 +20,10 @@ public enum WritePriority:Int{
     case low = 1, normal, high, highest
 }
 
+public enum ConnectState:Int{
+    case disconnected, connecting, connected, disconnecting
+}
+
 final class Bluetooth: NSObject {
     public weak var delegate:BluetoothDelegate?
     fileprivate weak var manager:BluetoothManager?
@@ -37,6 +41,8 @@ final class Bluetooth: NSObject {
     fileprivate var deviceInfo:DeviceInfo?//收到8命令会重新生成，一直缓存，不会删除
     fileprivate var aliveTimer:Timer?
     fileprivate var powerTimer:Timer?
+    
+    public var state:ConnectState {return ConnectState(rawValue: peripheral.state.rawValue) ?? .disconnected}
     
     public func verify(){
         peripheral.discoverServices(nil)
