@@ -255,6 +255,7 @@ extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
 extension SimpleWorkbenchViewController{
     @objc func popupCode(){
         if case let str?? = try? workspace?.toXML(){
+            saveBlocks()
             let ctr = CodeViewControler(str)
             codeCtr = ctr
             ctr.modalPresentationStyle = .popover

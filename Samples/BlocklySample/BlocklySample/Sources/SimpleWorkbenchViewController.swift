@@ -16,6 +16,7 @@
 import UIKit
 import Blockly
 import CoreMotion
+import AEXML
 
 class SimpleWorkbenchViewController: WorkbenchViewController {
   // MARK: - Initializers
@@ -52,7 +53,7 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     // Load data
     loadBlockFactory()
     loadToolbox()
-    
+    loadBlocks()
     redoButton.isHidden = true
     undoButton.isHidden = true
     
@@ -106,4 +107,23 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
       print("An error occurred loading the toolbox: \(error)")
     }
   }
+    func saveBlocks(){
+        if case let str?? = try? workspace?.toXML(){
+            UserDefaults.standard.set(str, forKey: "blockly_tmp_xml")
+            UserDefaults.standard.synchronize()
+            print("xml:" + str)
+        }
+    }
+    private func loadBlocks(){
+        let def = """
+xml:<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+    <block x="81" type="start" id="255CBAB0-4DD5-4FFC-B8B1-B473F9707C2B" y="21" />
+</xml>
+"""
+        let str = UserDefaults.standard.string(forKey: "blockly_tmp_xml") ?? ""
+        if let xml = (try? AEXMLDocument(xml: str)) ?? (try? AEXMLDocument(xml: def)){
+            try? workspace?.loadBlocks(fromXML: xml["xml"], factory: blockFactory)
+        }
+    }
 }

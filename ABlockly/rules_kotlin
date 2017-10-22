@@ -1,28 +1,40 @@
 start::
-def main():
-    \(next),
+fun main()
+{
+    \(next)
+},
 
 start_tilt::
-def onTilt():
-    \(next),
+fun onTilt()
+{
+    \(next)
+},
 
 controls_repeat_ext::
-for i in range(\(value[name=TIMES]$0)):
-    \(statement[name=DO]),
+for (i in 0 until \(value[name=TIMES]$0))
+{
+    \(statement[name=DO])
+},
 
 controls_repeat_always::
-while True:
-    \(statement[name=DO]),
+while (true)
+{
+    \(statement[name=DO])
+},
 
 controls_if::
-if \(value[name=IF0]$false):
-    \(statement[name=DO0]),
+if (\(value[name=IF0]$false))
+{
+    \(statement[name=DO0])
+},
 
 controls_if_else::
-if \(value[name=IF0]):
+if (\(value[name=IF0]))
+{
     \(statement[name=DO0])
-else:
-    \(statement[name=ELSE]),
+}else{
+    \(statement[name=ELSE])
+},
 
 turtle_turn::
 turn(dir = "\(field[name=DIR]))", angle = \(value[name=VALUE]$0)),

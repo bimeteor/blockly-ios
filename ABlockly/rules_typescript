@@ -25,10 +25,10 @@ else:
     \(statement[name=ELSE]),
 
 turtle_turn::
-turn(dir = "\(field[name=DIR]))", angle = \(value[name=VALUE]$0)),
+turn(dir:"\(field[name=DIR]))", angle:\(value[name=VALUE]$0)),
 
 turtle_move::
-move(dir = "\(field[name=DIR])", steps = \(value[name=VALUE]$0)),
+move(dir:"\(field[name=DIR])", steps:\(value[name=VALUE]$0)),
 
 turtle_color::
 color(color:\()),

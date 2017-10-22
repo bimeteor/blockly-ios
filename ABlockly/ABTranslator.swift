@@ -18,17 +18,17 @@ public final class ABTranslator: ABParser {
         var str = ""
         if funtions.count>0{
             str.append("//function declarations\n")
-            funtions.forEach{str.append(code($0, depth: 0))}
+            funtions.forEach{str.append(code($0))}
             str.append("\n")
         }
-        str.append("//trunk\n" + code(trunk, depth: 0))
-        branches.enumerated().forEach{str.append("\n//branch \($0+1)\n" + code($1, depth: 0))}
+        str.append("//trunk\n" + code(trunk))
+        branches.enumerated().forEach{str.append("\n//branch \($0+1)\n" + code($1))}
         codes = str
     }
     public static func parse(str:String)->[String:String]{
         var map = [String:String]()
         str.components(separatedBy: ",\n").forEach{
-            let arr = $0.components(separatedBy: ":\n")
+            let arr = $0.components(separatedBy: "::\n")
             if arr.count > 1{
                 map[arr[0].trimMargin()] = arr[1].trimMargin()
             }
@@ -63,9 +63,14 @@ extension String{
 }
 
 extension ABTranslator{
-    private func code(_ node:XMLNode, depth:Int)->String{
-        guard let type = node.attributes["type"], let rule = rules[type] else {return ""}
-        var str = depth > 0 ? rule.replacingOccurrences(of: "\n", with: "\n" + repeated(depth, initial:""){$0 + tab}) : rule
+    private func space(_ string:String)->String{
+        if let start = string.reversed().index(of: "\n")?.base, let end = string[start...].index(where: {$0 != " " && $0 != "\n"}){
+            return String(string[start..<end])
+        }
+        return ""
+    }
+    private func code(_ node:XMLNode)->String{
+        guard let type = node.attributes["type"], var str = rules[type] else {return ""}
         var offset = str.startIndex
         while true{ //repeat: find \(name[id=value]) and replace it
             if let range = str.range(of: "\\\\\\([a-zA-Z0-9\\[=\\]$]*\\)", options: .regularExpression, range: offset..<str.endIndex){
@@ -85,15 +90,18 @@ extension ABTranslator{
 
                 var repl = ""
                 node[path].map{
-                    if $0.name == "field" {    //it's a field
+                    if $0.name == "field" {    //it's a field, an embeded expr
                         repl = $0.value
-                    }else if path.contains("statement") || type.hasPrefix("start"){
-                        let c = code($0, depth: depth + 1)
+                    }else if path.contains("statement") || type.hasPrefix("start"){//sub statement
+                        var c = code($0)
                         if !c.isEmpty{
-                            repl = "\n" + repeated(depth + 1, initial:""){$0 + tab} + c
+                            if let idx = str[str.startIndex..<range.lowerBound].reversed().index(where: {$0 == "\n"})?.base{
+                                c = c.replacingOccurrences(of: "\n", with: "\n" + str[idx..<range.lowerBound])
+                            }
+                            repl = c
                         }
-                    }else{
-                        repl = code($0, depth: depth)
+                    }else{//embeded expr
+                        repl = code($0)
                     }
                 }
                 let res = repl.isEmpty ? def : repl //replace
@@ -103,8 +111,8 @@ extension ABTranslator{
                 break
             }
         }
-        if !type.hasPrefix("start") {
-            node["|block.next.block"].map{str.append("\n" + repeated(depth, initial:""){$0 + tab} + code($0, depth: depth))}
+        if !type.hasPrefix("start") {   //next
+            node["|block.next.block"].map{str += "\n" + code($0)}
         }
         return str
     }

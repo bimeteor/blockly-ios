@@ -26,26 +26,27 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jFL-Ix-QLB">
-                    <rect key="frame" x="291" y="38.5" width="51" height="31"/>
+                    <rect key="frame" x="362" y="38.5" width="51" height="31"/>
                     <connections>
-                        <action selector="onSlide:" destination="-1" eventType="valueChanged" id="4xS-Nw-z8j"/>
+                        <action selector="onSlide:" destination="-1" eventType="valueChanged" id="e4c-ml-WzS"/>
                     </connections>
                 </switch>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Y8x-1h-NDg">
-                    <rect key="frame" x="101" y="40" width="173" height="29"/>
+                    <rect key="frame" x="30" y="40" width="315" height="29"/>
                     <segments>
                         <segment title="Python"/>
+                        <segment title="Typescript"/>
                         <segment title="Swift"/>
-                        <segment title="Kotlin"/>
+                        <segment title="kotlin"/>
                     </segments>
                     <connections>
-                        <action selector="onSegment:" destination="-1" eventType="valueChanged" id="sE8-cu-Jfo"/>
+                        <action selector="onSegment:" destination="-1" eventType="valueChanged" id="mMW-84-ojg"/>
                     </connections>
                 </segmentedControl>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="kcj-kv-mOJ">
                     <rect key="frame" x="16" y="86" width="343" height="561"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="19"/>
+                    <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="20"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
             </subviews>
