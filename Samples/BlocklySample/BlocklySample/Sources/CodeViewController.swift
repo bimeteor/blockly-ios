@@ -9,10 +9,15 @@
 import Foundation
 import UIKit
 
+extension CodeViewControler{
+    fileprivate static let languages = [0: ("Python", "rules_python", ABColorLexer.keywordsPython), 1: ("Typescript", "rules_typescript", ABColorLexer.keywordsTypescript), 2: ("Swift", "rules_swift", ABColorLexer.keywordsSwift), 3: ("Kotlin", "rules_kotlin", ABColorLexer.keywordsKotlin)]
+    fileprivate static let themes = [(UIColor.white, UIColor.black, ["comment":0x208813, "number":0x100aff, "operator":0x0, "keyword":0xb40061, "function":0x4c009f]), (UIColor.black, UIColor.white, ["comment":0x41cc45, "number":0x786cff, "operator":0xffffff, "keyword":0xd31995, "function":0x39fff])]
+}
+
 class CodeViewControler: UIViewController {
     private let xml:String
-    private var lang = 0
-    private var theme = true
+    private var langIdx = 0
+    private var themeIdx = 0
     init(_ xml:String) {
         self.xml = xml
         super.init(nibName: nil, bundle: nil)
@@ -27,29 +32,29 @@ class CodeViewControler: UIViewController {
     }
     
     @IBAction func onSegment(_ sender: UISegmentedControl) {
-        lang = sender.selectedSegmentIndex
+        langIdx = sender.selectedSegmentIndex
         reload()
     }
     @IBAction func onSlide(_ sender: UISwitch) {
-        theme = sender.isOn
+        themeIdx = sender.isOn ? 1 : 0
         reload()
     }
     fileprivate func reload(){
-        let items = [0: ("Python", "rules_python", ABColorLexer.keywordsPython), 1: ("Typescript", "rules_typescript", ABColorLexer.keywordsTypescript), 2: ("Swift", "rules_swift", ABColorLexer.keywordsSwift), 3: ("Kotlin", "rules_kotlin", ABColorLexer.keywordsKotlin)]
-        if let item = items[lang], let path = Bundle.main.path(forResource: item.1, ofType: nil), let rule = try? String.init(contentsOfFile: path) {
+        if let item = CodeViewControler.languages[langIdx], let path = Bundle.main.path(forResource: item.1, ofType: nil), let rule = try? String.init(contentsOfFile: path) {
             let codes = ABTranslator.init(xml, rules: ABTranslator.parse(str: rule))?.codes ?? ""
             print("codes:" + codes)
             let lex = ABColorLexer.init(codes, keywords: item.2)
             let str = NSMutableAttributedString.init(string: codes)
-            str.addAttributes([.foregroundColor:UIColor.white, .font:UIFont.init(name: "Menlo", size: 16) ?? UIFont.monospacedDigitSystemFont(ofSize: 16, weight: .regular)], range: NSRange.init(location: 0, length: str.length))
-            let colors = ["comment":0x41cc45, "number":0x786cff, "operator":0xffffff, "keyword":0xd31995, "function":0x39fff]
+            let theme = CodeViewControler.themes[themeIdx]
+            str.addAttributes([.foregroundColor:theme.1, .font:UIFont.init(name: "Menlo", size: 16) ?? UIFont.monospacedDigitSystemFont(ofSize: 16, weight: .regular)], range: NSRange.init(location: 0, length: str.length))
+            
             lex.colors.forEach{
-                if let val = colors[$0.1.rawValue]{
+                if let val = theme.2[$0.1.rawValue]{
                     str.addAttributes([.foregroundColor:UIColor.init(val)], range: $0.0)
                 }
             }
-            text?.backgroundColor = .black
             text?.attributedText = str
+            text?.backgroundColor = theme.0
         }
     }
 }

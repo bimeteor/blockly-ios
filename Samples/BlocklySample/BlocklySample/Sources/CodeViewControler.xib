@@ -25,7 +25,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jFL-Ix-QLB">
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="jFL-Ix-QLB">
                     <rect key="frame" x="362" y="38.5" width="51" height="31"/>
                     <connections>
                         <action selector="onSlide:" destination="-1" eventType="valueChanged" id="e4c-ml-WzS"/>
@@ -37,7 +37,7 @@
                         <segment title="Python"/>
                         <segment title="Typescript"/>
                         <segment title="Swift"/>
-                        <segment title="kotlin"/>
+                        <segment title="Kotlin"/>
                     </segments>
                     <connections>
                         <action selector="onSegment:" destination="-1" eventType="valueChanged" id="mMW-84-ojg"/>
