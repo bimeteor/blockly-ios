@@ -16,6 +16,7 @@
 		D60E431A1F9A768600423F47 /* rules_python in Resources */ = {isa = PBXBuildFile; fileRef = D60E43191F9A768600423F47 /* rules_python */; };
 		D60E43261F9CFE2A00423F47 /* rules_typescript in Resources */ = {isa = PBXBuildFile; fileRef = D60E431D1F9CFE2A00423F47 /* rules_typescript */; };
 		D60E43271F9CFE2A00423F47 /* rules_kotlin in Resources */ = {isa = PBXBuildFile; fileRef = D60E43251F9CFE2A00423F47 /* rules_kotlin */; };
+		D60E43371F9E09D000423F47 /* ConnectViewControler.xib in Resources */ = {isa = PBXBuildFile; fileRef = D60E43361F9E09D000423F47 /* ConnectViewControler.xib */; };
 		D61409E81F62681600B2012E /* ABColorLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E01F62681600B2012E /* ABColorLexer.swift */; };
 		D61409E91F62681600B2012E /* ABParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E11F62681600B2012E /* ABParser.swift */; };
 		D61409EA1F62681600B2012E /* ABPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61409E21F62681600B2012E /* ABPerformer.swift */; };
@@ -153,6 +154,7 @@
 		D60E43191F9A768600423F47 /* rules_python */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rules_python; sourceTree = "<group>"; };
 		D60E431D1F9CFE2A00423F47 /* rules_typescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rules_typescript; sourceTree = "<group>"; };
 		D60E43251F9CFE2A00423F47 /* rules_kotlin */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rules_kotlin; sourceTree = "<group>"; };
+		D60E43361F9E09D000423F47 /* ConnectViewControler.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConnectViewControler.xib; sourceTree = "<group>"; };
 		D61409E01F62681600B2012E /* ABColorLexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABColorLexer.swift; sourceTree = "<group>"; };
 		D61409E11F62681600B2012E /* ABParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABParser.swift; sourceTree = "<group>"; };
 		D61409E21F62681600B2012E /* ABPerformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABPerformer.swift; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 				FAE2A6471C756AA20085D36B /* SimpleWorkbenchViewController.swift */,
 				D61409F81F6268B400B2012E /* SimpleWorkbenchViewController+Addition.swift */,
 				D61458BF1F99EF6B00DB22DE /* ConnectViewControler.swift */,
+				D60E43361F9E09D000423F47 /* ConnectViewControler.xib */,
 				D60E430E1F9A142900423F47 /* CodeViewController.swift */,
 				D60E43171F9A262F00423F47 /* CodeViewControler.xib */,
 				D61409DF1F62681600B2012E /* ABlockly */,
@@ -615,6 +618,7 @@
 				D61409FB1F62AC6200B2012E /* turtle.xml in Resources */,
 				D63F06C11F5FF3A700050C2D /* toolbox.xml in Resources */,
 				D61409F61F62685300B2012E /* src1.xml in Resources */,
+				D60E43371F9E09D000423F47 /* ConnectViewControler.xib in Resources */,
 				FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */,
 				D61409EE1F62681600B2012E /* rules_swift in Resources */,
 				D60E43181F9A262F00423F47 /* CodeViewControler.xib in Resources */,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina4_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -16,50 +16,79 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CodeViewControler" customModule="BlocklySample" customModuleProvider="target">
             <connections>
+                <outlet property="container" destination="dd2-lJ-k4E" id="NU8-wt-QzN"/>
                 <outlet property="text" destination="kcj-kv-mOJ" id="eXm-7i-mxH"/>
                 <outlet property="view" destination="iN0-l3-epB" id="gbq-ip-fCt"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="jFL-Ix-QLB">
-                    <rect key="frame" x="362" y="38.5" width="51" height="31"/>
+                <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p2B-vy-kkE" customClass="UIControl">
+                    <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
-                        <action selector="onSlide:" destination="-1" eventType="valueChanged" id="e4c-ml-WzS"/>
+                        <action selector="onTap:" destination="-1" eventType="touchUpInside" id="whE-an-8q8"/>
                     </connections>
-                </switch>
-                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Y8x-1h-NDg">
-                    <rect key="frame" x="30" y="40" width="315" height="29"/>
-                    <segments>
-                        <segment title="Python"/>
-                        <segment title="Typescript"/>
-                        <segment title="Swift"/>
-                        <segment title="Kotlin"/>
-                    </segments>
-                    <connections>
-                        <action selector="onSegment:" destination="-1" eventType="valueChanged" id="mMW-84-ojg"/>
-                    </connections>
-                </segmentedControl>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="kcj-kv-mOJ">
-                    <rect key="frame" x="16" y="86" width="343" height="561"/>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dd2-lJ-k4E">
+                    <rect key="frame" x="70" y="50" width="527" height="275"/>
+                    <subviews>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Y8x-1h-NDg">
+                            <rect key="frame" x="106" y="8" width="315" height="29"/>
+                            <segments>
+                                <segment title="Python"/>
+                                <segment title="Typescript"/>
+                                <segment title="Swift"/>
+                                <segment title="Kotlin"/>
+                            </segments>
+                            <connections>
+                                <action selector="onSegment:" destination="-1" eventType="valueChanged" id="mMW-84-ojg"/>
+                            </connections>
+                        </segmentedControl>
+                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="jFL-Ix-QLB">
+                            <rect key="frame" x="441" y="7" width="51" height="31"/>
+                            <connections>
+                                <action selector="onSlide:" destination="-1" eventType="valueChanged" id="e4c-ml-WzS"/>
+                            </connections>
+                        </switch>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="suE-cb-Hsu">
+                            <rect key="frame" x="163" y="73" width="240" height="128"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="kcj-kv-mOJ">
+                            <rect key="frame" x="12" y="50" width="503" height="217"/>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="20"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
+                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="20"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                </textView>
+                    <constraints>
+                        <constraint firstItem="kcj-kv-mOJ" firstAttribute="top" secondItem="Y8x-1h-NDg" secondAttribute="bottom" constant="14" id="59E-nZ-oFd"/>
+                        <constraint firstItem="Y8x-1h-NDg" firstAttribute="centerX" secondItem="dd2-lJ-k4E" secondAttribute="centerX" id="6Ds-uQ-Ap1"/>
+                        <constraint firstItem="kcj-kv-mOJ" firstAttribute="leading" secondItem="dd2-lJ-k4E" secondAttribute="leading" constant="12" id="RlY-Uj-IS7"/>
+                        <constraint firstAttribute="trailing" secondItem="kcj-kv-mOJ" secondAttribute="trailing" constant="12" id="Uxc-1D-rd6"/>
+                        <constraint firstItem="jFL-Ix-QLB" firstAttribute="leading" secondItem="Y8x-1h-NDg" secondAttribute="trailing" constant="20" id="jHX-Ke-h3R"/>
+                        <constraint firstItem="Y8x-1h-NDg" firstAttribute="top" secondItem="dd2-lJ-k4E" secondAttribute="top" constant="8" id="k3j-et-Ike"/>
+                        <constraint firstAttribute="bottom" secondItem="kcj-kv-mOJ" secondAttribute="bottom" constant="8" id="rJt-ks-jAA"/>
+                        <constraint firstItem="jFL-Ix-QLB" firstAttribute="centerY" secondItem="Y8x-1h-NDg" secondAttribute="centerY" id="y7V-Bm-hOl"/>
+                    </constraints>
+                </view>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="jFL-Ix-QLB" firstAttribute="centerY" secondItem="Y8x-1h-NDg" secondAttribute="centerY" id="1Px-Q7-lx2"/>
-                <constraint firstItem="Y8x-1h-NDg" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="2Pk-nT-OSr"/>
-                <constraint firstItem="jFL-Ix-QLB" firstAttribute="leading" secondItem="Y8x-1h-NDg" secondAttribute="trailing" constant="17" id="47y-qw-wiv"/>
-                <constraint firstItem="Y8x-1h-NDg" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="FTC-IV-lXw"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="kcj-kv-mOJ" secondAttribute="trailing" constant="16" id="VO5-KJ-UlH"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="kcj-kv-mOJ" secondAttribute="bottom" constant="20" id="ew8-7Z-rhi"/>
-                <constraint firstItem="kcj-kv-mOJ" firstAttribute="top" secondItem="jFL-Ix-QLB" secondAttribute="bottom" constant="16" id="qu4-Wh-46K"/>
-                <constraint firstItem="kcj-kv-mOJ" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="rCS-Ng-DCx"/>
+                <constraint firstItem="p2B-vy-kkE" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="1zn-cW-Gt1"/>
+                <constraint firstItem="p2B-vy-kkE" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="GKx-Ti-0ZJ"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="dd2-lJ-k4E" secondAttribute="bottom" constant="50" id="Ytx-tP-vku"/>
+                <constraint firstItem="dd2-lJ-k4E" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="70" id="eKG-S0-cFR"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="dd2-lJ-k4E" secondAttribute="trailing" constant="70" id="nFw-Dn-Hzu"/>
+                <constraint firstItem="dd2-lJ-k4E" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="50" id="nqb-rC-rDD"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="p2B-vy-kkE" secondAttribute="bottom" id="y22-Ea-7Vq"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="p2B-vy-kkE" secondAttribute="trailing" id="z9X-Uf-pPY"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="33.5" y="53.5"/>
