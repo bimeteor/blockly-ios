@@ -72,8 +72,6 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     codeBtn.setImage(UIImage.init(named: "arrow"), for: .normal)
     codeBtn.frame = CGRect(x:view.bounds.width-50, y:110, width:50, height:50)
     codeBtn.addTarget(self, action: #selector(popupCode), for: .touchUpInside)
-//    loadSimulator()
-//    translate()
   }
 
   override var prefersStatusBarHidden : Bool {
@@ -116,7 +114,7 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     }
     private func loadBlocks(){
         let def = """
-xml:<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <xml xmlns="http://www.w3.org/1999/xhtml">
     <block x="81" type="start" id="255CBAB0-4DD5-4FFC-B8B1-B473F9707C2B" y="21" />
 </xml>

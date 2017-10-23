@@ -121,6 +121,9 @@ extension SimpleWorkbenchViewController{
         vm?.performer.delegate = nil
         vm?.stop()
         unhighlightAllBlocks()
+        if simulator.superview == nil {
+            loadSimulator()
+        }
         if running{
             simulator.isHidden = true
             running = false
