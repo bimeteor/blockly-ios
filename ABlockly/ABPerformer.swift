@@ -100,7 +100,7 @@ extension ABPerformer{
             guard let n = node["|block.value[name=VALUE].block"] else {endCurrent(); return}
             delegate?.begin("turtle_move", values: ["\(evaluate(n))"])
         case "turtle_turn":
-            guard let n = node["|block.value[name=VALUE].block"] else {endCurrent(); return}
+            guard let n = node["|block.field[name=DIR]"] else {endCurrent(); return}
             delegate?.begin("turtle_turn", values: ["\(evaluate(n))"])
         case "turtle_color":
             guard let n = node["|block.value[name=COLOUR].block"] else {endCurrent(); return}

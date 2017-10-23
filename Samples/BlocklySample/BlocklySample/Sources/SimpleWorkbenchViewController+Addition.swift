@@ -13,39 +13,6 @@ import CoreMotion
 var mm:CMDeviceMotion?
 
 extension SimpleWorkbenchViewController{
-    func run() {
-        if let path = Bundle.main.path(forResource: "src", ofType: "xml"), let str = try? String.init(contentsOfFile: path){
-            vm = ABVirtulMachine(str)
-            vm?.performer.delegate = self
-            vm?.start()
-        }
-    }
-    func translate() {
-        if let path = Bundle.main.path(forResource: "src4", ofType: "xml"), let str = try? String.init(contentsOfFile: path){
-            if let path = Bundle.main.path(forResource: "rules_swift", ofType: nil), let rule = try? String.init(contentsOfFile: path) {
-                print(ABTranslator.init(str, rules: ABTranslator.parse(str: rule))?.codes ?? "")
-            }
-        }
-    }
-    func color() {
-        let lex = ABColorLexer.init(codes, keywords: ABColorLexer.keywordsSwift)
-        let lbl = UILabel.init(frame: CGRect(x:20, y:20, width:400, height:400))
-        view.addSubview(lbl)
-        lbl.numberOfLines = 0
-        lbl.backgroundColor = .black
-        lbl.font = UIFont.init(name: "Menlo", size: 18)
-        //        lbl.font = UIFont.init(name: "Courier New", size: 19)
-        let str = NSMutableAttributedString.init(string: codes)
-        str.addAttributes([.foregroundColor:UIColor.white], range: NSRange.init(location: 0, length: str.length))
-        let colors = ["comment":0x41cc45, "number":0x786cff, "operator":0xffffff, "keyword":0xd31995, "function":0x39fff]
-        lex.colors.forEach{
-            if let val = colors[$0.1.rawValue]{
-                str.addAttributes([.foregroundColor:UIColor.init(val)], range: $0.0)
-            }
-        }
-        lbl.attributedText = str
-    }
-    
     func tilt() {
         mm = CMDeviceMotion.init()
         motionManager = CMMotionManager.init()
@@ -151,7 +118,7 @@ extension SimpleWorkbenchViewController{
     }
     func turn(_ angle:Int) {
         UIView.animate(withDuration: 0.3, animations: {
-            self.turtle.transform = self.turtle.transform.rotated(by: CGFloat(angle)*180/CGFloat.pi)
+            self.turtle.transform = self.turtle.transform.rotated(by: CGFloat(angle)*CGFloat.pi/180)
         }) {_ in
             self.vm?.performer.endCurrent()
         }
@@ -197,7 +164,7 @@ extension SimpleWorkbenchViewController:ABPerformerDelegate{
         case "turtle_move":
             move(Int(values.first ?? "") ?? 0)
         case "turtle_turn":
-            turn(Int(values.first ?? "") ?? 0)
+            turn(values.first == "left" ? 90 : -90)
         case "turtle_color":
             color(Int(values.first ?? "") ?? 0)
         default:
@@ -215,7 +182,7 @@ extension SimpleWorkbenchViewController:UIPopoverPresentationControllerDelegate{
         ctr.popoverPresentationController?.sourceView = connectBtn
         ctr.popoverPresentationController?.sourceRect = connectBtn.bounds
         ctr.preferredContentSize = CGSize(width: 200, height: view.bounds.height * 0.8)
-        ctr.popoverPresentationController?.permittedArrowDirections = .any
+//        ctr.popoverPresentationController?.permittedArrowDirections = .any
         ctr.popoverPresentationController?.delegate = self
         present(ctr, animated: true, completion: nil)
     }
@@ -265,7 +232,7 @@ extension SimpleWorkbenchViewController{
             ctr.popoverPresentationController?.sourceView = codeBtn
             ctr.popoverPresentationController?.sourceRect = codeBtn.bounds
             ctr.preferredContentSize = CGSize(width: view.bounds.width * 0.8, height: view.bounds.height * 0.8)
-            ctr.popoverPresentationController?.permittedArrowDirections = .any
+//            ctr.popoverPresentationController?.permittedArrowDirections = .any
             ctr.popoverPresentationController?.delegate = self
             present(ctr, animated: true, completion: nil)
         }
