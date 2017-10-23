@@ -9,7 +9,7 @@
 import Foundation
 
 extension ABColorLexer{
-    public static let keywordsPython = ["def", "for", "while", "in", "if", "else", "True", "False"]
+    public static let keywordsPython = ["def", "for", "while", "in", "if", "else", "True", "False", "pass"]
     public static let keywordsTypescript = ["fun", "for", "while", "when", "in", "if", "else", "true", "false", "var", "until"]
     public static let keywordsSwift = ["func", "for", "while", "switch", "in", "if", "else", "true", "false", "var"]
     public static let keywordsKotlin = ["fun", "for", "while", "when", "in", "if", "else", "true", "false", "var", "until"]

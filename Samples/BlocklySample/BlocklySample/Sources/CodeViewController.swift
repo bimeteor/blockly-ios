@@ -16,6 +16,7 @@ extension CodeViewControler{
 
 class CodeViewControler: UIViewController {
     private let xml:String
+    private var codes = [Int:String]()
     private var langIdx = 0
     private var themeIdx = 0
     init(_ xml:String) {
@@ -40,18 +41,22 @@ class CodeViewControler: UIViewController {
         reload()
     }
     fileprivate func reload(){
-        if let item = CodeViewControler.languages[langIdx], let path = Bundle.main.path(forResource: item.1, ofType: nil), let rule = try? String.init(contentsOfFile: path) {
-            let codes = ABTranslator.init(xml, rules: ABTranslator.parse(str: rule))?.codes ?? ""
-            print("codes:" + codes)
-            let lex = ABColorLexer.init(codes, keywords: item.2)
-            let str = NSMutableAttributedString.init(string: codes)
+        guard let item = CodeViewControler.languages[langIdx] else {return}
+        var code = codes[langIdx]
+        if code == nil {
+            guard let path = Bundle.main.path(forResource: item.1, ofType: nil), let rule = try? String.init(contentsOfFile: path) else {return}
+            code = ABTranslator.init(xml, rules: ABTranslator.parse(str: rule))?.codes ?? ""
+        }
+        if let c = code {
+            print("codes:" + c)
+            let lex = ABColorLexer.init(c, keywords: item.2)
+            let str = NSMutableAttributedString.init(string: c)
             let theme = CodeViewControler.themes[themeIdx]
             str.addAttributes([.foregroundColor:theme.1, .font:UIFont.init(name: "Menlo", size: 16) ?? UIFont.monospacedDigitSystemFont(ofSize: 16, weight: .regular)], range: NSRange.init(location: 0, length: str.length))
             
             lex.colors.forEach{
-                if let val = theme.2[$0.1.rawValue]{
-                    str.addAttributes([.foregroundColor:UIColor.init(val)], range: $0.0)
-                }
+                guard let val = theme.2[$0.1.rawValue] else {return}
+                str.addAttributes([.foregroundColor:UIColor.init(val)], range: $0.0)
             }
             text?.attributedText = str
             text?.backgroundColor = theme.0

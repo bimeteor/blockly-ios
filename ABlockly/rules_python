@@ -1,28 +1,28 @@
 start::
 def main():
-    \(next),
+    \(next$pass),
 
 start_tilt::
 def onTilt():
-    \(next),
+    \(next$pass),
 
 controls_repeat_ext::
 for i in range(\(value[name=TIMES]$0)):
-    \(statement[name=DO]),
+    \(statement[name=DO]$pass),
 
 controls_repeat_always::
 while True:
-    \(statement[name=DO]),
+    \(statement[name=DO]$pass),
 
 controls_if::
 if \(value[name=IF0]$false):
-    \(statement[name=DO0]),
+    \(statement[name=DO0]$pass),
 
 controls_if_else::
 if \(value[name=IF0]):
-    \(statement[name=DO0])
+    \(statement[name=DO0]$pass)
 else:
-    \(statement[name=ELSE]),
+    \(statement[name=ELSE]$pass),
 
 turtle_turn::
 turn(dir = "\(field[name=DIR]))", angle = \(value[name=VALUE]$0)),
@@ -48,7 +48,7 @@ procedures_callnoreturn::
 \(field[name=NAME])(),
 
 def \(field[name=NAME])():
-\(statement[name=STACK]),
+\(statement[name=STACK]$pass),
 
 variables_set::
 \(field[name=VAR]) = \(value[name=VALUE])
