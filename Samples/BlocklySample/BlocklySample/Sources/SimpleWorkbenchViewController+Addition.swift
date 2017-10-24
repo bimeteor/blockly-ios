@@ -139,22 +139,6 @@ extension UIColor{
     }
 }
 
-let codes = """
-for _ in 0..<10
-{
-    move(dir:.forward, len:50)
-    turn(dir:.right, angle:90)
-    color(0xff0000)
-}
-//branch
-if 5 == 5
-{
-    move(dir:.forward, len:12+18)
-}else
-{
-    turn(dir:.right, angle:90)
-}
-"""
 extension SimpleWorkbenchViewController:ABPerformerDelegate{
     func highlight(_ id:String){highlightBlock(blockUUID: id); print("\(#line) \(id)")}
     func unhighlight(_ id:String){unhighlightBlock(blockUUID: id); print("\(#line) \(id)")}
@@ -174,30 +158,29 @@ extension SimpleWorkbenchViewController:ABPerformerDelegate{
     func end(){unhighlightAllBlocks(); print("end \(#line)")}
 }
 
-extension SimpleWorkbenchViewController:UIPopoverPresentationControllerDelegate{
+extension SimpleWorkbenchViewController{
     @objc func popupConnect() {
         let ctr = ConnectViewControler(bleManager)
         connectCtr = ctr
-        ctr.modalPresentationStyle = .popover
-        ctr.popoverPresentationController?.sourceView = connectBtn
-        ctr.popoverPresentationController?.sourceRect = connectBtn.bounds
-        ctr.preferredContentSize = CGSize(width: 200, height: view.bounds.height * 0.8)
-//        ctr.popoverPresentationController?.permittedArrowDirections = .any
-        ctr.popoverPresentationController?.delegate = self
+        ctr.modalPresentationStyle = .overCurrentContext
+        ctr.modalTransitionStyle = .crossDissolve
         present(ctr, animated: true, completion: nil)
     }
     
-    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .none
+    @objc func popupCode(){
+        if case let str?? = try? workspace?.toXML(){
+            saveBlocks()
+            let ctr = CodeViewControler(str)
+            codeCtr = ctr
+            ctr.modalPresentationStyle = .overCurrentContext
+            ctr.modalTransitionStyle = .crossDissolve
+            present(ctr, animated: true, completion: nil)
+        }
     }
+}
+
+extension SimpleWorkbenchViewController{
     
-    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-        
-    }
-    
-    func popoverPresentationControllerShouldDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) -> Bool {
-        return true
-    }
 }
 
 extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
@@ -219,23 +202,6 @@ extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
     
     func managerDidDisconnect(_ uuid: UUID, error: DisconnectError?) {
         
-    }
-}
-
-extension SimpleWorkbenchViewController{
-    @objc func popupCode(){
-        if case let str?? = try? workspace?.toXML(){
-            saveBlocks()
-            let ctr = CodeViewControler(str)
-            codeCtr = ctr
-            ctr.modalPresentationStyle = .popover
-            ctr.popoverPresentationController?.sourceView = codeBtn
-            ctr.popoverPresentationController?.sourceRect = codeBtn.bounds
-            ctr.preferredContentSize = CGSize(width: view.bounds.width * 0.8, height: view.bounds.height * 0.8)
-//            ctr.popoverPresentationController?.permittedArrowDirections = .any
-            ctr.popoverPresentationController?.delegate = self
-            present(ctr, animated: true, completion: nil)
-        }
     }
 }
 

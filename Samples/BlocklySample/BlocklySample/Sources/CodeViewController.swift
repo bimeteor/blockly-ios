@@ -23,12 +23,14 @@ class CodeViewControler: UIViewController {
         self.xml = xml
         super.init(nibName: nil, bundle: nil)
     }
+    @IBOutlet weak var container: UIView!
     @IBOutlet weak var text: UITextView!
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        container.layer.cornerRadius = 16
         reload()
     }
     
@@ -40,6 +42,10 @@ class CodeViewControler: UIViewController {
         themeIdx = sender.isOn ? 1 : 0
         reload()
     }
+    @IBAction func onTap(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
+    
     fileprivate func reload(){
         guard let item = CodeViewControler.languages[langIdx] else {return}
         var code = codes[langIdx]

@@ -10,9 +10,10 @@ import Foundation
 import UIKit
 
 class ConnectViewControler: UIViewController {
-    fileprivate let table = UITableView.init(frame: .zero)
-    fileprivate var items = [(UUID, String)]()
+    @IBOutlet weak var container: UIView!
+    @IBOutlet weak var table: UITableView!
     let manager:BluetoothManager
+    fileprivate var items = [(UUID, String)]()
     init(_ manager:BluetoothManager) {
         self.manager = manager
         super.init(nibName: nil, bundle: nil)
@@ -23,18 +24,17 @@ class ConnectViewControler: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .lightGray
-        view.addSubview(table)
-        table.dataSource = self
-        table.delegate = self
+        container.layer.cornerRadius = 16
         table.reloadData()
         manager.delegate = self
         manager.update()
     }
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        table.frame = view.bounds
-        print(view.bounds)
+    
+    func supportedInterfaceOrientations()->UIInterfaceOrientationMask{
+        return .landscape
+    }
+    @IBAction func onTap(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
 }
 
