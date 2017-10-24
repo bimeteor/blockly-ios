@@ -108,6 +108,8 @@ extension FieldAngleView: UITextFieldDelegate {
     }
 
     // Don't actually edit the text field with the keyboard, but show the angle picker instead.
+    
+    /*
     let pickerOptions = fieldAngleLayout.config.untypedValue(for: LayoutConfig.FieldAnglePickerOptions) as? AnglePicker.Options
     let viewController = AnglePickerViewController(options: pickerOptions)
     viewController.modalDelegate = self
@@ -115,6 +117,14 @@ extension FieldAngleView: UITextFieldDelegate {
     viewController.shouldShowOkButton = true
     viewController.modalContentSize = .medium
     viewController.angle = fieldAngleLayout.angle
+ */
+    
+    let pickerOptions = SpeedPicker.Options()
+    let viewController = SpeedPickerController(options: pickerOptions)
+    viewController.modalDelegate = self
+    viewController.delegate = self
+    viewController.shouldShowOkButton = true
+    viewController.modalContentSize = .medium
 
     // Start a new event group for this edit.
     _eventGroupID = UUID().uuidString
