@@ -21,6 +21,8 @@
 		30DC64DB1D875C88002D2186 /* BlocklyPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DC64DA1D875C88002D2186 /* BlocklyPanGestureRecognizer.swift */; };
 		7844B4351F6FCD4D0045C390 /* TranslucentModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7844B4341F6FCD4D0045C390 /* TranslucentModalViewController.swift */; };
 		786ABAA11F6A80AC00022465 /* FieldColorPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 786ABAA01F6A80AC00022465 /* FieldColorPickerController.swift */; };
+		78F637891F735A9400EB9AC7 /* SpeedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F637881F735A9300EB9AC7 /* SpeedPicker.swift */; };
+		78F637931F738D5400EB9AC7 /* SpeedPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F637921F738D5400EB9AC7 /* SpeedPickerController.swift */; };
 		F98FF7E11BB2036A00A4F8E5 /* BlockFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98FF7E01BB2036A00A4F8E5 /* BlockFactory.swift */; };
 		FA1039281D936C24005FDF1D /* WorkspaceUnits.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1039271D936C24005FDF1D /* WorkspaceUnits.swift */; };
 		FA10E3F51C696A9F0095F088 /* FieldAngleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA10E3F41C696A9F0095F088 /* FieldAngleView.swift */; };
@@ -209,6 +211,8 @@
 		30DC64DA1D875C88002D2186 /* BlocklyPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlocklyPanGestureRecognizer.swift; sourceTree = "<group>"; };
 		7844B4341F6FCD4D0045C390 /* TranslucentModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslucentModalViewController.swift; sourceTree = "<group>"; };
 		786ABAA01F6A80AC00022465 /* FieldColorPickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldColorPickerController.swift; sourceTree = "<group>"; };
+		78F637881F735A9300EB9AC7 /* SpeedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedPicker.swift; sourceTree = "<group>"; };
+		78F637921F738D5400EB9AC7 /* SpeedPickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedPickerController.swift; sourceTree = "<group>"; };
 		F98FF7E01BB2036A00A4F8E5 /* BlockFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockFactory.swift; sourceTree = "<group>"; };
 		FA1039271D936C24005FDF1D /* WorkspaceUnits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceUnits.swift; sourceTree = "<group>"; };
 		FA10E3F41C696A9F0095F088 /* FieldAngleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldAngleView.swift; sourceTree = "<group>"; };
@@ -541,6 +545,7 @@
 				FAA4D4E61D07D6BF007312BD /* ZIndexedGroupView.swift */,
 				FAB31CE11C571F730071EBF8 /* FieldView.swift */,
 				FA59BC501ED62D6B00EF1646 /* AnglePicker.swift */,
+				78F637881F735A9300EB9AC7 /* SpeedPicker.swift */,
 				FA10E3F41C696A9F0095F088 /* FieldAngleView.swift */,
 				FA42D7F41C61B448000C8EB4 /* FieldCheckboxView.swift */,
 				FA42D7E01C5AD3C9000C8EB4 /* FieldColorView.swift */,
@@ -717,6 +722,7 @@
 			children = (
 				7844B4341F6FCD4D0045C390 /* TranslucentModalViewController.swift */,
 				FA2F456D1E9D69B60071C1A3 /* AnglePickerViewController.swift */,
+				78F637921F738D5400EB9AC7 /* SpeedPickerController.swift */,
 				FAA870151C642805000C7C61 /* DropdownOptionsViewController.swift */,
 				786ABAA01F6A80AC00022465 /* FieldColorPickerController.swift */,
 				FA59BC541ED6634900EF1646 /* NumberPadViewController.swift */,
@@ -857,7 +863,7 @@
 				TargetAttributes = {
 					FA548C041B630BAC008BC59C = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = GLWCRSS83U;
+						DevelopmentTeam = YC55GKNCVZ;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 					};
@@ -996,6 +1002,7 @@
 				FAA8700A1C64272C000C7C61 /* ObjectPool.swift in Sources */,
 				FAA4D4E71D07D6BF007312BD /* ZIndexedGroupView.swift in Sources */,
 				FAA870041C64272C000C7C61 /* CGPoint+Operators.swift in Sources */,
+				78F637891F735A9400EB9AC7 /* SpeedPicker.swift in Sources */,
 				FAA870061C64272C000C7C61 /* Dictionary+Helper.swift in Sources */,
 				FAD652411CB7210C00F73F11 /* DefaultBlockLayout.swift in Sources */,
 				FAE2A5D91C73FBFD0085D36B /* Block+XML.swift in Sources */,
@@ -1028,6 +1035,7 @@
 				FAC034FA1D515D270017C1C8 /* FieldImageLayout.swift in Sources */,
 				FAB551AC1BD5A06F00EFB09E /* LayoutView.swift in Sources */,
 				FAD6523F1CB7210C00F73F11 /* DefaultBlockGroupLayout.swift in Sources */,
+				78F637931F738D5400EB9AC7 /* SpeedPickerController.swift in Sources */,
 				FA548C8C1B66E861008BC59C /* Input.swift in Sources */,
 				FA548C8D1B66E861008BC59C /* Workspace.swift in Sources */,
 				FA271CEA1B8E6D430015CE38 /* LayoutConfig.swift in Sources */,
@@ -1309,7 +1317,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = GLWCRSS83U;
+				DEVELOPMENT_TEAM = YC55GKNCVZ;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1338,7 +1346,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = GLWCRSS83U;
+				DEVELOPMENT_TEAM = YC55GKNCVZ;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

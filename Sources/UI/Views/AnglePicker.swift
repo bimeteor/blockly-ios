@@ -243,6 +243,7 @@ public class AnglePicker: UIControl {
         
         _backgroundCircleLayer.path = circlePath.cgPath
         _backgroundCircleLayer.setNeedsDisplay()
+        setNeedsDisplay()
     }
     
     fileprivate func renderAngle() {
