@@ -13,7 +13,7 @@ let serviceStr = "49535343-FE7D-4AE5-8FA9-9FAFD205E455"
 let readCharStr = "49535343-1E4D-4BD9-BA61-23C647249616"
 let writeCharStr = "49535343-8841-43F4-A8D4-ECBE34729BB3"
 
-let idIndex = 3
+let cmdIndex = 3
 let lenIndex = 2
 
 public enum WritePriority:Int{
@@ -26,46 +26,89 @@ public enum ConnectState:Int{
 
 final class Bluetooth: NSObject {
     public weak var delegate:BluetoothDelegate?
+    public let uuid:UUID
+    public let name:String
+    public private(set) var state:ConnectState = .disconnected
     fileprivate weak var manager:BluetoothManager?
+    fileprivate var observer:NSKeyValueObservation!
     fileprivate let peripheral:CBPeripheral
     fileprivate var writeChar:CBCharacteristic?
     fileprivate let serviceUuid = CBUUID.init(string: serviceStr)
     fileprivate let readCharUuid = CBUUID.init(string: readCharStr)
     fileprivate let writeCharUuid = CBUUID.init(string: writeCharStr)
-    fileprivate lazy var contexts = [(array:[UInt8], priority:WritePriority)]()
-    fileprivate var id:UInt8 = 0
+    fileprivate var contexts = [(UInt8, [UInt8], WritePriority)]()
+    fileprivate var cmd:UInt8 = 0
     fileprivate var time:Double = 0
     
     //jimu
     fileprivate var handShakeStep = 0  //握手依次发1，8，5命令，如果8命令返回EE，则需要继续发8命令。收到回复则用命令号标记，握手成功，标志为100
     fileprivate var deviceInfo:DeviceInfo?//收到8命令会重新生成，一直缓存，不会删除
     fileprivate var aliveTimer:Timer?
-    fileprivate var powerTimer:Timer?
+    fileprivate var powerTimer:Timer?//cmd 8 only
+    fileprivate var delayTimer:Timer?
     
-    public var state:ConnectState {return ConnectState(rawValue: peripheral.state.rawValue) ?? .disconnected}
+    public func connect(){
+        manager?.connect(uuid)
+    }
+    
+    public func disconnect(){
+        reset()
+        manager?.disconnect(uuid)
+    }
     
     public func verify(){
         peripheral.discoverServices(nil)
     }
     
+    public func handshake(){
+        guard let _ = writeChar, state == .connected else {//available to communicate
+            delegate?.bluetoothDidHandshake(false)
+            return
+        }
+        if handShakeStep == 100 {//handshake successfully
+            delegate?.bluetoothDidHandshake(true)
+        }else if handShakeStep == 0{//before handshaking
+            write(1, array:[0])
+        }
+    }
+    
     public func write(_ cmd:UInt8, array:[UInt8], priority:WritePriority = .normal){
-        contexts.append((array: [cmd] + array, priority: priority))
+        contexts.append((cmd, array, priority))
         tryWriting()
     }
     
     public func cancelAllWriting() {
-        id = 0
+        cmd = 0
         contexts.removeAll()
-        
+    }
+    
+    fileprivate func reset() {
+        cmd = 0
+        deviceInfo = nil
+        handShakeStep = 0
+        contexts.removeAll()
+        aliveTimer?.invalidate()
+        powerTimer?.invalidate()
+        delayTimer?.invalidate()
     }
     
     init(_ peripheral:CBPeripheral) {
         self.peripheral = peripheral
+        uuid = peripheral.identifier
+        name = peripheral.name ?? ""
         super.init()
+        observer = peripheral.observe(\CBPeripheral.state){p, _ in
+            self.state = ConnectState(rawValue: p.state.rawValue) ?? .disconnected
+            if self.state == .disconnected{
+                self.reset()
+            }
+        }
+        state = ConnectState(rawValue: peripheral.state.rawValue) ?? .disconnected
         peripheral.delegate = self
     }
     
     deinit {
+        observer.invalidate()
         peripheral.delegate = nil
     }
 }
@@ -75,7 +118,7 @@ public enum VerifyError:Int{
 }
 
 public enum WriteError:Int{
-    case unconnected = 1, unverified, unsupported, badWrite, systemError
+    case unconnected = 1, unverified, unsupported, systemError
 }
 
 public enum ReadError:Int{
@@ -84,9 +127,8 @@ public enum ReadError:Int{
 
 public protocol BluetoothDelegate: class{
     func bluetoothDidVerify(_ error:VerifyError?)
-    func bluetoothDidWrite(_ error:WriteError?)
+    func bluetoothDidWrite(_ cmd:UInt8, error:WriteError?)
     func bluetoothDidRead(_ data:(UInt8, [UInt8])?, error:ReadError?)
-    func bluetoothDidCancelAllWriting()
     
     func bluetoothDidHandshake(_ result:Bool)   //1，8，5命令回复正常
     func bluetoothDidUpdateInfo(_ info:DeviceInfo)
@@ -94,21 +136,19 @@ public protocol BluetoothDelegate: class{
 
 extension Bluetooth{
     fileprivate func tryWriting() {
-        if id == 0, let tuple = contexts.first{
+        if cmd == 0, let tuple = contexts.first{
             if peripheral.state == .connected{
                 if let char = writeChar{
-                    if Bluetooth.writeDataFormatCheck(tuple.array){
-                        id = tuple.array[idIndex]
-                        time = CFAbsoluteTimeGetCurrent()
-                        peripheral.writeValue(Data(tuple.array), for: char, type: .withResponse)
-                    }else{
-                        delegate?.bluetoothDidWrite(.badWrite)
-                    }
+                    aliveTimer?.invalidate()
+                    contexts.removeFirst()
+                    cmd = tuple.0
+                    time = CFAbsoluteTimeGetCurrent()
+                    peripheral.writeValue(Bluetooth.package(tuple.0, array: tuple.1), for: char, type: .withResponse)
                 }else{
-                    delegate?.bluetoothDidWrite(.unverified)
+                    onWrite(.unverified)
                 }
             }else{
-                delegate?.bluetoothDidWrite(.unconnected)
+                onWrite(.unconnected)
             }
         }
     }
@@ -116,7 +156,7 @@ extension Bluetooth{
 
 extension Bluetooth
 {
-    class func package(_ cmd:UInt8, array:[UInt8])->[UInt8]{
+    class func package(_ cmd:UInt8, array:[UInt8])->Data{
         var tmp = [0xfb, 0xbf, UInt8(array.count+5), cmd] + array
         var sum:UInt16=0
         for i in 2...tmp[2]-2 {
@@ -124,15 +164,11 @@ extension Bluetooth
         }
         tmp.append(UInt8(sum & 0xff))
         tmp.append(0xed)
-        return tmp
+        return Data(tmp)
     }
     
     class func unpackage(_ array:[UInt8])->(cmd:Int, array:[UInt8]){
-        return (cmd:Int(array[idIndex]), array:Array(array[4..<array.count-2]))
-    }
-    
-    class func writeDataFormatCheck(_ array:[UInt8]) -> Bool {
-        return array.count>6 && array[0] == 0xfb && array[1] == 0xbf && array.last == 0xed
+        return (cmd:Int(array[cmdIndex]), array:Array(array[4..<array.count-2]))
     }
     
     class func readDataFormatCheck(_ array:[UInt8]) -> Bool {
@@ -148,8 +184,7 @@ extension Bluetooth
         var arr = [(UInt8, [UInt8])]()
         while i+lenIndex<data.count {
             guard data[i] == 0xfb && data[i+1] == 0xbf && data.count-i >= Int(data[i+lenIndex])+1 && data[i+Int(data[i+lenIndex])] == 0xed else {break}
-            //                arr.append(Array(data.subdata(in: i..<1+i+Int(data[i+2]))))
-            arr.append((data[i+idIndex], Array(data[i+idIndex+1..<i+Int(data[i+lenIndex])-1])))
+            arr.append((data[i+cmdIndex], Array(data[i+cmdIndex+1..<i+Int(data[i+lenIndex])-1])))
             i += 1+i+Int(data[i+lenIndex])
         }
         return arr
@@ -175,14 +210,13 @@ let interval_power = 180.0
 let level_power_low:Float = 6.5
 
 public struct ServoErrorOption:OptionSet{
-    public static var number:ServoErrorOption {get{return ServoErrorOption(rawValue: 1)}}
-    public static var id:ServoErrorOption  {get{return ServoErrorOption(rawValue: 1<<1)}}
-    public static var version:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<2)}}
-    public static var blocked:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<3)}}
-    public static var temperature:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<4)}}
-    public static var voltage:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<5)}}
-    public static var current:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<6)}}
-    public static var other:ServoErrorOption   {get{return ServoErrorOption(rawValue: 1<<7)}}
+    public static var id:ServoErrorOption  {get{return ServoErrorOption(rawValue: 1)}}
+    public static var version:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<1)}}
+    public static var blocked:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<2)}}
+    public static var temperature:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<3)}}
+    public static var voltage:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<4)}}
+    public static var current:ServoErrorOption {get{return ServoErrorOption(rawValue: 1<<5)}}
+    public static var other:ServoErrorOption   {get{return ServoErrorOption(rawValue: 1<<6)}}
     public var rawValue: UInt
     public init(rawValue: UInt){
         self.rawValue = rawValue
@@ -237,19 +271,70 @@ extension Bluetooth{
         write(9, array:array)
     }
     
-    func onConnect(_ uuid:UUID) {
-        write(1, array:[0])
-        handShakeStep = 0
+    func onWrite(_ error:WriteError?) {
+        if let e = error{
+            delegate?.bluetoothDidWrite(cmd, error:e)
+            disconnect()
+        }
+    }
+    
+    func onRead(_ data:(UInt8, [UInt8])?, error:ReadError?){
+        aliveTimer?.invalidate()
+        if handShakeStep == 100 {//handshake successfully, may be communicating with the device
+            if let _ = error{//report all errors include internal talks
+                delegate?.bluetoothDidRead(data, error: error)
+                disconnect()
+            }else{
+                guard let t = data else{//data must exist
+                    delegate?.bluetoothDidRead(nil, error: .systemError)
+                    disconnect()
+                    return
+                }
+                if ([1, 8, 5, 3, 0x27, 0x3b].contains(t.0)){//internal talks
+                    var heartbeat = false
+                    onReadInternal(t.0, array: t.1, heartbeat: &heartbeat)
+                    if heartbeat{
+                        aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
+                            self.write(3, array: [0])
+                        })
+                    }
+                }else{//report user talks and activate the heartbeat timer
+                    aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
+                        self.write(3, array: [0])
+                    })
+                    delegate?.bluetoothDidRead(t, error: nil)
+                }
+            }
+        }else{//handshaking or not
+            if let _ = error{//report a fail
+                delegate?.bluetoothDidHandshake(false)
+                disconnect()
+            }else{
+                guard let t = data else{//data must exist
+                    delegate?.bluetoothDidHandshake(false)
+                    disconnect()
+                    return
+                }
+                if ([1, 8, 5, 3, 0x27, 0x3b].contains(t.0)){//only internal talks are in need
+                    var heartbeat = false
+                    onReadInternal(t.0, array: t.1, heartbeat: &heartbeat)
+                    if heartbeat{
+                        aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
+                            self.write(3, array: [0])
+                        })
+                    }
+                }
+            }
+        }
     }
     
     //握手依次发1，8，5命令，如果8命令返回EE，则需要1s后重发8命令
-    func onReceive(_ cmd:UInt8, array:[UInt8]) {
+    func onReadInternal(_ cmd:UInt8, array:[UInt8], heartbeat:inout Bool) {
         //连接成功且没有换连
         switch cmd {
         case 1:
             handShakeStep = 1
             write(8, array: [0])
-            break
         case 8:
             handShakeStep = 8
             switch array[0] {
@@ -257,16 +342,12 @@ extension Bluetooth{
                 let info = DeviceInfo(DeviceError(true))
                 deviceInfo = info
                 delegate?.bluetoothDidUpdateInfo(info)
-                break
-            case 0xEE:
-                //1s后重发一次
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+1, execute: {
+            case 0xEE://1s后重发一次
+                delayTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
                     self.write(8, array: [0])
                 })
-                break
-            case 0:
-                break
-            default:
+            case 0:break//ignored
+            default://if no error exists continue to send cmd 5 otherwise report info only
                 guard array.count >= 27 else {
                     fatalError("cmd = 8 sub =0 length error")
                     break
@@ -282,22 +363,19 @@ extension Bluetooth{
                     }
                 }
                 write(5, array: [0])
-                break
             }
-            break
-        case 5:
+        case 5://may be reported automatically
             var first = false
             if handShakeStep == 8 {
                 handShakeStep = 5
                 first = true
             }
             switch array[0] {
-            case 1:
+            case 1://report low power
                 deviceInfo?.error.power = true
                 if let i = deviceInfo {
                     delegate?.bluetoothDidUpdateInfo(i)
                 }
-                break
             case 2:
                 guard array.count >= 29 else {
                     fatalError("cmd = 5 sub =2 length error")
@@ -309,8 +387,7 @@ extension Bluetooth{
                         if info.error.servo.contains(.blocked) {
                             if let v = info.version {
                                 if let r = v.range(of: "_p")  {
-                                    if !r.isEmpty {
-                                        //可修复
+                                    if !r.isEmpty {//可修复
                                         if v[r.upperBound...].compare("1.36") != .orderedAscending {
                                             write(0x3b, array: [0])
                                             let _ = deviceInfo?.error.servo.remove(.blocked)
@@ -324,68 +401,41 @@ extension Bluetooth{
                 if let i = deviceInfo {
                     delegate?.bluetoothDidUpdateInfo(i)
                 }
-                break
-            case 0:
-                //握手成功
+            case 0://握手成功
                 if first {
                     handShakeStep = 100
                     print("did shaked")
-                    write(0x27, array: [0])
+                    write(0x27, array: [0])//query power info right away
                     delegate?.bluetoothDidHandshake(true)
                 }
-                aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
-                    self.write(3, array: [0])
-                })
-                break
-            default:
-                break
+                heartbeat = true
+            default:break
             }
-            break
-        case 3://心跳，不上报
-            aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
-                self.write(3, array: [0])
-            })
-            break
-        case 0x27:
+        case 3:heartbeat = true//heartbeat
+        case 0x27://power info
             if array.count==4 {
                 updateInfo0x27(array)
                 print("power info = \(deviceInfo?.power)")
                 if let i = deviceInfo {
                     delegate?.bluetoothDidUpdateInfo(i)
                 }
-            }
-            powerTimer?.invalidate()
-            powerTimer = Timer.scheduledTimer(withTimeInterval: interval_power, repeats: false, block: {_ in
-                self.write(0x27, array: [0])
-            })
-            aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
-                self.write(3, array: [0])
-            })
-            break
-        case 0x3b:
-            switch array[0] {
-            case 0:
-                aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
-                    self.write(3, array: [0])
+                powerTimer?.invalidate()
+                powerTimer = Timer.scheduledTimer(withTimeInterval: interval_power, repeats: false, block: {_ in
+                    self.write(0x27, array: [0])
                 })
-                break
-            case 0xee:
+            }
+        case 0x3b://auto-repairment
+            switch array[0] {
+            case 0:heartbeat = true//done
+            case 0xee://report fail
                 if deviceInfo != nil {
                     deviceInfo?.error.servo.insert(.blocked)
                     guard let i = deviceInfo else {return}
                     delegate?.bluetoothDidUpdateInfo(i)
                 }
-                break
-            default:
-                break
+            default:break
             }
-            break
-        default:
-            aliveTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
-                self.write(3, array: [0])
-            })
-            delegate?.bluetoothDidRead((cmd, array), error: nil)
-            break
+        default:break
         }
     }
     
@@ -421,12 +471,7 @@ extension Bluetooth{
                     }
                 }
             }
-            
-            if count == 0 {
-                info.error.servo.insert(.number)
-            }else{
-                info.servo?.count = UInt(count)
-            }
+            info.servo?.count = UInt(count)
         }
         
         //舵机版本不同
@@ -531,43 +576,38 @@ extension Bluetooth:CBPeripheralDelegate
             peripheral.setNotifyValue(true, for: r)
             writeChar = w
             tryWriting()
+            delegate?.bluetoothDidVerify(nil)
         }else{
             delegate?.bluetoothDidVerify(.unsupported)
         }
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        print("didWriteValueFor \(peripheral.state == .connected), error: \(error != nil)" )
-        if error == nil{
-            delegate?.bluetoothDidWrite(nil)
-        }else{
-            delegate?.bluetoothDidWrite(.systemError)
-        }
+        print("didWriteValueFor \(cmd), error: \(error)" )
+        onWrite(error == nil ? nil : .systemError)
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if error == nil{
             guard let data = characteristic.value else{return}
             if data == Data(bytes:[0]){
-                delegate?.bluetoothDidRead(nil, error: .restarted)
+                onRead(nil, error: .restarted)
             }else{
                 let arr = Bluetooth.devidePackage(data)
                 guard arr.count > 0 else{
-                    delegate?.bluetoothDidRead(nil, error: .badResponse)
+                    onRead(nil, error: .badResponse)
                     return
                 }
                 arr.forEach{
-                    if $0.0 == id{
-                        contexts.removeFirst()
-                        id = 0
+                    onRead($0, error: nil)
+                    if $0.0 == cmd{
+                        cmd = 0
                         tryWriting()
                     }
-                    delegate?.bluetoothDidRead($0, error: nil)
                 }
             }
         }else{
-            contexts.removeAll()
-            delegate?.bluetoothDidRead(nil, error: .systemError)
+            onRead(nil, error: .systemError)
         }
     }
 }

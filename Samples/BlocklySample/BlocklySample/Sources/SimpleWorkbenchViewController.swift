@@ -41,6 +41,8 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
     let connectBtn = UIButton.init(type: .custom)
     let codeBtn = UIButton.init(type: .custom)
     
+    var device:Bluetooth?
+    
     var running = false
     var paused = false
     var vm:ABVirtulMachine?

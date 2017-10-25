@@ -158,13 +158,34 @@ extension SimpleWorkbenchViewController:ABPerformerDelegate{
     func end(){unhighlightAllBlocks(); print("end \(#line)")}
 }
 
-extension SimpleWorkbenchViewController{
+protocol PresentViewControllerDelegate: class{
+    func onConfirm(_ ctr: UIViewController, obj:Any)
+    func onCancel(_ ctr: UIViewController)
+}
+
+extension SimpleWorkbenchViewController:PresentViewControllerDelegate{
+    func onConfirm(_ ctr: UIViewController, obj:Any) {
+        if let u = obj as? UUID {
+            device = bleManager[u]
+        }
+        ctr.dismiss(animated: true)
+        connectCtr = nil
+        codeCtr = nil
+    }
+    
+    func onCancel(_ ctr: UIViewController) {
+        ctr.dismiss(animated: true)
+        connectCtr = nil
+        codeCtr = nil
+    }
+    
     @objc func popupConnect() {
         let ctr = ConnectViewControler(bleManager)
         connectCtr = ctr
         ctr.modalPresentationStyle = .overCurrentContext
         ctr.modalTransitionStyle = .crossDissolve
         present(ctr, animated: true, completion: nil)
+        ctr.delegate = self
     }
     
     @objc func popupCode(){
@@ -175,6 +196,7 @@ extension SimpleWorkbenchViewController{
             ctr.modalPresentationStyle = .overCurrentContext
             ctr.modalTransitionStyle = .crossDissolve
             present(ctr, animated: true, completion: nil)
+            ctr.delegate = self
         }
     }
 }
@@ -206,19 +228,15 @@ extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
 }
 
 extension SimpleWorkbenchViewController:BluetoothDelegate{
+    func bluetoothDidWrite(_ cmd: UInt8, error: WriteError?) {
+        
+    }
+    
     func bluetoothDidVerify(_ error: VerifyError?) {
         
     }
     
-    func bluetoothDidWrite(_ error: WriteError?) {
-        
-    }
-    
     func bluetoothDidRead(_ data: (UInt8, [UInt8])?, error: ReadError?) {
-        
-    }
-    
-    func bluetoothDidCancelAllWriting() {
         
     }
     
