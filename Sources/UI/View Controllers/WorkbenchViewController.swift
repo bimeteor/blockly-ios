@@ -450,169 +450,166 @@ open class WorkbenchViewController: UIViewController {
     EventManager.shared.removeListener(self)
   }
 
-  // MARK: - Super
-
-  open override func loadView() {
-    super.loadView()
-
-    view.clipsToBounds = true
-    view.autoresizesSubviews = true
-    view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-
-    // Add child view controllers
-    addChildViewController(workspaceViewController)
-    addChildViewController(trashCanViewController)
-    addChildViewController(toolboxCategoryListViewController)
-    addChildViewController(toolboxCategoryViewController)
-
-    // Set up auto-layout constraints
-    let undoRedoButtonSize = CGSize(width: 36, height: 36)
-    let iconPadding = CGFloat(25)
-    let views: [String: UIView] = [
-      "toolboxCategoriesListView": toolboxCategoryListViewController.view,
-      "toolboxCategoryView": toolboxCategoryViewController.view,
-      "workspaceView": workspaceViewController.view,
-      "trashCanView": trashCanView,
-      "trashCanFolderView": trashCanViewController.view,
-      "undoButton": undoButton,
-      "redoButton": redoButton,
-    ]
-    let metrics = [
-      "iconPadding": iconPadding,
-      "undoRedoButtonWidth": undoRedoButtonSize.width,
-      "undoRedoButtonHeight": undoRedoButtonSize.height
-    ]
-    let constraints: [String]
-
-    if style == .alternate {
-      // Position the button inside the trashCanView to be `(iconPadding, iconPadding)`
-      // away from the top-trailing corner.
-      //trashCanView.setButtonPadding(top: iconPadding, leading: 0, bottom: 0, trailing: iconPadding)
-      constraints = [
-        // Position the toolbox category list along the bottom margin, and let the workspace view
-        // fill the rest of the space
-        "H:|[workspaceView]|",
-        "H:|[toolboxCategoriesListView]|",
-        "V:|[workspaceView][toolboxCategoriesListView]|",
-        // Position the toolbox category view above the list view
-        "H:|[toolboxCategoryView]|",
-        "V:[toolboxCategoryView][toolboxCategoriesListView]",
-        // Position the undo/redo buttons along the top-leading margin
-        "H:[undoButton(undoRedoButtonWidth)]",
-        "V:[undoButton(undoRedoButtonHeight)]",
-        "H:[redoButton(undoRedoButtonWidth)]",
-        "V:[redoButton(undoRedoButtonHeight)]",
-        "H:|-(iconPadding)-[undoButton]-(iconPadding)-[redoButton]",
-        "V:|-(iconPadding)-[undoButton]",
-        "V:|-(iconPadding)-[redoButton]",
-        // Position the trash can button along the top-trailing margin
-        "H:|[trashCanView]|",
-        "V:|[trashCanView(==toolboxCategoriesListView)]",
-        // Position the trash can folder view on the trailing edge of the view, between the toolbox
-        // category view and trash can button
-        //"H:[trashCanFolderView]|",
-        //"V:[trashCanView]-(iconPadding)-[trashCanFolderView]-[toolboxCategoryView]",
-      ]
-    } else {
-      // Position the button inside the trashCanView to be `(iconPadding, iconPadding)`
-      // away from the bottom-trailing corner.
-      //trashCanView.setButtonPadding(top: 0, leading: 0, bottom: iconPadding, trailing: iconPadding)
-      constraints = [
-        // Position the toolbox category list along the leading margin, and let the workspace view
-        // fill the rest of the space
-        "H:|[toolboxCategoriesListView][workspaceView]|",
-        "V:|[toolboxCategoriesListView]|",
-        "V:|[workspaceView]|",
-        // Position the toolbox category view beside the category list
-        "H:[toolboxCategoriesListView][toolboxCategoryView]",
-        "V:|[toolboxCategoryView]|",
-        // Position the undo/redo buttons along the bottom-leading margin
-        /*
-        "H:[undoButton(undoRedoButtonWidth)]",
-        "V:[undoButton(undoRedoButtonHeight)]",
-        "H:[redoButton(undoRedoButtonWidth)]",
-        "V:[redoButton(undoRedoButtonHeight)]",
-        "H:[toolboxCategoriesListView]-(iconPadding)-[undoButton]-(iconPadding)-[redoButton]",
-        "V:[undoButton]-(iconPadding)-|",
-        "V:[redoButton]-(iconPadding)-|",
-         */
-        // Position the trash can button along the bottom-trailing margin
-        "H:|[trashCanView(==toolboxCategoriesListView)]",
-        "V:|[trashCanView]|",
-        // Position the trash can folder view on the bottom of the view, between the toolbox
-        // category view and trash can button
-        //"H:[toolboxCategoryView]-[trashCanFolderView]-(iconPadding)-[trashCanView]",
-        //"V:[trashCanFolderView]|",
-      ]
-    }
-
-    // Add subviews and constraints
-    view.bky_addSubviews(Array(views.values))
-    view.addSubview(workspaceDragLayerView)
-    view.bky_addVisualFormatConstraints(constraints, metrics: metrics, views: views)
-
-    // Order the subviews from back to front
-    view.sendSubview(toBack: workspaceViewController.view)
-    view.bringSubview(toFront: trashCanViewController.view)
-    view.bringSubview(toFront: toolboxCategoryViewController.view)
-    view.bringSubview(toFront: workspaceDragLayerView)
-    view.bringSubview(toFront: toolboxCategoryListViewController.view)
-
-    // Attach the block pan gesture recognizer to the entire view (so it can block out any other
-    // once touches once its gesture state turns to `.began`).
-    let panGesture = BlocklyPanGestureRecognizer(targetDelegate: self)
-    panGesture.delegate = self
-    view.addGestureRecognizer(panGesture)
-
-    // Signify to view controllers that they've been moved to this parent
-    workspaceViewController.didMove(toParentViewController: self)
-    trashCanViewController.didMove(toParentViewController: self)
-    toolboxCategoryListViewController.didMove(toParentViewController: self)
-    toolboxCategoryViewController.didMove(toParentViewController: self)
-
-    // Update workspace view edge insets to account for control overlays
-    let controlHeight =
-      max(undoButton.image(for: .normal)?.size.height ?? 0,
-          redoButton.image(for: .normal)?.size.height ?? 0,
-          trashCanView.button.image(for: .normal)?.size.height ?? 0)
-    switch style {
-    case .defaultStyle:
-      workspaceView.scrollIntoViewEdgeInsets =
-        EdgeInsets(top: iconPadding, leading: iconPadding, bottom: controlHeight + iconPadding * 2,
-                   trailing: iconPadding)
-    case .alternate:
-      workspaceView.scrollIntoViewEdgeInsets =
-        EdgeInsets(top: controlHeight + iconPadding * 2, leading: iconPadding, bottom: iconPadding,
-                   trailing: iconPadding)
-    }
-
-    // Create a default workspace, if one doesn't already exist
-    if workspace == nil {
-      do {
-        try loadWorkspace(Workspace())
-      } catch let error {
-        bky_print("Could not create a default workspace: \(error)")
-      }
-    }
-  }
-
-  open override func viewDidLoad() {
-    super.viewDidLoad()
-
-    // Hide/show trash can
-    //setTrashCanViewVisible(enableTrashCan)
-    trashCanViewController.view.isHidden = true
+    // MARK: - Super
     
-    refreshView()
-  }
-
-  open override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-
-    // Enable/disable the pop gesture recognizer
-    _wasInteractivePopGestureRecognizerEnabled = interactivePopGestureRecognizerEnabled()
-    setInteractivePopGestureRecognizerEnabled(allowInteractivePopGestureRecognizer)
-  }
+    private func _addSubviews() {
+        view.clipsToBounds = true
+        view.autoresizesSubviews = true
+        view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        
+        // Add child view controllers
+        addChildViewController(workspaceViewController)
+        addChildViewController(trashCanViewController)
+        addChildViewController(toolboxCategoryListViewController)
+        addChildViewController(toolboxCategoryViewController)
+        
+        // Hide view at origin state
+        trashCanViewController.view.isHidden = true
+        
+        // Set up auto-layout constraints
+        let undoRedoButtonSize = CGSize(width: 36, height: 36)
+        let iconPadding = CGFloat(25)
+        let views: [String: UIView] = [
+            "toolboxCategoriesListView": toolboxCategoryListViewController.view,
+            "toolboxCategoryView": toolboxCategoryViewController.view,
+            "workspaceView": workspaceViewController.view,
+            "trashCanView": trashCanView,
+            "trashCanFolderView": trashCanViewController.view,
+            "undoButton": undoButton,
+            "redoButton": redoButton,
+            ]
+        let metrics = [
+            "iconPadding": iconPadding,
+            "undoRedoButtonWidth": undoRedoButtonSize.width,
+            "undoRedoButtonHeight": undoRedoButtonSize.height
+        ]
+        let constraints: [String]
+        
+        if style == .alternate {
+            // Position the button inside the trashCanView to be `(iconPadding, iconPadding)`
+            // away from the top-trailing corner.
+            //trashCanView.setButtonPadding(top: iconPadding, leading: 0, bottom: 0, trailing: iconPadding)
+            constraints = [
+                // Position the toolbox category list along the bottom margin, and let the workspace view
+                // fill the rest of the space
+                "H:|[workspaceView]|",
+                "H:|[toolboxCategoriesListView]|",
+                "V:|[workspaceView][toolboxCategoriesListView]|",
+                // Position the toolbox category view above the list view
+                "H:|[toolboxCategoryView]|",
+                "V:[toolboxCategoryView][toolboxCategoriesListView]",
+                // Position the undo/redo buttons along the top-leading margin
+                "H:[undoButton(undoRedoButtonWidth)]",
+                "V:[undoButton(undoRedoButtonHeight)]",
+                "H:[redoButton(undoRedoButtonWidth)]",
+                "V:[redoButton(undoRedoButtonHeight)]",
+                "H:|-(iconPadding)-[undoButton]-(iconPadding)-[redoButton]",
+                "V:|-(iconPadding)-[undoButton]",
+                "V:|-(iconPadding)-[redoButton]",
+                // Position the trash can button along the top-trailing margin
+                "H:|[trashCanView]|",
+                "V:|[trashCanView(==toolboxCategoriesListView)]",
+                // Position the trash can folder view on the trailing edge of the view, between the toolbox
+                // category view and trash can button
+                //"H:[trashCanFolderView]|",
+                //"V:[trashCanView]-(iconPadding)-[trashCanFolderView]-[toolboxCategoryView]",
+            ]
+        } else {
+            // Position the button inside the trashCanView to be `(iconPadding, iconPadding)`
+            // away from the bottom-trailing corner.
+            //trashCanView.setButtonPadding(top: 0, leading: 0, bottom: iconPadding, trailing: iconPadding)
+            constraints = [
+                // Position the toolbox category list along the leading margin, and let the workspace view
+                // fill the rest of the space
+                "H:|[toolboxCategoriesListView][workspaceView]|",
+                "V:|[toolboxCategoriesListView]|",
+                "V:|[workspaceView]|",
+                // Position the toolbox category view beside the category list
+                "H:[toolboxCategoriesListView][toolboxCategoryView]",
+                "V:|[toolboxCategoryView]|",
+                // Position the undo/redo buttons along the bottom-leading margin
+                /*
+                 "H:[undoButton(undoRedoButtonWidth)]",
+                 "V:[undoButton(undoRedoButtonHeight)]",
+                 "H:[redoButton(undoRedoButtonWidth)]",
+                 "V:[redoButton(undoRedoButtonHeight)]",
+                 "H:[toolboxCategoriesListView]-(iconPadding)-[undoButton]-(iconPadding)-[redoButton]",
+                 "V:[undoButton]-(iconPadding)-|",
+                 "V:[redoButton]-(iconPadding)-|",
+                 */
+                // Position the trash can button along the bottom-trailing margin
+                "H:|[trashCanView(==toolboxCategoriesListView)]",
+                "V:|[trashCanView]|",
+                // Position the trash can folder view on the bottom of the view, between the toolbox
+                // category view and trash can button
+                //"H:[toolboxCategoryView]-[trashCanFolderView]-(iconPadding)-[trashCanView]",
+                //"V:[trashCanFolderView]|",
+            ]
+        }
+        
+        // Add subviews and constraints
+        view.bky_addSubviews(Array(views.values))
+        view.addSubview(workspaceDragLayerView)
+        view.bky_addVisualFormatConstraints(constraints, metrics: metrics, views: views)
+        
+        // Order the subviews from back to front
+        view.sendSubview(toBack: workspaceViewController.view)
+        view.bringSubview(toFront: trashCanViewController.view)
+        view.bringSubview(toFront: toolboxCategoryViewController.view)
+        view.bringSubview(toFront: workspaceDragLayerView)
+        view.bringSubview(toFront: toolboxCategoryListViewController.view)
+        
+        // Attach the block pan gesture recognizer to the entire view (so it can block out any other
+        // once touches once its gesture state turns to `.began`).
+        let panGesture = BlocklyPanGestureRecognizer(targetDelegate: self)
+        panGesture.delegate = self
+        view.addGestureRecognizer(panGesture)
+        
+        // Signify to view controllers that they've been moved to this parent
+        workspaceViewController.didMove(toParentViewController: self)
+        trashCanViewController.didMove(toParentViewController: self)
+        toolboxCategoryListViewController.didMove(toParentViewController: self)
+        toolboxCategoryViewController.didMove(toParentViewController: self)
+        
+        // Update workspace view edge insets to account for control overlays
+        let controlHeight =
+            max(undoButton.image(for: .normal)?.size.height ?? 0,
+                redoButton.image(for: .normal)?.size.height ?? 0,
+                trashCanView.button.image(for: .normal)?.size.height ?? 0)
+        switch style {
+        case .defaultStyle:
+            workspaceView.scrollIntoViewEdgeInsets =
+                EdgeInsets(top: iconPadding, leading: iconPadding, bottom: controlHeight + iconPadding * 2,
+                           trailing: iconPadding)
+        case .alternate:
+            workspaceView.scrollIntoViewEdgeInsets =
+                EdgeInsets(top: controlHeight + iconPadding * 2, leading: iconPadding, bottom: iconPadding,
+                           trailing: iconPadding)
+        }
+        
+        // Create a default workspace, if one doesn't already exist
+        if workspace == nil {
+            do {
+                try loadWorkspace(Workspace())
+            } catch let error {
+                bky_print("Could not create a default workspace: \(error)")
+            }
+        }
+    }
+    
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        _addSubviews()
+        refreshView()
+    }
+    
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Enable/disable the pop gesture recognizer
+        _wasInteractivePopGestureRecognizerEnabled = interactivePopGestureRecognizerEnabled()
+        setInteractivePopGestureRecognizerEnabled(allowInteractivePopGestureRecognizer)
+    }
 
   open override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
