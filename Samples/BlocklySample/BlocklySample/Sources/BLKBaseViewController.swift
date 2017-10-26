@@ -10,7 +10,7 @@ import Foundation
 import Blockly
 import AEXML
 
-class BLKBaseViewController: WorkbenchViewController {
+class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, PresentViewControllerDelegate{
     
     init() {
         super.init(style: .defaultStyle)
@@ -45,17 +45,17 @@ class BLKBaseViewController: WorkbenchViewController {
         view.addSubview(btn1)
         btn1.setImage(UIImage.init(named: "arrow"), for: .normal)
         btn1.frame = CGRect(x:view.bounds.width-50, y:0, width:50, height:50)
-        btn1.addTarget(self, action: #selector(pop), for: .touchUpInside)
+        btn1.addTarget(self, action: #selector(popout), for: .touchUpInside)
         
         view.addSubview(btn2)
         btn2.setImage(UIImage.init(named: "arrow"), for: .normal)
         btn2.frame = CGRect(x:view.bounds.width-50, y:55, width:50, height:50)
-//        btn2.addTarget(self, action: #selector(popupConnect), for: .touchUpInside)
+        btn2.addTarget(self, action: #selector(run), for: .touchUpInside)
         
         view.addSubview(btn3)
         btn3.setImage(UIImage.init(named: "arrow"), for: .normal)
         btn3.frame = CGRect(x:view.bounds.width-50, y:110, width:50, height:50)
-//        btn3.addTarget(self, action: #selector(popupCode), for: .touchUpInside)
+        btn3.addTarget(self, action: #selector(showCode), for: .touchUpInside)
     }
     
     override var prefersStatusBarHidden : Bool {
@@ -67,8 +67,31 @@ class BLKBaseViewController: WorkbenchViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    @objc func pop(){
+    @objc func popout(){
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func run(){
+        if case let str?? = try? workspace?.toXML(){
+            print(str)
+            vm?.performer.delegate = nil
+            vm?.stop()
+            vm = ABVirtulMachine.init(str)
+            vm?.performer.delegate = self
+            vm?.start()
+        }
+    }
+    
+    @objc func showCode(){
+        if case let str?? = try? workspace?.toXML(){
+            saveBlocks()
+            let ctr = CodeViewControler(str)
+            codeCtr = ctr
+            ctr.modalPresentationStyle = .overCurrentContext
+            ctr.modalTransitionStyle = .crossDissolve
+            present(ctr, animated: true, completion: nil)
+            ctr.delegate = self
+        }
     }
     
     func loadBlockFactory() {
@@ -116,4 +139,47 @@ class BLKBaseViewController: WorkbenchViewController {
             try? workspace?.loadBlocks(fromXML: xml["xml"], factory: blockFactory)
         }
     }
+    //ABPerformerDelegate
+    func highlight(_ id: String) {
+        
+    }
+    
+    func unhighlight(_ id: String) {
+        
+    }
+    
+    func begin(_ cmd: String, value: Any) {
+        
+    }
+    
+    func end() {
+        
+    }
+    //PresentViewControllerDelegate
+    func onConfirm(_ ctr: UIViewController, obj:Any) {
+        //        if let u = obj as? UUID {
+        //            ble = bleManager[u]
+        //        }
+        //        ctr.dismiss(animated: true)
+        //        connectCtr = nil
+        //        codeCtr = nil
+    }
+    
+    func onCancel(_ ctr: UIViewController) {
+        ctr.dismiss(animated: true)
+        //        connectCtr = nil
+        codeCtr = nil
+    }
+    
+    func onRead(_ ctr: UIViewController, obj: Any) {
+        if ctr is SimulatorViewController {
+            vm?.endCurrent()
+        }
+    }
+}
+
+protocol PresentViewControllerDelegate: class{
+    func onConfirm(_ ctr: UIViewController, obj:Any)
+    func onCancel(_ ctr: UIViewController)
+    func onRead(_ ctr:UIViewController, obj:Any)
 }

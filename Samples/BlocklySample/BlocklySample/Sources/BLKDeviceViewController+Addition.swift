@@ -70,105 +70,11 @@ extension BLKDeviceViewController{
     }
 }
 
-extension BLKDeviceViewController{
-    @objc func act() {
-        if case let str?? = try? workspace?.toXML(){
-            print(str)
-            vm?.performer.delegate = nil
-            vm?.stop()
-            vm = ABVirtulMachine.init(str)
-            vm?.performer.delegate = self
-            vm?.start()
-            let ctr = SimulatorViewController()
-            simulatorCtr = ctr
-            ctr.modalPresentationStyle = .overCurrentContext
-            ctr.modalTransitionStyle = .crossDissolve
-            present(ctr, animated: true, completion: nil)
-            ctr.delegate = self
-        }
-    }
-}
-
 extension UIColor{
     @inline(__always)
     public convenience init(_ rgb:Int) {
         self.init(red: CGFloat((rgb & 0xff0000)>>16)/255.0, green: CGFloat((rgb & 0xff00)>>8)/255.0, blue: CGFloat(rgb & 0xff)/255.0, alpha: 1)
     }
-}
-
-extension BLKDeviceViewController:ABPerformerDelegate{
-    func highlight(_ id:String){highlightBlock(blockUUID: id); print("\(#line) \(id)")}
-    func unhighlight(_ id:String){unhighlightBlock(blockUUID: id); print("\(#line) \(id)")}
-    func begin(_ cmd:String, value:Any){
-        print("\(#line) \(cmd) \(value)")
-        switch cmd {
-        case "turtle_move":
-            simulatorCtr?.move(value as? Int ?? 0)
-        case "turtle_turn":
-            simulatorCtr?.turn(value as? String == "left" ? 1 : 2)
-        case "turtle_color":
-            simulatorCtr?.actor(value as? Int ?? 0)
-        case "turtle_collect":
-            simulatorCtr?.collect()
-        default:
-            vm?.performer.endCurrent()
-        }
-    }
-    func end(){unhighlightAllBlocks(); print("end \(#line)")}
-}
-
-protocol PresentViewControllerDelegate: class{
-    func onConfirm(_ ctr: UIViewController, obj:Any)
-    func onCancel(_ ctr: UIViewController)
-    func onRead(_ ctr:UIViewController, obj:Any)
-}
-
-extension BLKDeviceViewController:PresentViewControllerDelegate{
-    func onConfirm(_ ctr: UIViewController, obj:Any) {
-        if let u = obj as? UUID {
-            ble = bleManager[u]
-        }
-        ctr.dismiss(animated: true)
-        connectCtr = nil
-        codeCtr = nil
-    }
-    
-    func onCancel(_ ctr: UIViewController) {
-        ctr.dismiss(animated: true)
-        connectCtr = nil
-        codeCtr = nil
-    }
-    
-    func onRead(_ ctr: UIViewController, obj: Any) {
-        if ctr is SimulatorViewController {
-            vm?.endCurrent()
-        }
-    }
-    
-    @objc func popupConnect() {
-        let ctr = ConnectViewControler(bleManager)
-        connectCtr = ctr
-        ctr.modalPresentationStyle = .overCurrentContext
-        ctr.modalTransitionStyle = .crossDissolve
-        present(ctr, animated: true, completion: nil)
-        ctr.delegate = self
-    }
-    
-    @objc func popupCode(){
-        if case let str?? = try? workspace?.toXML(){
-            saveBlocks()
-            let ctr = CodeViewControler(str)
-            codeCtr = ctr
-            ctr.modalPresentationStyle = .overCurrentContext
-            ctr.modalTransitionStyle = .crossDissolve
-            present(ctr, animated: true, completion: nil)
-            ctr.delegate = self
-        }
-    }
-}
-
-extension BLKDeviceViewController{
-    
 }
 
 extension BLKDeviceViewController:BluetoothManagerDelegate{
