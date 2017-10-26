@@ -286,8 +286,8 @@
 		D68BC3341F7A2F7E008FB564 /* Robot */ = {
 			isa = PBXGroup;
 			children = (
-				D68BC3351F7A2F7E008FB564 /* BluetoothManager.swift */,
 				D68BC3361F7A2F7E008FB564 /* Bluetooth.swift */,
+				D68BC3351F7A2F7E008FB564 /* BluetoothManager.swift */,
 			);
 			name = Robot;
 			path = ../../../../Robot;
@@ -405,6 +405,7 @@
 			isa = PBXGroup;
 			children = (
 				D68BC3341F7A2F7E008FB564 /* Robot */,
+				D61409DF1F62681600B2012E /* ABlockly */,
 				FAE2A6441C756AA20085D36B /* AppDelegate.swift */,
 				FAE2A6461C756AA20085D36B /* SampleObjCObject.h */,
 				FAE2A6471C756AA20085D36B /* SimpleWorkbenchViewController.swift */,
@@ -413,7 +414,6 @@
 				D60E43361F9E09D000423F47 /* ConnectViewControler.xib */,
 				D60E430E1F9A142900423F47 /* CodeViewController.swift */,
 				D60E43171F9A262F00423F47 /* CodeViewControler.xib */,
-				D61409DF1F62681600B2012E /* ABlockly */,
 			);
 			path = Sources;
 			sourceTree = "<group>";

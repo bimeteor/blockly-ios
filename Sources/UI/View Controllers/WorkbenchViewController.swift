@@ -527,6 +527,7 @@ open class WorkbenchViewController: UIViewController {
         "H:[toolboxCategoriesListView][toolboxCategoryView]",
         "V:|[toolboxCategoryView]|",
         // Position the undo/redo buttons along the bottom-leading margin
+        /*
         "H:[undoButton(undoRedoButtonWidth)]",
         "V:[undoButton(undoRedoButtonHeight)]",
         "H:[redoButton(undoRedoButtonWidth)]",
@@ -534,6 +535,7 @@ open class WorkbenchViewController: UIViewController {
         "H:[toolboxCategoriesListView]-(iconPadding)-[undoButton]-(iconPadding)-[redoButton]",
         "V:[undoButton]-(iconPadding)-|",
         "V:[redoButton]-(iconPadding)-|",
+         */
         // Position the trash can button along the bottom-trailing margin
         "H:|[trashCanView(==toolboxCategoriesListView)]",
         "V:|[trashCanView]|",
@@ -1640,55 +1642,52 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
       
       let inToolbox = blockView.bky_isDescendant(of: toolboxCategoryViewController.view)
       let inTrash = blockView.bky_isDescendant(of: trashCanViewController.view)
-      // If the touch is in the toolbox, copy the block over to the workspace first.
-      if inToolbox {
-        guard let newBlock = copyBlockToWorkspace(blockView) else {
-          return
+        // If the touch is in the toolbox, copy the block over to the workspace first.
+        if inToolbox {
+            guard let newBlock = copyBlockToWorkspace(blockView) else {
+                return
+            }
+            gesture.replaceBlock(block, with: newBlock)
+            blockView = newBlock
+            
+        } else if inTrash {
+            let oldBlock = blockView
+            
+            guard let newBlock = copyBlockToWorkspace(blockView) else {
+                return
+            }
+            gesture.replaceBlock(block, with: newBlock)
+            blockView = newBlock
+            removeBlockFromTrash(oldBlock)
+            
+        } else if let deletable = block.blockLayout?.block.deletable, deletable {
+            toolboxCategoryListViewController.view.isHidden = true // Show the trash view
         }
-        gesture.replaceBlock(block, with: newBlock)
-        blockView = newBlock
         
-      } else if inTrash {
-        let oldBlock = blockView
-        
-        guard let newBlock = copyBlockToWorkspace(blockView) else {
-          return
+        guard let blockLayout = blockView.blockLayout?.draggableBlockLayout else {
+            return
         }
-        gesture.replaceBlock(block, with: newBlock)
-        blockView = newBlock
-        removeBlockFromTrash(oldBlock)
-        
-      } else {
-        if !toolboxCategoryListViewController.view.isHidden {
-          toolboxCategoryListViewController.view.isHidden = true // 让垃圾筐显示出来
+        addUIStateValue(.draggingBlock)
+        do {
+            try _dragger.startDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
+        } catch let error {
+            bky_assertionFailure("Could not start dragging block layout: \(error)")
+            
+            // This shouldn't happen in practice. Cancel the gesture to be safe.
+            gesture.cancelAllTouches()
         }
-      }
-
-      guard let blockLayout = blockView.blockLayout?.draggableBlockLayout else {
-        return
-      }
-
-      addUIStateValue(.draggingBlock)
-      do {
-        try _dragger.startDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
-      } catch let error {
-        bky_assertionFailure("Could not start dragging block layout: \(error)")
-        
-        // This shouldn't happen in practice. Cancel the gesture to be safe.
-        gesture.cancelAllTouches()
-      }
     } else if touchState == .changed || touchState == .ended {
         addUIStateValue(.draggingBlock)
         _dragger.continueDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
         
-      if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
-        if !toolboxCategoryListViewController.view.isHidden {
-          toolboxCategoryListViewController.view.isHidden = true // 让垃圾筐显示出来
+        if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
+            if !toolboxCategoryListViewController.view.isHidden {
+                toolboxCategoryListViewController.view.isHidden = true // 让垃圾筐显示出来
+            }
+            addUIStateValue(.trashCanHighlighted)
+        } else {
+            removeUIStateValue(.trashCanHighlighted)
         }
-        addUIStateValue(.trashCanHighlighted)
-      } else {
-        removeUIStateValue(.trashCanHighlighted)
-      }
     }
 
     if touchState == .ended {

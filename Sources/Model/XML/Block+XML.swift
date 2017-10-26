@@ -79,6 +79,9 @@ extension Block {
     {
       block.position = WorkspacePoint(x: CGFloat(x), y: CGFloat(y))
     }
+    if let deletable = xml.attributes[XMLConstants.TAG_DELETABLE] {
+        block.deletable = deletable.caseInsensitiveCompare("true") == .orderedSame
+    }
 
     if let mutator = block.mutator {
       // Update the mutator and immediately apply it

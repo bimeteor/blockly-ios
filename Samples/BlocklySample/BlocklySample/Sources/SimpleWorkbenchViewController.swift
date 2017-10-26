@@ -116,7 +116,7 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
         let def = """
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <xml xmlns="http://www.w3.org/1999/xhtml">
-    <block x="81" type="start" id="255CBAB0-4DD5-4FFC-B8B1-B473F9707C2B" y="21" />
+    <block x="81" type="start" id="255CBAB0-4DD5-4FFC-B8B1-B473F9707C2B" deletable="false" y="21" />
 </xml>
 """
         let str = UserDefaults.standard.string(forKey: "blockly_tmp_xml") ?? ""

@@ -75,8 +75,8 @@ public final class TrashCanView: UIView {
     bky_addSubviews(Array(views.values))
     bky_addVisualFormatConstraints(constraints, metrics: nil, views: views)
 
-    _trashCanHeightConstraint = button.bky_addHeightConstraint(_imageSize.height)
-    _trashCanWidthConstraint = button.bky_addWidthConstraint(_imageSize.width)
+    //_trashCanHeightConstraint = button.bky_addHeightConstraint(_imageSize.height)
+    //_trashCanWidthConstraint = button.bky_addWidthConstraint(_imageSize.width)
     self.translatesAutoresizingMaskIntoConstraints = false
     self.layoutMargins = UIEdgeInsets.zero
   }
