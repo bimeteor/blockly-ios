@@ -17,17 +17,17 @@ import Blockly
 import CoreMotion
 import AEXML
 
-class BLKDeviceViewController: BLKSimulatorViewController {
+class BLKDeviceViewController: BLKBaseViewController {
     override init() {
         super.init()
+        libPath = Bundle.main.path(forResource: "turtle_blocks.json", ofType: nil)
+        toolPath = Bundle.main.path(forResource: "turtle.xml", ofType: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
         assertionFailure("Called unsupported initializer")
         super.init(coder: aDecoder)
     }
-    
-    let turtle = UIImageView(image: UIImage(named: "turtle")?.withRenderingMode(.alwaysTemplate))
     
     let bleManager = BluetoothManager()
     var ble:Bluetooth?

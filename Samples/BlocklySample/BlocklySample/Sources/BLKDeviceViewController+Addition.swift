@@ -87,52 +87,6 @@ extension BLKDeviceViewController{
             ctr.delegate = self
         }
     }
-    @objc func act1() {
-//        vm?.performer.delegate = nil
-//        vm?.stop()
-//        unhighlightAllBlocks()
-//        if simulator.superview == nil {
-//            loadSimulator()
-//        }
-//        if running{
-//            simulator.isHidden = true
-//            running = false
-//        }else{
-//            simulator.isHidden = false
-//            running = true
-//            tilt()
-//            if case let str?? = try? workspace?.toXML(){
-//                print(str)
-//                vm = ABVirtulMachine.init(str)
-//                vm?.performer.delegate = self
-//                vm?.start()
-//            }
-//            turtle.transform = CGAffineTransform.identity
-//            turtle.center = CGPoint.init(x: simulator.bounds.width/2, y: simulator.bounds.height/2)
-//        }
-    }
-    func move(_ step:Int) {
-        UIView.animate(withDuration: 0.3, animations: {
-            let size = CGSize.init(width: 0, height: -step).applying(self.turtle.transform)
-            self.turtle.center = CGPoint.init(x: self.turtle.center.x+size.width, y: self.turtle.center.y+size.height)
-        }) {_ in
-            self.vm?.performer.endCurrent()
-        }
-    }
-    func turn(_ angle:Int) {
-        UIView.animate(withDuration: 0.3, animations: {
-            self.turtle.transform = self.turtle.transform.rotated(by: -CGFloat(angle)*CGFloat.pi/180)
-        }) {_ in
-            self.vm?.performer.endCurrent()
-        }
-    }
-    func color(_ rgb:Int) {
-        UIView.animate(withDuration: 0.3, animations: {
-            self.turtle.tintColor = UIColor.init(rgb)
-        }) {_ in
-            self.vm?.performer.endCurrent()
-        }
-    }
 }
 
 extension UIColor{
@@ -149,11 +103,13 @@ extension BLKDeviceViewController:ABPerformerDelegate{
         print("\(#line) \(cmd) \(value)")
         switch cmd {
         case "turtle_move":
-            move(value as? Int ?? 0)
+            simulatorCtr?.move(value as? Int ?? 0)
         case "turtle_turn":
-            turn(value as? String == "left" ? 90 : -90)
+            simulatorCtr?.turn(value as? String == "left" ? 1 : 2)
         case "turtle_color":
-            color(value as? Int ?? 0)
+            simulatorCtr?.actor(value as? Int ?? 0)
+        case "turtle_collect":
+            simulatorCtr?.collect()
         default:
             vm?.performer.endCurrent()
         }

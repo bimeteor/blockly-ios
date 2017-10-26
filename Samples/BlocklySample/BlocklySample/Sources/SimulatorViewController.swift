@@ -15,7 +15,14 @@ class SimulatorViewController: UIViewController {
     public func move(_ step:Int) {
         
     }
+    //1:left 2:right
     public func turn(_ dir:Int){
+        
+    }
+    public func collect(){
+        
+    }
+    public func jump(){
         
     }
     public func actor(_ index:Int){
