@@ -71,42 +71,45 @@ extension SimpleWorkbenchViewController{
 }
 
 extension SimpleWorkbenchViewController{
-    func loadSimulator() {
-        view.addSubview(simulator)
-        simulator.isUserInteractionEnabled = false
-        simulator.isHidden = true
-        simulator.frame = CGRect(x:50, y:0, width:view.bounds.width-50, height:view.bounds.height)
-        let mask = UIView.init(frame: simulator.bounds)
-        mask.backgroundColor = .black
-        mask.alpha = 0.5
-        simulator.addSubview(mask)
-        simulator.addSubview(turtle)
-        turtle.bounds = CGRect(x:0, y:0, width:30, height:42)
-        turtle.center = CGPoint.init(x: simulator.bounds.width/2, y: simulator.bounds.height/2)
-    }
     @objc func act() {
-        vm?.performer.delegate = nil
-        vm?.stop()
-        unhighlightAllBlocks()
-        if simulator.superview == nil {
-            loadSimulator()
+        if case let str?? = try? workspace?.toXML(){
+            print(str)
+            vm?.performer.delegate = nil
+            vm?.stop()
+            vm = ABVirtulMachine.init(str)
+            vm?.performer.delegate = self
+            vm?.start()
+            let ctr = SimulatorViewController()
+            simulatorCtr = ctr
+            ctr.modalPresentationStyle = .overCurrentContext
+            ctr.modalTransitionStyle = .crossDissolve
+            present(ctr, animated: true, completion: nil)
+            ctr.delegate = self
         }
-        if running{
-            simulator.isHidden = true
-            running = false
-        }else{
-            simulator.isHidden = false
-            running = true
-            tilt()
-            if case let str?? = try? workspace?.toXML(){
-                print(str)
-                vm = ABVirtulMachine.init(str)
-                vm?.performer.delegate = self
-                vm?.start()
-            }
-            turtle.transform = CGAffineTransform.identity
-            turtle.center = CGPoint.init(x: simulator.bounds.width/2, y: simulator.bounds.height/2)
-        }
+    }
+    @objc func act1() {
+//        vm?.performer.delegate = nil
+//        vm?.stop()
+//        unhighlightAllBlocks()
+//        if simulator.superview == nil {
+//            loadSimulator()
+//        }
+//        if running{
+//            simulator.isHidden = true
+//            running = false
+//        }else{
+//            simulator.isHidden = false
+//            running = true
+//            tilt()
+//            if case let str?? = try? workspace?.toXML(){
+//                print(str)
+//                vm = ABVirtulMachine.init(str)
+//                vm?.performer.delegate = self
+//                vm?.start()
+//            }
+//            turtle.transform = CGAffineTransform.identity
+//            turtle.center = CGPoint.init(x: simulator.bounds.width/2, y: simulator.bounds.height/2)
+//        }
     }
     func move(_ step:Int) {
         UIView.animate(withDuration: 0.3, animations: {
@@ -118,7 +121,7 @@ extension SimpleWorkbenchViewController{
     }
     func turn(_ angle:Int) {
         UIView.animate(withDuration: 0.3, animations: {
-            self.turtle.transform = self.turtle.transform.rotated(by: CGFloat(angle)*CGFloat.pi/180)
+            self.turtle.transform = self.turtle.transform.rotated(by: -CGFloat(angle)*CGFloat.pi/180)
         }) {_ in
             self.vm?.performer.endCurrent()
         }
@@ -142,15 +145,15 @@ extension UIColor{
 extension SimpleWorkbenchViewController:ABPerformerDelegate{
     func highlight(_ id:String){highlightBlock(blockUUID: id); print("\(#line) \(id)")}
     func unhighlight(_ id:String){unhighlightBlock(blockUUID: id); print("\(#line) \(id)")}
-    func begin(_ cmd:String, values:[String]){
-        print("\(#line) \(cmd) \(values)")
+    func begin(_ cmd:String, value:Any){
+        print("\(#line) \(cmd) \(value)")
         switch cmd {
         case "turtle_move":
-            move(Int(values.first ?? "") ?? 0)
+            move(value as? Int ?? 0)
         case "turtle_turn":
-            turn(values.first == "left" ? 90 : -90)
+            turn(value as? String == "left" ? 90 : -90)
         case "turtle_color":
-            color(Int(values.first ?? "") ?? 0)
+            color(value as? Int ?? 0)
         default:
             vm?.performer.endCurrent()
         }
@@ -158,13 +161,41 @@ extension SimpleWorkbenchViewController:ABPerformerDelegate{
     func end(){unhighlightAllBlocks(); print("end \(#line)")}
 }
 
-extension SimpleWorkbenchViewController{
+protocol PresentViewControllerDelegate: class{
+    func onConfirm(_ ctr: UIViewController, obj:Any)
+    func onCancel(_ ctr: UIViewController)
+    func onRead(_ ctr:UIViewController, obj:Any)
+}
+
+extension SimpleWorkbenchViewController:PresentViewControllerDelegate{
+    func onConfirm(_ ctr: UIViewController, obj:Any) {
+        if let u = obj as? UUID {
+            ble = bleManager[u]
+        }
+        ctr.dismiss(animated: true)
+        connectCtr = nil
+        codeCtr = nil
+    }
+    
+    func onCancel(_ ctr: UIViewController) {
+        ctr.dismiss(animated: true)
+        connectCtr = nil
+        codeCtr = nil
+    }
+    
+    func onRead(_ ctr: UIViewController, obj: Any) {
+        if ctr is SimulatorViewController {
+            vm?.endCurrent()
+        }
+    }
+    
     @objc func popupConnect() {
         let ctr = ConnectViewControler(bleManager)
         connectCtr = ctr
         ctr.modalPresentationStyle = .overCurrentContext
         ctr.modalTransitionStyle = .crossDissolve
         present(ctr, animated: true, completion: nil)
+        ctr.delegate = self
     }
     
     @objc func popupCode(){
@@ -175,6 +206,7 @@ extension SimpleWorkbenchViewController{
             ctr.modalPresentationStyle = .overCurrentContext
             ctr.modalTransitionStyle = .crossDissolve
             present(ctr, animated: true, completion: nil)
+            ctr.delegate = self
         }
     }
 }
@@ -206,19 +238,15 @@ extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
 }
 
 extension SimpleWorkbenchViewController:BluetoothDelegate{
+    func bluetoothDidWrite(_ cmd: UInt8, error: WriteError?) {
+        
+    }
+    
     func bluetoothDidVerify(_ error: VerifyError?) {
         
     }
     
-    func bluetoothDidWrite(_ error: WriteError?) {
-        
-    }
-    
     func bluetoothDidRead(_ data: (UInt8, [UInt8])?, error: ReadError?) {
-        
-    }
-    
-    func bluetoothDidCancelAllWriting() {
         
     }
     

@@ -11,7 +11,7 @@ import UIKit
 public protocol ABPerformerDelegate:class {
     func highlight(_ id:String)
     func unhighlight(_ id:String)
-    func begin(_ cmd:String, values:[String])
+    func begin(_ cmd:String, value:Any)
     func end()
 }
 
@@ -98,13 +98,13 @@ extension ABPerformer{
             endCurrent()
         case "turtle_move":
             guard let n = node["|block.value[name=VALUE].block"] else {endCurrent(); return}
-            delegate?.begin("turtle_move", values: ["\(evaluate(n))"])
+            delegate?.begin("turtle_move", value: Int(evaluate(n)) ?? 0)
         case "turtle_turn":
             guard let n = node["|block.field[name=DIR]"] else {endCurrent(); return}
-            delegate?.begin("turtle_turn", values: ["\(evaluate(n))"])
+            delegate?.begin("turtle_turn", value: evaluate(n))
         case "turtle_color":
             guard let n = node["|block.value[name=COLOUR].block"] else {endCurrent(); return}
-            delegate?.begin("turtle_color", values: ["\(evaluate(n))"])
+            delegate?.begin("turtle_color", value: Int(evaluate(n)) ?? 0)
         default:
             endCurrent()
         }

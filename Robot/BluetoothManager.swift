@@ -15,12 +15,38 @@ import CoreBluetooth
 
 final class BluetoothManager: NSObject {
     
-    public weak var delegate:BluetoothManagerDelegate?
     public var nameFilter:((String)->Bool)?
+    fileprivate let serviceUuid = CBUUID.init(string: serviceStr)
     fileprivate var manager:CBCentralManager!
-    fileprivate lazy var scannedPeers = Set<CBPeripheral>()//被扫描过的，元素只增不减，防止连接和断开时的系统错误
+    fileprivate var scannedPeers = Set<CBPeripheral>()//被扫描过的，元素只增不减，防止连接和断开时的系统错误
     fileprivate var initializing = false
-    fileprivate lazy var bluetoothes = [UUID:Bluetooth]()
+    fileprivate var bluetoothes = [UUID:Bluetooth]()
+    fileprivate var delegates = [BluetoothManagerDelegate]()
+    public var connected:[(UUID, String)]{
+        return manager.retrieveConnectedPeripherals(withServices: [serviceUuid]).filter{$0.state == .connected}.map{($0.identifier, $0.name ?? "")}
+    }
+    
+    public func addDelegate(_ delegate:BluetoothManagerDelegate){
+        for e in delegates {
+            if e === delegate{
+                return
+            }
+        }
+        delegates += [delegate]
+    }
+    
+    public func removeDelegate(_ delegate:BluetoothManagerDelegate){
+        var idx = -1
+        for e in delegates.enumerated() {
+            if (e.element === delegate){
+                idx = e.offset
+                break
+            }
+        }
+        if idx >= 0 {
+            delegates.remove(at: idx)
+        }
+    }
     
     public override init() {
         super.init()
@@ -39,29 +65,6 @@ final class BluetoothManager: NSObject {
         manager.stopScan()
     }
     
-    public func connect(_ uuid:UUID){
-        if let p = manager.retrievePeripherals(withIdentifiers: [uuid]).first{//TODO:frank
-            switch p.state{
-            case .connected: delegate?.managerDidConnect(uuid, error: nil)
-            case .connecting: Void()
-            default: manager.connect(p)
-            }
-        }else{
-            delegate?.managerDidConnect(uuid, error: .unexisting)
-        }
-    }
-    
-    public func disconnect(_ uuid:UUID){
-        if let p = manager.retrievePeripherals(withIdentifiers: [uuid]).first{
-            switch p.state{
-            case .disconnected: delegate?.managerDidDisconnect(uuid, error: nil)
-            case .disconnecting: Void()
-            default: manager.cancelPeripheralConnection(p)
-            }
-        }else{
-            delegate?.managerDidDisconnect(uuid, error: nil)
-        }
-    }
     public subscript(_ id:UUID)->Bluetooth?{
         if let b = bluetoothes[id]{
             return b
@@ -74,17 +77,41 @@ final class BluetoothManager: NSObject {
         }
     }
     
+    func connect(_ uuid:UUID){
+        if let p = manager.retrievePeripherals(withIdentifiers: [uuid]).first{//TODO:frank
+            switch p.state{
+            case .connected: delegates.forEach{$0.managerDidConnect(uuid, error: nil)}
+            case .connecting: Void()
+            default: manager.connect(p)
+            }
+        }else{
+            delegates.forEach{$0.managerDidConnect(uuid, error: .unexisting)}
+        }
+    }
+    
+    func disconnect(_ uuid:UUID){
+        if let p = manager.retrievePeripherals(withIdentifiers: [uuid]).first{
+            switch p.state{
+            case .disconnected: delegates.forEach{$0.managerDidDisconnect(uuid, error: nil)}
+            case .disconnecting: Void()
+            default: manager.cancelPeripheralConnection(p)
+            }
+        }else{
+            delegates.forEach{$0.managerDidDisconnect(uuid, error: nil)}
+        }
+    }
+    
     fileprivate func checkState() {
         print("manager state:\(manager.state.rawValue)")
         switch manager.state {
         case .unsupported:
-            delegate?.managerDidUpdate(error: .unsupported)
+            delegates.forEach{$0.managerDidUpdate(error: .unsupported)}
         case .poweredOn:
-            delegate?.managerDidUpdate(error: nil)
+            delegates.forEach{$0.managerDidUpdate(error: nil)}
         case .unauthorized:
-            delegate?.managerDidUpdate(error:.unauthorized)
+            delegates.forEach{$0.managerDidUpdate(error:.unauthorized)}
         case .poweredOff:
-            delegate?.managerDidUpdate(error:.powerOff)
+            delegates.forEach{$0.managerDidUpdate(error:.powerOff)}
         default: Void()
         }
     }
@@ -120,21 +147,21 @@ extension BluetoothManager:CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if let name = peripheral.name, nameFilter == nil || nameFilter!(name){
             scannedPeers.insert(peripheral)
-            delegate?.managerDidScan(peripheral.identifier, name: name)
+            delegates.forEach{$0.managerDidScan(peripheral.identifier, name: name)}
         }
     }
     
     func centralManager(_ centralManager: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        delegate?.managerDidConnect(peripheral.identifier, error:nil)
+        delegates.forEach{$0.managerDidConnect(peripheral.identifier, error:nil)}
     }
     
     func centralManager(_ centralManager: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         print("didFailToConnect \(peripheral.state == .connected)" )
-        delegate?.managerDidConnect(peripheral.identifier, error: .systemError)
+        delegates.forEach{$0.managerDidConnect(peripheral.identifier, error: .systemError)}
     }
     
     func centralManager(_ centralManager: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("didDisconnectPeripheral \(peripheral.state == .connected)" )
-        delegate?.managerDidDisconnect(peripheral.identifier, error: error == nil ? nil : .systemError)
+        delegates.forEach{$0.managerDidDisconnect(peripheral.identifier, error: error == nil ? nil : .systemError)}
     }
 }

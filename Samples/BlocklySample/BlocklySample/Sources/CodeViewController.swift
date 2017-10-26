@@ -15,6 +15,7 @@ extension CodeViewControler{
 }
 
 class CodeViewControler: UIViewController {
+    public weak var delegate: PresentViewControllerDelegate?
     private let xml:String
     private var codes = [Int:String]()
     private var langIdx = 0
@@ -43,7 +44,7 @@ class CodeViewControler: UIViewController {
         reload()
     }
     @IBAction func onTap(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
+        delegate?.onCancel(self)
     }
     
     fileprivate func reload(){
