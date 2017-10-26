@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Create window
     let frame = UIScreen.main.bounds
     self.window = UIWindow(frame: frame)
-    self.window!.rootViewController = SimpleWorkbenchViewController()
+    self.window!.rootViewController = UINavigationController(rootViewController: RootViewController())
     self.window!.makeKeyAndVisible()
     Fabric.with([Crashlytics.self])
     return true

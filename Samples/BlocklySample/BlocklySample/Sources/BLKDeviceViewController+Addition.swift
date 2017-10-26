@@ -12,7 +12,7 @@ import CoreMotion
 
 var mm:CMDeviceMotion?
 
-extension SimpleWorkbenchViewController{
+extension BLKDeviceViewController{
     func tilt() {
         mm = CMDeviceMotion.init()
         motionManager = CMMotionManager.init()
@@ -70,7 +70,7 @@ extension SimpleWorkbenchViewController{
     }
 }
 
-extension SimpleWorkbenchViewController{
+extension BLKDeviceViewController{
     @objc func act() {
         if case let str?? = try? workspace?.toXML(){
             print(str)
@@ -142,7 +142,7 @@ extension UIColor{
     }
 }
 
-extension SimpleWorkbenchViewController:ABPerformerDelegate{
+extension BLKDeviceViewController:ABPerformerDelegate{
     func highlight(_ id:String){highlightBlock(blockUUID: id); print("\(#line) \(id)")}
     func unhighlight(_ id:String){unhighlightBlock(blockUUID: id); print("\(#line) \(id)")}
     func begin(_ cmd:String, value:Any){
@@ -167,7 +167,7 @@ protocol PresentViewControllerDelegate: class{
     func onRead(_ ctr:UIViewController, obj:Any)
 }
 
-extension SimpleWorkbenchViewController:PresentViewControllerDelegate{
+extension BLKDeviceViewController:PresentViewControllerDelegate{
     func onConfirm(_ ctr: UIViewController, obj:Any) {
         if let u = obj as? UUID {
             ble = bleManager[u]
@@ -211,11 +211,11 @@ extension SimpleWorkbenchViewController:PresentViewControllerDelegate{
     }
 }
 
-extension SimpleWorkbenchViewController{
+extension BLKDeviceViewController{
     
 }
 
-extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
+extension BLKDeviceViewController:BluetoothManagerDelegate{
     func managerDidUpdate(error: PhoneStateError?) {
         if let e = error {
             print(e);
@@ -237,7 +237,7 @@ extension SimpleWorkbenchViewController:BluetoothManagerDelegate{
     }
 }
 
-extension SimpleWorkbenchViewController:BluetoothDelegate{
+extension BLKDeviceViewController:BluetoothDelegate{
     func bluetoothDidWrite(_ cmd: UInt8, error: WriteError?) {
         
     }

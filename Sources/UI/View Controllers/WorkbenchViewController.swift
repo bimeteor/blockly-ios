@@ -368,7 +368,6 @@ open class WorkbenchViewController: UIViewController {
     self.variableNameManager = NameManager()
     self.procedureCoordinator = ProcedureCoordinator()
     super.init(nibName: nil, bundle: nil)
-    commonInit()
   }
 
   /**
@@ -395,7 +394,6 @@ open class WorkbenchViewController: UIViewController {
     self.variableNameManager = variableNameManager
     self.procedureCoordinator = ProcedureCoordinator()
     super.init(nibName: nil, bundle: nil)
-    commonInit()
   }
 
   /**
@@ -599,6 +597,7 @@ open class WorkbenchViewController: UIViewController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
+        commonInit()
         _addSubviews()
         refreshView()
     }
