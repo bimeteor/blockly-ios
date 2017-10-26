@@ -30,18 +30,15 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
         super.init(coder: aDecoder)
     }
     
-    let simulator = UIView()
     let turtle = UIImageView.init(image: UIImage.init(named: "turtle")?.withRenderingMode(.alwaysTemplate))
     
     let bleManager = BluetoothManager.init()
-    var bles:Bluetooth?
+    var ble:Bluetooth?
+    var cmd = 0
+    
     var connectCtr:ConnectViewControler?
     var codeCtr:CodeViewControler?
-    
-    let connectBtn = UIButton.init(type: .custom)
-    let codeBtn = UIButton.init(type: .custom)
-    
-    var device:Bluetooth?
+    var simulatorCtr:SimulatorViewController?
     
     var running = false
     var paused = false
@@ -59,21 +56,23 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
         redoButton.isHidden = true
         undoButton.isHidden = true
         
-        let btn = UIButton.init(type: .custom)
+        var btn = UIButton.init(type: .custom)
         view.addSubview(btn)
         btn.setImage(UIImage.init(named: "arrow"), for: .normal)
         btn.frame = CGRect(x:view.bounds.width-50, y:0, width:50, height:50)
         btn.addTarget(self, action: #selector(act), for: .touchUpInside)
         
-        view.addSubview(connectBtn)
-        connectBtn.setImage(UIImage.init(named: "arrow"), for: .normal)
-        connectBtn.frame = CGRect(x:view.bounds.width-50, y:55, width:50, height:50)
-        connectBtn.addTarget(self, action: #selector(popupConnect), for: .touchUpInside)
+        btn = UIButton.init(type: .custom)
+        view.addSubview(btn)
+        btn.setImage(UIImage.init(named: "arrow"), for: .normal)
+        btn.frame = CGRect(x:view.bounds.width-50, y:55, width:50, height:50)
+        btn.addTarget(self, action: #selector(popupConnect), for: .touchUpInside)
         
-        view.addSubview(codeBtn)
-        codeBtn.setImage(UIImage.init(named: "arrow"), for: .normal)
-        codeBtn.frame = CGRect(x:view.bounds.width-50, y:110, width:50, height:50)
-        codeBtn.addTarget(self, action: #selector(popupCode), for: .touchUpInside)
+        btn = UIButton.init(type: .custom)
+        view.addSubview(btn)
+        btn.setImage(UIImage.init(named: "arrow"), for: .normal)
+        btn.frame = CGRect(x:view.bounds.width-50, y:110, width:50, height:50)
+        btn.addTarget(self, action: #selector(popupCode), for: .touchUpInside)
     }
     
     override var prefersStatusBarHidden : Bool {
@@ -127,4 +126,3 @@ class SimpleWorkbenchViewController: WorkbenchViewController {
         }
     }
 }
-

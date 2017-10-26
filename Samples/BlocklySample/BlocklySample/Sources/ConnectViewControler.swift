@@ -125,16 +125,21 @@ extension ConnectViewControler: UITableViewDataSource, UITableViewDelegate{
         var cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         if cell == nil {
             cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "cell")
+            cell?.accessoryView = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
         }
         let item = items[indexPath.row]
         cell?.textLabel?.text = item.1
         switch manager[item.0]?.state ?? .disconnected {
         case .connected:
             cell?.textLabel?.textColor = .green
+            cell?.accessoryView?.isHidden = true
         case .connecting:
             cell?.textLabel?.textColor = .yellow
+            (cell?.accessoryView as? UIActivityIndicatorView)?.startAnimating()
+            cell?.accessoryView?.isHidden = false
         default:
             cell?.textLabel?.textColor = .gray
+            cell?.accessoryView?.isHidden = true
         }
         
         return cell!
