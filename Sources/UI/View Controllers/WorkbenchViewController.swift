@@ -1657,7 +1657,7 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
             removeBlockFromTrash(oldBlock)
             
         } else if let deletable = block.blockLayout?.block.deletable, deletable {
-            toolboxCategoryListViewController.view.isHidden = true // Show the trash view
+            toolboxCategoryListViewController.view.isHidden = true // 显示垃圾筐
         }
         
         guard let blockLayout = blockView.blockLayout?.draggableBlockLayout else {
@@ -1678,11 +1678,15 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
         
         if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
             if !toolboxCategoryListViewController.view.isHidden {
-                toolboxCategoryListViewController.view.isHidden = true // 让垃圾筐显示出来
+                toolboxCategoryListViewController.view.isHidden = true // 显示垃圾筐
             }
             addUIStateValue(.trashCanHighlighted)
         } else {
             removeUIStateValue(.trashCanHighlighted)
+        }
+    } else {
+        if toolboxCategoryListViewController.view.isHidden {
+            toolboxCategoryListViewController.view.isHidden = false // 隐藏垃圾筐
         }
     }
 

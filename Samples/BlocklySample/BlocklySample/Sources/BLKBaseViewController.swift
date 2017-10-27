@@ -140,10 +140,13 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         let def = """
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <xml xmlns="http://www.w3.org/1999/xhtml">
-    <block x="81" type="start" id="255CBAB0-4DD5-4FFC-B8B1-B473F9707C2B" deletable="false" y="21" />
+    <block type="start" id="255CBAB0-4DD5-4FFC-B8B1-B473F9707C2B" deletable="false" x="81" y="21" />
 </xml>
 """
-        let str = UserDefaults.standard.string(forKey: "blockly_xml_\(type(of: self))") ?? ""
+        var str = UserDefaults.standard.string(forKey: "blockly_xml_\(type(of: self))") ?? ""
+        if !str.contains("deletable") { // 修复由于存储问题造成"start"块可以删除的缺陷
+            str = def
+        }
         if let xml = (try? AEXMLDocument(xml: str)) ?? (try? AEXMLDocument(xml: def)){
             try? workspace?.loadBlocks(fromXML: xml["xml"], factory: blockFactory)
         }
