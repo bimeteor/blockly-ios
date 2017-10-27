@@ -42,6 +42,9 @@ turn(dir:"\(field[name=DIR])", angle:\(value[name=VALUE]$0)),
 turtle_move::
 move(dir:"\(field[name=DIR])", steps:\(value[name=VALUE]$0)),
 
+move_action::
+move("\(field[name=DIR])"),
+
 turtle_color::
 color(color:\()),
 

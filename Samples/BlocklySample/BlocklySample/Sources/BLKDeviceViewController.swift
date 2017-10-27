@@ -31,14 +31,24 @@ class BLKDeviceViewController: BLKBaseViewController {
     
     let bleManager = BluetoothManager()
     var ble:Bluetooth?
-    var cmd = 0
+    var cmds = [(UInt8, [UInt8])]()
+    var cmd = UInt8(0)
     
     var connectCtr:ConnectViewControler?
-    var simulatorCtr:SimulatorViewController?
     
-    var motionManager:CMMotionManager?
+    lazy var motionManager:CMMotionManager = CMMotionManager()
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    override func start() {
+        cmds = []
+        cmd = 0
+        super.start()
+        monitorTilt()
+    }
+    override func stop() {
+        super.stop()
+        motionManager.stopAccelerometerUpdates()
     }
     //btn
     override func run(){
@@ -56,6 +66,7 @@ class BLKDeviceViewController: BLKBaseViewController {
         ctr.dismiss(animated: true)
         connectCtr = nil
         codeCtr = nil
+        start()
     }
     
     override func onCancel(_ ctr: UIViewController) {
@@ -66,23 +77,50 @@ class BLKDeviceViewController: BLKBaseViewController {
     
     override func onRead(_ ctr: UIViewController, obj: Any) {
         if ctr is SimulatorViewController {
-            vm?.endCurrent()
+
+        }
+    }
+    func tryWriting() {
+        if ble?.state == .connected, ble?.handshaked == true{
+            if cmds.count > 0{
+                if cmd == 0{
+                    let c = cmds[0]
+                    cmd = c.0
+                    ble?.write(c.0, array: c.1)
+                    cmds.removeFirst()
+                }
+            }else{
+                vm?.performer.endCurrent()
+            }
+        }else{
+            stop()
         }
     }
     //run
-    override func highlight(_ id:String){highlightBlock(blockUUID: id); print("\(#line) \(id)")}
-    override func unhighlight(_ id:String){unhighlightBlock(blockUUID: id); print("\(#line) \(id)")}
     override func begin(_ cmd:String, value:Any){
         print("\(#line) \(cmd) \(value)")
         switch cmd {
-        case "turtle_move":
-            simulatorCtr?.move(value as? Int ?? 0)
-        case "turtle_turn":
-            simulatorCtr?.turn(value as? String == "left" ? 1 : 2)
-        case "turtle_color":
-            simulatorCtr?.actor(value as? Int ?? 0)
-        case "turtle_collect":
-            simulatorCtr?.collect()
+        case "move_action":
+            guard let dir = value as? String else{vm?.performer.endCurrent(); break}
+            switch dir{
+            case "forward":
+                cmds = [(UInt8(7), [2, 1, 3, 1, 1, 0x54]), (UInt8(7), [2, 2, 4, 2, 1, 0x54])]
+                self.cmd = 0
+                tryWriting()
+            case "backward":
+                cmds = [(UInt8(7), [2, 1, 3, 2, 1, 0x54]), (UInt8(7), [2, 2, 4, 1, 1, 0x54])]
+                self.cmd = 0
+                tryWriting()
+            case "left":
+                cmds = [(UInt8(7), [2, 2, 4, 2, 0, 0x40]), (UInt8(7), [2, 1, 3, 1, 1, 0x54])]
+                self.cmd = 0
+                tryWriting()
+            case "right":
+                cmds = [(UInt8(7), [2, 2, 4, 2, 1, 0x54]), (UInt8(7), [2, 1, 3, 1, 0, 0x40])]
+                self.cmd = 0
+                tryWriting()
+            default:vm?.performer.endCurrent()
+            }
         default:
             vm?.performer.endCurrent()
         }

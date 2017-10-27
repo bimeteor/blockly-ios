@@ -10,14 +10,10 @@ import Foundation
 import UIKit
 import CoreMotion
 
-var mm:CMDeviceMotion?
-
 extension BLKDeviceViewController{
-    func tilt() {
-        mm = CMDeviceMotion.init()
-        motionManager = CMMotionManager.init()
-        motionManager?.accelerometerUpdateInterval = 1.0/20
-        motionManager?.startAccelerometerUpdates(to: OperationQueue.main) {
+    func monitorTilt() {
+        motionManager.accelerometerUpdateInterval = 1.0/20
+        motionManager.startAccelerometerUpdates(to: OperationQueue.main) {
             if $1 == nil, let acc = $0{
                 let x = acc.acceleration.x/acc.acceleration.z
                 let y = acc.acceleration.y/acc.acceleration.z
@@ -112,6 +108,14 @@ extension BLKDeviceViewController:BluetoothDelegate{
         print("bluetoothDidRead \(data?.0) \(data?.1) \(error)")
         if error == .restarted {
             ble?.handshake()
+        }
+        if let _ = error {
+            stop()
+        }else{
+            if cmd == data?.0{
+                cmd = 0
+                tryWriting()
+            }
         }
     }
     

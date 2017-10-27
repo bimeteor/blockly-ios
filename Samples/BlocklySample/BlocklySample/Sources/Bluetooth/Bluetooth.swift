@@ -29,6 +29,7 @@ final class Bluetooth: NSObject {
     public let uuid:UUID
     public let name:String
     public private(set) var state:ConnectState = .disconnected
+    public var handshaked:Bool {return handShakeStep == 100}
     fileprivate weak var manager:BluetoothManager?
     fileprivate var observer:NSKeyValueObservation!
     fileprivate let peripheral:CBPeripheral
@@ -144,6 +145,7 @@ extension Bluetooth{
                     cmd = tuple.0
                     time = CFAbsoluteTimeGetCurrent()
                     peripheral.writeValue(Bluetooth.package(tuple.0, array: tuple.1), for: char, type: .withResponse)
+                    print("trywriting:\(tuple)")
                 }else{
                     onWrite(.unverified)
                 }

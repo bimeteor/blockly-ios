@@ -67,19 +67,28 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
+    func start() {
+        if case let str?? = try? workspace?.toXML(){
+            print(str)
+            vm?.performer.delegate = nil
+            vm?.stop()
+            unhighlightAllBlocks()
+            vm = ABVirtulMachine.init(str)
+            vm?.performer.delegate = self
+            vm?.start()
+        }
+    }
+    
+    func stop() {
+        vm?.stop()
+    }
+    
     @objc func popout(){
         navigationController?.popViewController(animated: true)
     }
     
     @objc func run(){
-        if case let str?? = try? workspace?.toXML(){
-            print(str)
-            vm?.performer.delegate = nil
-            vm?.stop()
-            vm = ABVirtulMachine.init(str)
-            vm?.performer.delegate = self
-            vm?.start()
-        }
+        start()
     }
     
     @objc func showCode(){
@@ -140,12 +149,14 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         }
     }
     //ABPerformerDelegate
-    func highlight(_ id: String) {
-        
+    func highlight(_ id: String, type: String) {
+        highlightBlock(blockUUID: id)
+        print("highlight \(id) \(type)")
     }
     
-    func unhighlight(_ id: String) {
-        
+    func unhighlight(_ id: String, type: String) {
+        unhighlightBlock(blockUUID: id)
+        print("unhighlight \(id) \(type)")
     }
     
     func begin(_ cmd: String, value: Any) {
@@ -157,23 +168,17 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
     }
     //PresentViewControllerDelegate
     func onConfirm(_ ctr: UIViewController, obj:Any) {
-        //        if let u = obj as? UUID {
-        //            ble = bleManager[u]
-        //        }
-        //        ctr.dismiss(animated: true)
-        //        connectCtr = nil
-        //        codeCtr = nil
+
     }
     
     func onCancel(_ ctr: UIViewController) {
         ctr.dismiss(animated: true)
-        //        connectCtr = nil
         codeCtr = nil
     }
     
     func onRead(_ ctr: UIViewController, obj: Any) {
         if ctr is SimulatorViewController {
-            vm?.endCurrent()
+            
         }
     }
 }

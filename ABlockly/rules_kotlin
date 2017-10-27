@@ -45,6 +45,9 @@ move(dir = "\(field[name=DIR])", steps = \(value[name=VALUE]$0)),
 turtle_color::
 color(color:\()),
 
+move_action::
+move("\(field[name=DIR])"),
+
 angle_picker::
 \(field[name=NUM]),
 

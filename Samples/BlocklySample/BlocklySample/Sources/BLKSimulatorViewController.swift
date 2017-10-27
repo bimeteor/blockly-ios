@@ -44,12 +44,10 @@ class BLKSimulatorViewController: BLKBaseViewController {
     
     override func onRead(_ ctr: UIViewController, obj: Any) {
         if ctr is SimulatorViewController {
-            vm?.endCurrent()
+            
         }
     }
     //run
-    override func highlight(_ id:String){highlightBlock(blockUUID: id); print("\(#line) \(id)")}
-    override func unhighlight(_ id:String){unhighlightBlock(blockUUID: id); print("\(#line) \(id)")}
     override func begin(_ cmd:String, value:Any){
         print("\(#line) \(cmd) \(value)")
         switch cmd {

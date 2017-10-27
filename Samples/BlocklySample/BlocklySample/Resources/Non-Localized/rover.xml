@@ -30,7 +30,13 @@
         <block type="move_machine_rotate_speed"></block>
     </category>
     <category name="控制" colour="%{BKY_LOGIC_HUE}">
-        <block type="controls_wait"></block>
+        <block type="controls_wait">
+            <value name="TIME">
+                <shadow type="math_number">
+                    <field name="NUM">2</field>
+                </shadow>
+            </value>
+        </block>
         <block type="controls_repeat_ext">
             <value name="TIMES">
                 <shadow type="math_number">

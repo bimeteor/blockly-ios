@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 public protocol ABPerformerDelegate:class {
-    func highlight(_ id:String)
-    func unhighlight(_ id:String)
+    func highlight(_ id:String, type:String)
+    func unhighlight(_ id:String, type:String)
     func begin(_ cmd:String, value:Any)
     func end()
 }
@@ -78,7 +78,7 @@ extension ABPerformer{
             endCurrent()
             return
         }
-        delegate?.highlight(id)
+        delegate?.highlight(id, type: node.attributes["type"] ?? "")
         switch node.attributes["type"] ?? "" {
         case "": endCurrent()
         case "control_wait":
@@ -86,7 +86,7 @@ extension ABPerformer{
             timer = Timer.scheduledTimer(withTimeInterval: max(Double(itv) ?? 0, timeInterval), repeats: false){[unowned self] _ in
                 self.endSoon()
             }
-        case "control_wait_until":Void()//TODO:frank
+        case "control_wait_until":break//TODO:frank
 //            timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true){
 //                [unowned self] t in
 //                if true{
@@ -105,6 +105,9 @@ extension ABPerformer{
         case "turtle_color":
             guard let n = node["|block.value[name=COLOUR].block"] else {endCurrent(); return}
             delegate?.begin("turtle_color", value: Int(evaluate(n)) ?? 0)
+        case "move_action":
+            guard let n = node["|block.field[name=DIR]"] else {endCurrent(); return}
+            delegate?.begin("move_action", value: evaluate(n))
         default:
             endCurrent()
         }
@@ -163,7 +166,7 @@ extension ABPerformer{
     }
     func end() {
         if let id = current?.attributes["id"]{
-            delegate?.unhighlight(id)
+            delegate?.unhighlight(id, type: current?.attributes["type"] ?? "")
         }
         current = nil
         timer?.invalidate()
@@ -171,7 +174,7 @@ extension ABPerformer{
     }
     func endSoon(){
         if let id = current?.attributes["id"]{
-            delegate?.unhighlight(id)
+            delegate?.unhighlight(id, type: current?.attributes["type"] ?? "")
         }
         current = nil
         timer?.invalidate()
