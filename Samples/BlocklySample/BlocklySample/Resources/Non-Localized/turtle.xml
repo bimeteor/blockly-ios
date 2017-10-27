@@ -15,7 +15,6 @@
 
 <xml>
     <category icon="28" name="开始" colour="#009688">
-        <block type="start"></block>
         <block type="start_tilt"></block>
     </category>
     <category icon="28" name="运动" colour="%{BKY_COLOUR_HUE}">
