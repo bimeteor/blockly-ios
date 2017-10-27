@@ -46,6 +46,7 @@ Another Blockly is a visual coding module provided by Jimu team. It's based on G
 |内存泄漏|长期持有数10m内存|离开页面立刻释放|
 |稳定性|多分支出错概率高|非常稳定|
 |输入问题|存在表情及全半角bug|无此问题|
+|暂停和继续|不支持|支持|
 |交互体验|web体验差|原生体验好|
 |蓝牙通信|一次问答需要web与原生语言交互两次|直接通信|
 |同时连接多个设备|不支持|支持|

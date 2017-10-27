@@ -27,7 +27,7 @@ public final class ABVirtulMachine: ABParser {
     public func stop(){
         if running{
             reset()
-            performer.end()
+            performer.stop()
         }
     }
     public func pause(){
@@ -61,13 +61,13 @@ extension ABVirtulMachine{
         }
         var type:String{return node.attributes["type"] ?? ""}
     }
-    func endCurrent(){
+    func `continue`(){
         if running && !paused{
             check()
         }
     }
     private func check(){
-        next().map({performer.begin($0)}){stop()}
+        next().map({performer.run($0)}){stop()}
     }
     private func reset(){
         trunkStack.removeAll()

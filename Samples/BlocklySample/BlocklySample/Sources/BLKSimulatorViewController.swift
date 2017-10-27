@@ -19,11 +19,7 @@ class BLKSimulatorViewController: BLKBaseViewController {
         assertionFailure("Called unsupported initializer")
         super.init(coder: aDecoder)
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        btn2.addTarget(self, action: #selector(run), for: .touchUpInside)
-    }
-    override func run(){
+    override func ation(){
         if case _?? = try? workspace?.toXML(){
             let ctr = SimulatorViewController()
             simulatorCtr = ctr
@@ -31,7 +27,7 @@ class BLKSimulatorViewController: BLKBaseViewController {
             ctr.modalTransitionStyle = .crossDissolve
             present(ctr, animated: true, completion: nil)
             ctr.delegate = self
-            super.run()
+            super.ation()
         }
     }
     //present ctr
@@ -48,7 +44,7 @@ class BLKSimulatorViewController: BLKBaseViewController {
         }
     }
     //run
-    override func begin(_ cmd:String, value:Any){
+    override func run(_ cmd:String, value:Any){
         print("\(#line) \(cmd) \(value)")
         switch cmd {
         case "turtle_move":
@@ -60,8 +56,8 @@ class BLKSimulatorViewController: BLKBaseViewController {
         case "turtle_collect":
             simulatorCtr?.collect()
         default:
-            vm?.performer.endCurrent()
+            vm?.performer.continue()
         }
     }
-    override func end(){unhighlightAllBlocks(); print("end \(#line)")}
+    override func stop() {unhighlightAllBlocks(); print("stop")}
 }

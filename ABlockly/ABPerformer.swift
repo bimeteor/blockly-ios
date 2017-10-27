@@ -11,8 +11,8 @@ import UIKit
 public protocol ABPerformerDelegate:class {
     func highlight(_ id:String, type:String)
     func unhighlight(_ id:String, type:String)
-    func begin(_ cmd:String, value:Any)
-    func end()
+    func run(_ cmd:String, value:Any)
+    func stop()
 }
 
 public final class ABPerformer: NSObject {
@@ -42,15 +42,15 @@ public final class ABPerformer: NSObject {
     private var replied = false
     private var beginTime = 0.0
     //may be delayed
-    public func endCurrent(){
+    public func `continue`(){
         let t = CFAbsoluteTimeGetCurrent() - beginTime
         if t < timeInterval{
             timer = Timer.scheduledTimer(withTimeInterval: timeInterval - t, repeats: false){
                 [unowned self] _ in
-                self.endSoon()
+                self.continueSoon()
             }
         }else{
-            endSoon()
+            continueSoon()
         }
     }
     public func update(_ value:Int, type:String, id:Int){
@@ -69,47 +69,47 @@ public final class ABPerformer: NSObject {
 }
 
 extension ABPerformer{
-    func begin(_ node:XMLNode) {
+    func run(_ node:XMLNode) {
         replied = false
         timer?.invalidate()
         beginTime = CFAbsoluteTimeGetCurrent()
         current = node
         guard let id = node.attributes["id"] else{
-            endCurrent()
+            `continue`()
             return
         }
         delegate?.highlight(id, type: node.attributes["type"] ?? "")
         switch node.attributes["type"] ?? "" {
-        case "": endCurrent()
+        case "": `continue`()
         case "control_wait":
             let itv = node["|block.value[name=delay].block"]?.value ?? ""
             timer = Timer.scheduledTimer(withTimeInterval: max(Double(itv) ?? 0, timeInterval), repeats: false){[unowned self] _ in
-                self.endSoon()
+                self.continueSoon()
             }
         case "control_wait_until":break//TODO:frank
 //            timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true){
 //                [unowned self] t in
 //                if true{
 //                    t.invalidate()
-//                    self.endSoon()
+//                    self.continueSoon()
 //                }
 //            }
         case "control_repeat_times", "control_repeat_until", "control_repeat_always", "control_if", "control_if_else", "restart":
-            endCurrent()
+            `continue`()
         case "turtle_move":
-            guard let n = node["|block.value[name=VALUE].block"] else {endCurrent(); return}
-            delegate?.begin("turtle_move", value: Int(evaluate(n)) ?? 0)
+            guard let n = node["|block.value[name=VALUE].block"] else {`continue`(); return}
+            delegate?.run("turtle_move", value: Int(evaluate(n)) ?? 0)
         case "turtle_turn":
-            guard let n = node["|block.field[name=DIR]"] else {endCurrent(); return}
-            delegate?.begin("turtle_turn", value: evaluate(n))
+            guard let n = node["|block.field[name=DIR]"] else {`continue`(); return}
+            delegate?.run("turtle_turn", value: evaluate(n))
         case "turtle_color":
-            guard let n = node["|block.value[name=COLOUR].block"] else {endCurrent(); return}
-            delegate?.begin("turtle_color", value: Int(evaluate(n)) ?? 0)
+            guard let n = node["|block.value[name=COLOUR].block"] else {`continue`(); return}
+            delegate?.run("turtle_color", value: Int(evaluate(n)) ?? 0)
         case "move_action":
-            guard let n = node["|block.field[name=DIR]"] else {endCurrent(); return}
-            delegate?.begin("move_action", value: evaluate(n))
+            guard let n = node["|block.field[name=DIR]"] else {`continue`(); return}
+            delegate?.run("move_action", value: evaluate(n))
         default:
-            endCurrent()
+            `continue`()
         }
     }
     //expr return: "left", "234", "true"/"false"
@@ -164,20 +164,20 @@ extension ABPerformer{
             return ""
         }
     }
-    func end() {
+    func stop() {
         if let id = current?.attributes["id"]{
             delegate?.unhighlight(id, type: current?.attributes["type"] ?? "")
         }
         current = nil
         timer?.invalidate()
-        delegate?.end()
+        delegate?.stop()
     }
-    func endSoon(){
+    func continueSoon(){
         if let id = current?.attributes["id"]{
             delegate?.unhighlight(id, type: current?.attributes["type"] ?? "")
         }
         current = nil
         timer?.invalidate()
-        vm?.endCurrent()
+        vm?.continue()
     }
 }

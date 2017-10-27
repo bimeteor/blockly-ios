@@ -50,7 +50,7 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         view.addSubview(btn2)
         btn2.setImage(UIImage.init(named: "arrow"), for: .normal)
         btn2.frame = CGRect(x:view.bounds.width-50, y:55, width:50, height:50)
-        btn2.addTarget(self, action: #selector(run), for: .touchUpInside)
+        btn2.addTarget(self, action: #selector(ation), for: .touchUpInside)
         
         view.addSubview(btn3)
         btn3.setImage(UIImage.init(named: "arrow"), for: .normal)
@@ -79,7 +79,7 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         }
     }
     
-    func stop() {
+    func _stop() {
         vm?.stop()
     }
     
@@ -87,7 +87,7 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func run(){
+    @objc func ation(){
         start()
     }
     
@@ -162,11 +162,11 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         print("unhighlight \(id) \(type)")
     }
     
-    func begin(_ cmd: String, value: Any) {
+    func run(_ cmd: String, value: Any) {
         
     }
     
-    func end() {
+    func stop() {
         
     }
     //PresentViewControllerDelegate

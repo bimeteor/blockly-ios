@@ -46,12 +46,12 @@ class BLKDeviceViewController: BLKBaseViewController {
         super.start()
         monitorTilt()
     }
-    override func stop() {
-        super.stop()
+    override func _stop() {
+        super._stop()
         motionManager.stopAccelerometerUpdates()
     }
     //btn
-    override func run(){
+    override func ation(){
         let ctr = ConnectViewControler(bleManager)
         ctr.modalPresentationStyle = .overCurrentContext
         ctr.modalTransitionStyle = .crossDissolve
@@ -90,18 +90,18 @@ class BLKDeviceViewController: BLKBaseViewController {
                     cmds.removeFirst()
                 }
             }else{
-                vm?.performer.endCurrent()
+                vm?.performer.continue()
             }
         }else{
-            stop()
+            _stop()
         }
     }
     //run
-    override func begin(_ cmd:String, value:Any){
+    override func run(_ cmd:String, value:Any){
         print("\(#line) \(cmd) \(value)")
         switch cmd {
         case "move_action":
-            guard let dir = value as? String else{vm?.performer.endCurrent(); break}
+            guard let dir = value as? String else{vm?.performer.continue(); break}
             switch dir{
             case "forward":
                 cmds = [(UInt8(7), [2, 1, 3, 1, 1, 0x54]), (UInt8(7), [2, 2, 4, 2, 1, 0x54])]
@@ -119,11 +119,11 @@ class BLKDeviceViewController: BLKBaseViewController {
                 cmds = [(UInt8(7), [2, 2, 4, 2, 1, 0x54]), (UInt8(7), [2, 1, 3, 1, 0, 0x40])]
                 self.cmd = 0
                 tryWriting()
-            default:vm?.performer.endCurrent()
+            default:vm?.performer.continue()
             }
         default:
-            vm?.performer.endCurrent()
+            vm?.performer.continue()
         }
     }
-    override func end(){unhighlightAllBlocks(); print("end \(#line)")}
+    override func stop() {unhighlightAllBlocks(); print("stop")}
 }

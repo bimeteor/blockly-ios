@@ -110,7 +110,7 @@ extension BLKDeviceViewController:BluetoothDelegate{
             ble?.handshake()
         }
         if let _ = error {
-            stop()
+            _stop()
         }else{
             if cmd == data?.0{
                 cmd = 0
