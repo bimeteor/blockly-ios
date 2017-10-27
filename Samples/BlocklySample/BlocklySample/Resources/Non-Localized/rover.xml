@@ -31,11 +31,16 @@
     </category>
     <category name="控制" colour="%{BKY_LOGIC_HUE}">
         <block type="controls_wait"></block>
-        <block type="controls_repeat_ext"></block>
+        <block type="controls_repeat_ext">
+            <value name="TIMES">
+                <shadow type="math_number">
+                    <field name="NUM">3</field>
+                </shadow>
+            </value>
+        </block>
         <block type="controls_if"></block>
         <block type="controls_if_else"></block>
         <block type="controls_wait_until"></block>
-        <block type="controls_restart"></block>
     </category>
     <category name="声光" colour="%{BKY_LOOPS_HUE}">
         <block type="light_playvoice_pat"></block>
@@ -49,30 +54,30 @@
         <block type="light_customlight__duration"></block>
     </category>
     <category name="感知" colour="%{BKY_VARIABLES_HUE}">
-<!--        <block type="controls_repeat_ext">-->
-<!--            <value name="TIMES">-->
-<!--                <shadow type="math_number">-->
-<!--                    <field name="NUM">10</field>-->
-<!--                </shadow>-->
-<!--            </value>-->
-<!--        </block>-->
-<!--        <block type="controls_for">-->
-<!--            <value name="FROM">-->
-<!--                <shadow type="math_number">-->
-<!--                    <field name="NUM">1</field>-->
-<!--                </shadow>-->
-<!--            </value>-->
-<!--            <value name="TO">-->
-<!--                <shadow type="math_number">-->
-<!--                    <field name="NUM">10</field>-->
-<!--                </shadow>-->
-<!--            </value>-->
-<!--            <value name="BY">-->
-<!--                <shadow type="math_number">-->
-<!--                    <field name="NUM">1</field>-->
-<!--                </shadow>-->
-<!--            </value>-->
-<!--        </block>-->
+        <block type="controls_repeat_ext">
+            <value name="TIMES">
+                <shadow type="math_number">
+                    <field name="NUM">10</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="controls_for">
+            <value name="FROM">
+                <shadow type="math_number">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+            <value name="TO">
+                <shadow type="math_number">
+                    <field name="NUM">10</field>
+                </shadow>
+            </value>
+            <value name="BY">
+                <shadow type="math_number">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+        </block>
     </category>
     <category name="数学" colour="%{BKY_MATH_HUE}">
         <block type="logic_compare"></block>

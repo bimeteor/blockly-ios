@@ -20,8 +20,8 @@ import AEXML
 class BLKDeviceViewController: BLKBaseViewController {
     override init() {
         super.init()
-        libPath = Bundle.main.path(forResource: "turtle_blocks.json", ofType: nil)
-        toolPath = Bundle.main.path(forResource: "turtle.xml", ofType: nil)
+        libPath = Bundle.main.path(forResource: "rover.json", ofType: nil)
+        toolPath = Bundle.main.path(forResource: "rover.xml", ofType: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -40,11 +40,19 @@ class BLKDeviceViewController: BLKBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    //btn
+    override func run(){
+        let ctr = ConnectViewControler(bleManager)
+        ctr.modalPresentationStyle = .overCurrentContext
+        ctr.modalTransitionStyle = .crossDissolve
+        present(ctr, animated: true, completion: nil)
+        ctr.delegate = self
+    }
     //present ctr
     override func onConfirm(_ ctr: UIViewController, obj:Any) {
-        if let u = obj as? UUID {
-            ble = bleManager[u]
-        }
+        guard let d = obj as? Bluetooth else { return }
+        d.delegate = self
+        ble = d
         ctr.dismiss(animated: true)
         connectCtr = nil
         codeCtr = nil

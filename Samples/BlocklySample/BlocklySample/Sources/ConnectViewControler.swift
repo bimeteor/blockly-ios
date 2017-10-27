@@ -39,6 +39,7 @@ class ConnectViewControler: UIViewController {
     }
     @IBAction func onTap(_ sender: Any) {
         delegate?.onCancel(self)
+        manager.stopScan()
     }
 }
 
@@ -96,7 +97,7 @@ extension ConnectViewControler:BluetoothDelegate{
     }
     
     func bluetoothDidRead(_ data: (UInt8, [UInt8])?, error: ReadError?) {
-        print("bluetoothDidRead \(data?.0) \(data?.1)")
+        print("bluetoothDidRead \(data?.0) \(data?.1) \(error)")
         if error == .restarted {
             device?.connect()
         }
@@ -104,8 +105,8 @@ extension ConnectViewControler:BluetoothDelegate{
     
     func bluetoothDidHandshake(_ result: Bool) {
         if result {
-            guard let u = tryingUuid else{return}
-            delegate?.onConfirm(self, obj: u)
+            guard let d = device else{return}
+            delegate?.onConfirm(self, obj: d)
         }else{
             print("bluetoothDidHandshake fail")
         }

@@ -101,22 +101,25 @@ extension BLKDeviceViewController:BluetoothManagerDelegate{
 
 extension BLKDeviceViewController:BluetoothDelegate{
     func bluetoothDidWrite(_ cmd: UInt8, error: WriteError?) {
-        
+        print("bluetoothDidWrite \(cmd)  \(error)")
     }
     
     func bluetoothDidVerify(_ error: VerifyError?) {
-        
+        print("bluetoothDidVerify \(error)")
     }
     
     func bluetoothDidRead(_ data: (UInt8, [UInt8])?, error: ReadError?) {
-        
+        print("bluetoothDidRead \(data?.0) \(data?.1) \(error)")
+        if error == .restarted {
+            ble?.handshake()
+        }
     }
     
     func bluetoothDidHandshake(_ result: Bool) {
-        
+        print("bluetoothDidHandshake \(result)")
     }
     
     func bluetoothDidUpdateInfo(_ info: DeviceInfo) {
-        
+        print("bluetoothDidHandshake \(info)")
     }
 }
