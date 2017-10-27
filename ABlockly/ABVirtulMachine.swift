@@ -154,6 +154,11 @@ extension ABVirtulMachine{
                 return traverse(node, stack:&stack)
             }
             return nil
+        }else if type == "start_barrier"{
+            if performer.evaluate(node) == "true"{
+                return traverse(node, stack:&stack)
+            }
+            return nil
         }else if type == "restart"{
             let root = (stack.first?.node ?? node).root
             stack.removeAll()

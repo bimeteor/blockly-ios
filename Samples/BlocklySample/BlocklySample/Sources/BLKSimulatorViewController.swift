@@ -59,5 +59,5 @@ class BLKSimulatorViewController: BLKBaseViewController {
             vm?.performer.continue()
         }
     }
-    override func stop() {unhighlightAllBlocks(); print("stop")}
+    override func stop() {super.stop()}
 }

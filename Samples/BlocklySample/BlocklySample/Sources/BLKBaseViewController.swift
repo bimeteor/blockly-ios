@@ -73,6 +73,8 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
             vm?.performer.delegate = nil
             vm?.stop()
             unhighlightAllBlocks()
+            running = true
+            paused = false
             vm = ABVirtulMachine.init(str)
             vm?.performer.delegate = self
             vm?.start()
@@ -80,6 +82,7 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
     }
     
     func _stop() {
+        running = false
         vm?.stop()
     }
     
@@ -167,7 +170,8 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
     }
     
     func stop() {
-        
+        unhighlightAllBlocks(); print("stop")
+        running = false
     }
     //PresentViewControllerDelegate
     func onConfirm(_ ctr: UIViewController, obj:Any) {

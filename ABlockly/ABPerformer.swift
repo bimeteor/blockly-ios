@@ -160,6 +160,11 @@ extension ABPerformer{
                 return String(val == Direction.init(evaluate(n))?.rawValue)
             }
             return "false"
+        case "start_barrier":
+            if let val = variables["fir_space"]?[1], val > 0{
+                return String(val <= 20)
+            }
+            return "false"
         default:
             return ""
         }

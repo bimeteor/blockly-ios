@@ -17,6 +17,35 @@ import Blockly
 import CoreMotion
 import AEXML
 
+func infraredLevel(_ value:Int)->Int
+{
+    let realValue = value - 850;
+    var level = 0.0
+    
+    if realValue < 0 {
+        level = 0
+    } else if realValue < 70 {
+        level = (Double(realValue - 15) / 13.5)
+    } else if realValue < 1210 {
+        level = Double(realValue + 1134) / 288.0
+    } else if realValue < 1565 {
+        level = Double(realValue + 206) / 177
+    } else if realValue < 1821 {
+        level = Double(realValue - 1033) / 53.75
+    } else if realValue < 2200 {
+        level = Double(realValue - 1462) / 22.75
+    } else {
+        level = 20 // 此值不可达,因为realValue最大值为2800左右
+    }
+    
+    if(level>20)
+    {
+        level=20
+    }
+    
+    return Int(level)
+}
+
 class BLKDeviceViewController: BLKBaseViewController {
     override init() {
         super.init()
@@ -33,6 +62,7 @@ class BLKDeviceViewController: BLKBaseViewController {
     var ble:Bluetooth?
     var cmds = [(UInt8, [UInt8])]()
     var cmd = UInt8(0)
+    var sensorTimer:Timer?
     
     var connectCtr:ConnectViewControler?
     
@@ -43,12 +73,18 @@ class BLKDeviceViewController: BLKBaseViewController {
     override func start() {
         cmds = []
         cmd = 0
+        ble?.startSensor([1], type: .fir)
+        sensorTimer?.invalidate()
+        sensorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true){_ in
+            self.ble?.write(0x72, array: [1, 1, 0])
+        }
         super.start()
         monitorTilt()
     }
     override func _stop() {
         super._stop()
         motionManager.stopAccelerometerUpdates()
+        sensorTimer?.invalidate()
     }
     //btn
     override func ation(){
@@ -104,19 +140,19 @@ class BLKDeviceViewController: BLKBaseViewController {
             guard let dir = value as? String else{vm?.performer.continue(); break}
             switch dir{
             case "forward":
-                cmds = [(UInt8(7), [2, 1, 3, 1, 1, 0x54]), (UInt8(7), [2, 2, 4, 2, 1, 0x54])]
+                cmds = [(UInt8(7), [2, 1, 3, 1, 2, 0x92]), (UInt8(7), [2, 2, 4, 2, 2, 0x92])]
                 self.cmd = 0
                 tryWriting()
             case "backward":
-                cmds = [(UInt8(7), [2, 1, 3, 2, 1, 0x54]), (UInt8(7), [2, 2, 4, 1, 1, 0x54])]
+                cmds = [(UInt8(7), [2, 1, 3, 2, 2, 0x92]), (UInt8(7), [2, 2, 4, 1, 2, 0x92])]
                 self.cmd = 0
                 tryWriting()
             case "left":
-                cmds = [(UInt8(7), [2, 2, 4, 2, 0, 0x40]), (UInt8(7), [2, 1, 3, 1, 1, 0x54])]
+                cmds = [(UInt8(7), [2, 2, 4, 2, 0, 0x40]), (UInt8(7), [2, 1, 3, 1, 2, 0x92])]
                 self.cmd = 0
                 tryWriting()
             case "right":
-                cmds = [(UInt8(7), [2, 2, 4, 2, 1, 0x54]), (UInt8(7), [2, 1, 3, 1, 0, 0x40])]
+                cmds = [(UInt8(7), [2, 2, 4, 2, 2, 0x92]), (UInt8(7), [2, 1, 3, 1, 0, 0x40])]
                 self.cmd = 0
                 tryWriting()
             default:vm?.performer.continue()
@@ -125,5 +161,7 @@ class BLKDeviceViewController: BLKBaseViewController {
             vm?.performer.continue()
         }
     }
-    override func stop() {unhighlightAllBlocks(); print("stop")}
+    override func stop() {
+        _stop()
+    }
 }

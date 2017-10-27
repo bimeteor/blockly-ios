@@ -44,10 +44,11 @@ final class Bluetooth: NSObject {
     //jimu
     fileprivate var handShakeStep = 0  //握手依次发1，8，5命令，如果8命令返回EE，则需要继续发8命令。收到回复则用命令号标记，握手成功，标志为100
     fileprivate var deviceInfo:DeviceInfo?//收到8命令会重新生成，一直缓存，不会删除
+    fileprivate var sersorInfo = [AccInfo.AccType:[Int:Any]]()
     fileprivate var aliveTimer:Timer?
     fileprivate var powerTimer:Timer?//cmd 8 only
     fileprivate var delayTimer:Timer?
-    
+    fileprivate var sensorTimer:Timer?
     public func connect(){
         manager?.connect(uuid)
     }
@@ -273,10 +274,10 @@ extension Bluetooth{
     public func setAngles(_ angles:[UInt8?], duration:UInt) {
         var arr = [UInt8]()
         var flags:[UInt8] = [0,0,0,0]
-        for (i, e) in angles.enumerated() {
-            if let ee = e {
+        angles.enumerated().forEach{
+            if let ee = $0.element {
                 arr.append(ee)
-                flags[3 - i/8] |= UInt8(1<<(i%8))
+                flags[3 - $0.offset/8] |= UInt8(1<<($0.offset%8))
             }
         }
         let time = duration/20
@@ -288,6 +289,16 @@ extension Bluetooth{
         var arr = [UInt8(ids.count)] + ids.map{UInt8($0)}
         arr += [UInt8(dir), UInt8((speed & 0xff00)>>8), UInt8(speed & 0xff)]
         write(7, array: arr)
+    }
+    
+    public func startSensor(_ ids:[Int], type:AccInfo.AccType){
+        write(0x71, array: [UInt8(type.rawValue), ids.reduce(UInt8(0)){$0 | (1 << $1)}, 0])
+        sensorTimer?.invalidate()
+    }
+    
+    public func stopSensor(_ ids:[Int], type:AccInfo.AccType){
+        write(0x71, array: [UInt8(type.rawValue), ids.reduce(UInt8(0)){$0 | (1 << $1)}, 1])
+        sensorTimer?.invalidate()
     }
     
     func onWrite(_ error:WriteError?) {

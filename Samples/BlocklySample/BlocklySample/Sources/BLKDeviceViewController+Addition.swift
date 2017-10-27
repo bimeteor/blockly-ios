@@ -112,7 +112,18 @@ extension BLKDeviceViewController:BluetoothDelegate{
         if let _ = error {
             _stop()
         }else{
-            if cmd == data?.0{
+            guard let d = data else{
+                _stop()
+                return
+            }
+            if d.0 == 0x72{
+                if d.1.count > 3{
+                    let v = (Int(d.1[3]) << 8) | Int(d.1[4])
+                    vm?.performer.update(infraredLevel(v), type: "fir_space", id: 1)
+                }else{
+                    print("sensor errror!!!")
+                }
+            }else if cmd == data?.0{
                 cmd = 0
                 tryWriting()
             }
