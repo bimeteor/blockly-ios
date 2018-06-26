@@ -21,7 +21,7 @@ class BLKDeviceViewController: BLKBaseViewController {
     var ble:Bluetooth?
     var cmds = [(UInt8, [UInt8])]()
     var cmd = UInt8(0)
-    let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.width - 250, y: 150, width: 200, height: 20))
+    let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.width - 100, y: 140, width: 70, height: 20))
     var connectCtr:ConnectViewControler?
     
     override func viewDidLoad() {
@@ -31,6 +31,8 @@ class BLKDeviceViewController: BLKBaseViewController {
         view.addSubview(label)
         label.textColor = .red
         label.text = "0"
+        label.textAlignment = .right
+//        label.backgroundColor = .blue
     }
     override func start() {
         cmds = []
