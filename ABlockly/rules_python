@@ -6,32 +6,40 @@ start_tilt::
 def onTilt():
     \(next$pass),
 
-controls_repeat_ext::
+start_barrier::
+def onBarrier():
+    \(next$pass),
+
+start_barrier_space::
+def onBarrier()
+    \(next$pass),
+
+control_repeat_ext::
 for i in range(\(value[name=TIMES]$0)):
     \(statement[name=DO]$pass),
 
-controls_repeat_always::
+control_repeat_forever::
 while True:
     \(statement[name=DO]$pass),
 
-controls_if::
+control_if::
 if \(value[name=IF0]$false):
     \(statement[name=DO0]$pass),
 
-controls_if_else::
+control_if_else::
 if \(value[name=IF0]):
     \(statement[name=DO0]$pass)
 else:
     \(statement[name=ELSE]$pass),
 
 turtle_turn::
-turn(dir = "\(field[name=DIR]))", angle = \(value[name=VALUE]$0)),
+turn(dir = "\(field[name=DIR])", angle = \(value[name=VALUE]$0)),
 
 turtle_move::
 move(dir = "\(field[name=DIR])", steps = \(value[name=VALUE]$0)),
 
 move_action::
-move("\(field[name=DIR])"),
+move("\(field[name=ACTION])"),
 
 turtle_color::
 color(color:\()),
@@ -42,16 +50,38 @@ angle_picker::
 math_number::
 \(field[name=NUM]),
 
+math_modulo::
+\(value[name=DIVIDEND]$0) % \(value[name=DIVISOR$1]),
+
+math_random::
+random(),
+
+math_random_limit::
+random(from = \(value[name=FROM]$0), to = \(value[name=TO]$0)),
+
+math_round::
+round(\(value[name=NUM]$0)),
+
 logic_compare::
 \(value[name=A]$0) \(field[name=OP]) \(value[name=B]$0),
 
+logic_negate::
+!\(value[name=BOOL]$True),
+
+math_arithmetic::
 \(value[name=A]$0) \(field[name=OP]) \(value[name=B]$0),
 
 procedures_callnoreturn::
 \(field[name=NAME])(),
 
+procedures_defnoreturn::
 def \(field[name=NAME])():
-\(statement[name=STACK]$pass),
+{
+    \(statement[name=DO]$pass)
+},
 
 variables_set::
-\(field[name=VAR]) = \(value[name=VALUE])
+\(field[name=VAR]) = \(value[name=VALUE]$0),
+
+variables_get::
+\(field[name=VAR]),

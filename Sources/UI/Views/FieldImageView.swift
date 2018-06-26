@@ -44,6 +44,15 @@ open class FieldImageView: FieldView {
 
     addSubview(imageView)
   }
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // 调整image view与边界的距离
+        if let w = fieldImageLayout?.size.width, w >= 30 {
+            imageView.frame = self.bounds.insetBy(dx: 5, dy: 5)
+        }
+    }
 
   /**
    :nodoc:
@@ -90,7 +99,6 @@ extension FieldImageView: FieldLayoutMeasurer {
         "Expected type `FieldImageLayout`.")
       return CGSize.zero
     }
-
     return layout.engine.viewSizeFromWorkspaceSize(fieldImageLayout.size)
   }
 }

@@ -9,6 +9,7 @@
 import Foundation
 import Blockly
 import AEXML
+import CoreMotion
 
 class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, PresentViewControllerDelegate{
     
@@ -23,13 +24,15 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
     var libPath:String?
     var toolPath:String?
     var codeCtr:CodeViewControler?
-    let btn1 = UIButton.init(type: .custom)
-    let btn2 = UIButton.init(type: .custom)
-    let btn3 = UIButton.init(type: .custom)
+    let btn1 = UIButton.init(type: .system)
+    let btn2 = UIButton.init(type: .system)
+    let btn3 = UIButton.init(type: .system)
     
     var running = false
     var paused = false
     var vm:ABVirtulMachine?
+    lazy var motionManager:CMMotionManager = CMMotionManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Don't allow the navigation controller bar cover this view controller
@@ -41,21 +44,14 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         loadBlocks()
         redoButton.isHidden = true
         undoButton.isHidden = true
-        
-        view.addSubview(btn1)
-        btn1.setImage(UIImage.init(named: "arrow"), for: .normal)
-        btn1.frame = CGRect(x:view.bounds.width-50, y:0, width:50, height:50)
-        btn1.addTarget(self, action: #selector(popout), for: .touchUpInside)
-        
-        view.addSubview(btn2)
-        btn2.setImage(UIImage.init(named: "arrow"), for: .normal)
-        btn2.frame = CGRect(x:view.bounds.width-50, y:55, width:50, height:50)
-        btn2.addTarget(self, action: #selector(ation), for: .touchUpInside)
-        
-        view.addSubview(btn3)
-        btn3.setImage(UIImage.init(named: "arrow"), for: .normal)
-        btn3.frame = CGRect(x:view.bounds.width-50, y:110, width:50, height:50)
-        btn3.addTarget(self, action: #selector(showCode), for: .touchUpInside)
+        let titles = ["back", "action", "code"]
+        let actions = [#selector(popout), #selector(ation), #selector(showCode)]
+        [btn1, btn2, btn3].enumerated().forEach{
+            view.addSubview($1)
+            $1.frame = .init(x: Int(view.bounds.width) - 80, y: 20 + 40 * $0, width: 70, height: 30)
+            $1.setTitle(titles[$0], for: .normal)
+            $1.addTarget(self, action: actions[$0], for: .touchUpInside)
+        }
     }
     
     override var prefersStatusBarHidden : Bool {
@@ -78,10 +74,12 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
             vm = ABVirtulMachine.init(str)
             vm?.performer.delegate = self
             vm?.start()
+            monitorTilt()
         }
     }
     
     func _stop() {
+        motionManager.stopAccelerometerUpdates()
         running = false
         vm?.stop()
     }
@@ -146,12 +144,17 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
     <block type="start" id="255CBAB0-4DD5-4FFC-B8B1-B473F9707C2B" deletable="false" x="81" y="21" />
 </xml>
 """
-        var str = UserDefaults.standard.string(forKey: "blockly_xml_\(type(of: self))") ?? ""
-        if !str.contains("deletable") { // 修复由于存储问题造成"start"块可以删除的缺陷
-            str = def
-        }
-        if let xml = (try? AEXMLDocument(xml: str)) ?? (try? AEXMLDocument(xml: def)){
-            try? workspace?.loadBlocks(fromXML: xml["xml"], factory: blockFactory)
+        let str = UserDefaults.standard.string(forKey: "blockly_xml_\(type(of: self))") ?? ""
+        if let xml = try? AEXMLDocument(xml: str) {
+            do{
+                try workspace?.loadBlocks(fromXML: xml["xml"], factory: blockFactory)
+            }catch{
+                if let x = try? AEXMLDocument(xml: def){
+                    try? workspace?.loadBlocks(fromXML: x["xml"], factory: blockFactory)
+                }
+            }
+        }else if let x = try? AEXMLDocument(xml: def){
+            try? workspace?.loadBlocks(fromXML: x["xml"], factory: blockFactory)
         }
     }
     //ABPerformerDelegate
@@ -183,9 +186,9 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
         codeCtr = nil
     }
     
-    func onRead(_ ctr: UIViewController, obj: Any) {
+    func onOther(_ ctr: UIViewController, obj: Any) {
         if ctr is SimulatorViewController {
-            
+            vm?.performer.continue()
         }
     }
 }
@@ -193,5 +196,61 @@ class BLKBaseViewController: WorkbenchViewController, ABPerformerDelegate, Prese
 protocol PresentViewControllerDelegate: class{
     func onConfirm(_ ctr: UIViewController, obj:Any)
     func onCancel(_ ctr: UIViewController)
-    func onRead(_ ctr:UIViewController, obj:Any)
+    func onOther(_ ctr:UIViewController, obj:Any)
+}
+
+extension BLKBaseViewController{
+    func monitorTilt() {
+        motionManager.accelerometerUpdateInterval = 1.0/20
+        motionManager.startAccelerometerUpdates(to: OperationQueue.main) {
+            if $1 == nil, let acc = $0{
+                let x = acc.acceleration.x/acc.acceleration.z
+                let y = acc.acceleration.y/acc.acceleration.z
+                let cutX = 0.35
+                let cutY = 0.3
+                var res = ""
+                if abs(x) >= cutX || abs(y) >= cutY{
+                    let dir = UIApplication.shared.statusBarOrientation
+                    if abs(x)/cutX > abs(y)/cutY{
+                        if x >= cutX{
+                            switch dir{
+                            case .portrait:res = "right"
+                            case .portraitUpsideDown:res = "left"
+                            case .landscapeLeft:res = "forward"
+                            case .landscapeRight:res = "backward"
+                            default: res = ""
+                            }
+                        }else{
+                            switch dir{
+                            case .portrait:res = "left"
+                            case .portraitUpsideDown:res = "right"
+                            case .landscapeLeft:res = "backward"
+                            case .landscapeRight:res = "forward"
+                            default: res = ""
+                            }
+                        }
+                    }else{//y
+                        if y >= cutY{
+                            switch dir{
+                            case .portrait:res = "forward"
+                            case .portraitUpsideDown:res = "backward"
+                            case .landscapeLeft:res = "left"
+                            case .landscapeRight:res = "right"
+                            default: res = ""
+                            }
+                        }else{
+                            switch dir{
+                            case .portrait:res = "backward"
+                            case .portraitUpsideDown:res = "forward"
+                            case .landscapeLeft:res = "right"
+                            case .landscapeRight:res = "left"
+                            default: res = ""
+                            }
+                        }
+                    }
+                }
+                self.vm?.performer.update(ABPerformer.Direction.init(res)?.rawValue ?? 0, type: "phone_tilt", id: 1)
+            }
+        }
+    }
 }

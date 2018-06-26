@@ -13,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SimulatorViewController" customModule="BlocklySample" customModuleProvider="target">
             <connections>
                 <outlet property="container" destination="JaV-Jo-XJX" id="qkx-j7-iQQ"/>
+                <outlet property="stage" destination="m7f-FG-HsO" id="yPt-OI-Zcb"/>
                 <outlet property="view" destination="iN0-l3-epB" id="OEO-W4-KkI"/>
             </connections>
         </placeholder>
@@ -30,7 +31,18 @@
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JaV-Jo-XJX">
                     <rect key="frame" x="70" y="50" width="527" height="275"/>
+                    <subviews>
+                        <sceneKitView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m7f-FG-HsO">
+                            <rect key="frame" x="8" y="8" width="511" height="259"/>
+                        </sceneKitView>
+                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="m7f-FG-HsO" firstAttribute="leading" secondItem="JaV-Jo-XJX" secondAttribute="leading" constant="8" id="dHz-MJ-FfO"/>
+                        <constraint firstAttribute="trailing" secondItem="m7f-FG-HsO" secondAttribute="trailing" constant="8" id="fnZ-di-OAO"/>
+                        <constraint firstAttribute="bottom" secondItem="m7f-FG-HsO" secondAttribute="bottom" constant="8" id="r0C-fo-119"/>
+                        <constraint firstItem="m7f-FG-HsO" firstAttribute="top" secondItem="JaV-Jo-XJX" secondAttribute="top" constant="8" id="xvf-XJ-FYd"/>
+                    </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -45,6 +57,7 @@
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="JaV-Jo-XJX" secondAttribute="trailing" constant="70" id="oFS-LH-fQg"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="-38" y="-47"/>
         </view>
     </objects>
 </document>

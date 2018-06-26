@@ -1,6 +1,6 @@
 [
   {
-    "type": "controls_repeat_ext",
+    "type": "control_repeat_ext",
     "message0": "%{BKY_CONTROLS_REPEAT_TITLE}",
     "args0": [
       {
@@ -131,5 +131,20 @@
     "colour": "%{BKY_LOOPS_HUE}",
     "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_HELPURL}",
     "TODO(#375)": "https://github.com/google/blockly-android/issues/375"
-  }
+  },
+ {
+ "type": "control_repeat_forever",
+ "message0": "一直重复%1",
+ "args0": [
+           {
+           "type": "input_statement",
+           "name": "DO"
+           }
+           ],
+ "previousStatement": null,
+ "nextStatement": null,
+ "colour": "%{BKY_LOOPS_HUE}",
+ "tooltip": "While a value is false, then do some statements.",
+ "helpUrl": "%{BKY_CONTROLS_WHILEUNTIL_HELPURL}"
+ }
 ]

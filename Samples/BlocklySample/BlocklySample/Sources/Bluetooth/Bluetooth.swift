@@ -12,6 +12,9 @@ import CoreBluetooth
 let serviceStr = "49535343-FE7D-4AE5-8FA9-9FAFD205E455"
 let readCharStr = "49535343-1E4D-4BD9-BA61-23C647249616"
 let writeCharStr = "49535343-8841-43F4-A8D4-ECBE34729BB3"
+//let serviceStr = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
+//let readCharStr = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
+//let writeCharStr = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
 
 let cmdIndex = 3
 let lenIndex = 2
@@ -40,11 +43,13 @@ final class Bluetooth: NSObject {
     fileprivate var contexts = [(UInt8, [UInt8], WritePriority)]()
     fileprivate var cmd:UInt8 = 0
     fileprivate var time:Double = 0
+    fileprivate var buf = Data()
     
     //jimu
     fileprivate var handShakeStep = 0  //握手依次发1，8，5命令，如果8命令返回EE，则需要继续发8命令。收到回复则用命令号标记，握手成功，标志为100
-    fileprivate var deviceInfo:DeviceInfo?//收到8命令会重新生成，一直缓存，不会删除
-    fileprivate var sersorInfo = [AccInfo.AccType:[Int:Any]]()
+    fileprivate var deviceInfo = DeviceInfo()//收到8命令会重新生成，一直缓存，不会删除
+    fileprivate var accInfo = AccInfo()
+    fileprivate var sensorSwitches = [AccInfo.AccType:Bool]()
     fileprivate var aliveTimer:Timer?
     fileprivate var powerTimer:Timer?//cmd 8 only
     fileprivate var delayTimer:Timer?
@@ -84,14 +89,22 @@ final class Bluetooth: NSObject {
         contexts.removeAll()
     }
     
+    fileprivate func writeNow(_ cmd:UInt8, array:[UInt8]){
+        if peripheral.state == .connected, let char = writeChar{
+            peripheral.writeValue(Bluetooth.package(cmd, array: array), for: char, type: .withResponse)
+        }
+    }
+    
     fileprivate func reset() {
         cmd = 0
-        deviceInfo = nil
         handShakeStep = 0
+        buf.removeAll()
+        sensorSwitches.removeAll()
         contexts.removeAll()
         aliveTimer?.invalidate()
         powerTimer?.invalidate()
         delayTimer?.invalidate()
+        sensorTimer?.invalidate()
     }
     
     init(_ peripheral:CBPeripheral) {
@@ -133,7 +146,8 @@ public protocol BluetoothDelegate: class{
     func bluetoothDidRead(_ data:(UInt8, [UInt8])?, error:ReadError?)
     
     func bluetoothDidHandshake(_ result:Bool)   //1，8，5命令回复正常
-    func bluetoothDidUpdateInfo(_ info:DeviceInfo)
+    func bluetoothDidUpdateDevice(_ info:DeviceInfo)
+    func bluetoothDidUpdateAcc(_ info:AccInfo, type:AccInfo.AccType)
 }
 
 extension Bluetooth{
@@ -182,15 +196,20 @@ extension Bluetooth
         return name.lowercased().contains("jimu")
     }
     
-    class func devidePackage(_ data:Data)->[(UInt8, [UInt8])]{
+    class func devidePackage(_ data:Data)->(Int, [(UInt8, [UInt8])]){
         var i:Int = 0
         var arr = [(UInt8, [UInt8])]()
         while i+lenIndex<data.count {
-            guard data[i] == 0xfb && data[i+1] == 0xbf && data.count-i >= Int(data[i+lenIndex])+1 && data[i+Int(data[i+lenIndex])] == 0xed else {break}
-            arr.append((data[i+cmdIndex], Array(data[i+cmdIndex+1..<i+Int(data[i+lenIndex])-1])))
-            i += 1+i+Int(data[i+lenIndex])
+            guard data[i] == 0xfb && data[i+1] == 0xbf else {return (-1, arr)}
+            if data.count-i < Int(data[i+lenIndex])+1{
+                break
+            }else{
+                guard data[i+Int(data[i+lenIndex])] == 0xed else {return (-1, arr)}
+                arr.append((data[i+cmdIndex], Array(data[i+cmdIndex+1..<i+Int(data[i+lenIndex])-1])))
+                i += 1+i+Int(data[i+lenIndex])
+            }
         }
-        return arr
+        return (i, arr)
     }
 }
 
@@ -250,24 +269,29 @@ public struct ServoInfo {
 
 public struct AccInfo{
     public enum AccType:Int{
-        case fir, led
+        case fir = 1, led = 4, color = 9
     }
-    let type:AccInfo.AccType
-    let id = 0
-    var trouble = false
-    var value:Any
+    public var values = [AccInfo.AccType:[Int:Any]]()
+    public var errors = [AccInfo.AccType:Set<Int>]()
+}
+
+public struct AccColor{
+    public var color:UInt
+    public var ch0:UInt16
+    public var ch1:UInt16
+    public var ch2:UInt16
+    public var ch3:UInt16
 }
 
 public struct DeviceInfo {
     public var version:String?
     public var power:PowerInfo?
     public var servo:ServoInfo?
-    public var accInfos = [AccInfo]()
-    public var error:DeviceError
-    public init(_ error:DeviceError){
-        self.error = error
-    }
+    public var accIds = [AccInfo.AccType:[Int]]()
+    public var error = DeviceError(false)
 }
+
+let cmds_internal:[UInt8] = [1, 8, 5, 3, 0x27, 0x3b, 0x71, 0x7e]
 
 extension Bluetooth{
     //duration:毫秒
@@ -291,14 +315,31 @@ extension Bluetooth{
         write(7, array: arr)
     }
     
-    public func startSensor(_ ids:[Int], type:AccInfo.AccType){
-        write(0x71, array: [UInt8(type.rawValue), ids.reduce(UInt8(0)){$0 | (1 << $1)}, 0])
-        sensorTimer?.invalidate()
+    public func startAcc(){
+        if let ids = deviceInfo.accIds[.fir], !ids.isEmpty{
+            sensorSwitches[.fir] = true
+            writeNow(0x71, array: [UInt8(AccInfo.AccType.fir.rawValue), ids.reduce(UInt8(0)){$0 | (1 << ($1 - 1))}, 0])
+            sensorTimer?.invalidate()
+        }
+        if let ids = deviceInfo.accIds[.color], !ids.isEmpty{
+            sensorSwitches[.color] = true
+            writeNow(0x71, array: [UInt8(AccInfo.AccType.color.rawValue), ids.reduce(UInt8(0)){$0 | (1 << ($1 - 1))}, 0])
+            sensorTimer?.invalidate()
+        }
+        if let ids = deviceInfo.accIds[.led], !ids.isEmpty {
+            writeNow(0x71, array: [UInt8(AccInfo.AccType.led.rawValue), ids.reduce(UInt8(0)){$0 | (1 << ($1 - 1))}, 0])
+        }
     }
     
-    public func stopSensor(_ ids:[Int], type:AccInfo.AccType){
-        write(0x71, array: [UInt8(type.rawValue), ids.reduce(UInt8(0)){$0 | (1 << $1)}, 1])
-        sensorTimer?.invalidate()
+    public func stopAcc(){
+        sensorSwitches[.fir] = false
+        if let ids = deviceInfo.accIds[.fir], !ids.isEmpty{
+            writeNow(0x71, array: [UInt8(AccInfo.AccType.fir.rawValue), ids.reduce(UInt8(0)){$0 | (1 << ($1 - 1))}, 1])
+            sensorTimer?.invalidate()
+        }
+        if let ids = deviceInfo.accIds[.led], !ids.isEmpty {
+            writeNow(0x71, array: [UInt8(AccInfo.AccType.led.rawValue), ids.reduce(UInt8(0)){$0 | (1 << ($1 - 1))}, 1])
+        }
     }
     
     func onWrite(_ error:WriteError?) {
@@ -326,7 +367,7 @@ extension Bluetooth{
                     disconnect()
                     return
                 }
-                if ([1, 8, 5, 3, 0x27, 0x3b].contains(t.0)){//internal talks
+                if (cmds_internal.contains(t.0)){//internal talks
                     var heartbeat = false
                     onReadInternal(t.0, array: t.1, heartbeat: &heartbeat)
                     if heartbeat{
@@ -351,7 +392,7 @@ extension Bluetooth{
                     disconnect()
                     return
                 }
-                if ([1, 8, 5, 3, 0x27, 0x3b].contains(t.0)){//only internal talks are in need
+                if (cmds_internal.contains(t.0)){//only internal talks are in need
                     var heartbeat = false
                     onReadInternal(t.0, array: t.1, heartbeat: &heartbeat)
                     if heartbeat{
@@ -375,9 +416,9 @@ extension Bluetooth{
             handShakeStep = 8
             switch array[0] {
             case 1:
-                let info = DeviceInfo(DeviceError(true))
-                deviceInfo = info
-                delegate?.bluetoothDidUpdateInfo(info)
+                deviceInfo = DeviceInfo()
+                deviceInfo.error.masterboard = true//master board error
+                delegate?.bluetoothDidUpdateDevice(deviceInfo)
             case 0xEE://1s后重发一次
                 delayTimer = Timer.scheduledTimer(withTimeInterval: interval_alive, repeats: false, block: {_ in
                     self.write(8, array: [0])
@@ -389,16 +430,10 @@ extension Bluetooth{
                     break
                 }
                 updateInfo0x8(array)
-                if let d = deviceInfo{
-                    print(d)
-                }
-                if let i = deviceInfo {
-                    delegate?.bluetoothDidUpdateInfo(i)
-                }
-                if let e = deviceInfo?.error {
-                    if e.hasError {
-                        break
-                    }
+                print(deviceInfo)
+                delegate?.bluetoothDidUpdateDevice(deviceInfo)
+                if deviceInfo.error.hasError {
+                    break
                 }
                 write(5, array: [0])
             }
@@ -410,35 +445,29 @@ extension Bluetooth{
             }
             switch array[0] {
             case 1://report low power
-                deviceInfo?.error.power = true
-                if let i = deviceInfo {
-                    delegate?.bluetoothDidUpdateInfo(i)
-                }
+                deviceInfo.error.power = true
+                delegate?.bluetoothDidUpdateDevice(deviceInfo)
             case 2:
                 guard array.count >= 29 else {
                     fatalError("cmd = 5 sub =2 length error")
                     break
                 }
                 updateInfo0x5(array)
-                if let info = deviceInfo {
-                    if info.error.hasError {
-                        if info.error.servo.contains(.blocked) {
-                            if let v = info.version {
-                                if let r = v.range(of: "_p")  {
-                                    if !r.isEmpty {//可修复
-                                        if v[r.upperBound...].compare("1.36") != .orderedAscending {
-                                            write(0x3b, array: [0])
-                                            let _ = deviceInfo?.error.servo.remove(.blocked)
-                                        }
+                if deviceInfo.error.hasError {
+                    if deviceInfo.error.servo.contains(.blocked) {
+                        if let v = deviceInfo.version {
+                            if let r = v.range(of: "_p")  {
+                                if !r.isEmpty {//可修复
+                                    if v[r.upperBound...].compare("1.36") != .orderedAscending {
+                                        write(0x3b, array: [0])
+                                        let _ = deviceInfo.error.servo.remove(.blocked)
                                     }
                                 }
                             }
                         }
                     }
                 }
-                if let i = deviceInfo {
-                    delegate?.bluetoothDidUpdateInfo(i)
-                }
+                delegate?.bluetoothDidUpdateDevice(deviceInfo)
             case 0://握手成功
                 if first {
                     handShakeStep = 100
@@ -453,12 +482,8 @@ extension Bluetooth{
         case 0x27://power info
             if array.count==4 {
                 updateInfo0x27(array)
-                if let p = deviceInfo?.power{
-                    print("power info = \(p)")
-                }
-                if let i = deviceInfo {
-                    delegate?.bluetoothDidUpdateInfo(i)
-                }
+                print("power info = \(deviceInfo.power)")
+                delegate?.bluetoothDidUpdateDevice(deviceInfo)
                 powerTimer?.invalidate()
                 powerTimer = Timer.scheduledTimer(withTimeInterval: interval_power, repeats: false, block: {_ in
                     self.write(0x27, array: [0])
@@ -469,12 +494,58 @@ extension Bluetooth{
             switch array[0] {
             case 0:heartbeat = true//done
             case 0xee://report fail
-                if deviceInfo != nil {
-                    deviceInfo?.error.servo.insert(.blocked)
-                    guard let i = deviceInfo else {return}
-                    delegate?.bluetoothDidUpdateInfo(i)
-                }
+                deviceInfo.error.servo.insert(.blocked)
+                delegate?.bluetoothDidUpdateDevice(deviceInfo)
             default:break
+            }
+        case 0x71:updateInfo0x71(array)
+        case 0x7e://temp
+            guard array.count >= 7 else {break}
+            guard let type = AccInfo.AccType(rawValue: Int(array[3])) else {break}
+            if sensorSwitches[type] == true{
+                if array[0] >= 1, array[1] >= 1, array[2] >= 1{
+                    if type == .fir{
+                        if array[4] != 0{
+                            (0..<8).forEach{
+                                if (1 << $0 & array[4]) != 0{
+                                    if accInfo.errors[type] == nil{
+                                        accInfo.errors[type] = Set()
+                                    }
+                                    accInfo.errors[type]?.insert($0 + 1)
+                                }
+                            }
+                            sensorTimer?.invalidate()
+                            delegate?.bluetoothDidUpdateAcc(accInfo, type: type)
+                            break
+                        }
+                        if accInfo.values[type] == nil{
+                            accInfo.values[type] = [Int:Any]()
+                        }
+                        accInfo.values[type]?[1] = infraredLevel((Int(array[6]) << 8) | Int(array[7]))
+                        delegate?.bluetoothDidUpdateAcc(accInfo, type: type)
+                    }else if type == .color{
+                        if array[4] != 0{
+                            (0..<8).forEach{
+                                if (1 << $0 & array[4]) != 0{
+                                    if accInfo.errors[type] == nil{
+                                        accInfo.errors[type] = Set()
+                                    }
+                                    accInfo.errors[type]?.insert($0 + 1)
+                                }
+                            }
+                            sensorTimer?.invalidate()
+                            delegate?.bluetoothDidUpdateAcc(accInfo, type: type)
+                            break
+                        }
+                        if accInfo.values[type] == nil{
+                            accInfo.values[type] = [Int:Any]()
+                        }
+                        let col = UInt(array[6]) << 16 | UInt(array[7]) << 8 | UInt(array[8])
+                        let val = AccColor(color: col, ch0: UInt16(array[9]) << 8 | UInt16(array[10]), ch1: UInt16(array[11]) << 8 | UInt16(array[12]), ch2: UInt16(array[13]) << 8 | UInt16(array[14]), ch3: UInt16(array[15]) << 8 | UInt16(array[16]))
+                        accInfo.values[type]?[1] = val
+                        delegate?.bluetoothDidUpdateAcc(accInfo, type: type)
+                    }
+                }
             }
         default:break
         }
@@ -486,7 +557,7 @@ extension Bluetooth{
         }
         
         let p = Float(array[10])/10
-        var info = DeviceInfo(DeviceError(false))
+        var info = DeviceInfo()
         info.version = v
         info.servo = ServoInfo()
         info.power = PowerInfo()
@@ -525,6 +596,36 @@ extension Bluetooth{
                 v |= UInt(array[19 + i])<<(24 - i * 8)
             }
             info.servo?.version = v
+        }
+        var idx = 28
+        if array.count >= idx && array[idx] != 0 {
+            var ids = [Int]()
+            (0..<8).forEach{
+                if (1 << $0 & array[idx]) != 0{
+                    ids.append($0 + 1)
+                }
+            }
+            info.accIds[.fir] = ids
+        }
+        idx = 28 + 3 * 7
+        if array.count >= idx && array[idx] != 0{
+            var ids = [Int]()
+            (0..<8).forEach{
+                if (1 << $0 & array[idx]) != 0{
+                    ids.append($0 + 1)
+                }
+            }
+            info.accIds[.led] = ids
+        }
+        idx = 28 + 12 * 7
+        if array.count >= idx && array[idx] != 0{
+            var ids = [Int]()
+            (0..<8).forEach{
+                if (1 << $0 & array[idx]) != 0{
+                    ids.append($0 + 1)
+                }
+            }
+            info.accIds[.color] = ids
         }
         deviceInfo = info
     }
@@ -569,23 +670,56 @@ extension Bluetooth{
         guard !e.isEmpty else {
             fatalError("error updateInfo0x5 empty")
         }
-        deviceInfo?.error.servo.insert(e)
+        deviceInfo.error.servo.insert(e)
     }
     
     func updateInfo0x27(_ array:[UInt8]) {
         guard array.count>=4 else {
             fatalError("updateInfo0x27 length")
         }
-        if deviceInfo?.power != nil {
-            deviceInfo?.power?.charging = array[0] > 0
-            deviceInfo?.power?.complete = array[1] > 0
-            deviceInfo?.power?.voltage = Float(array[2])/10
-            deviceInfo?.power?.percent = Float(array[3])/100
-            if array[0] > 0 {
-                deviceInfo?.error.power = false
-            }else{
-                deviceInfo?.error.power = Float(array[2])/10 <= level_power_low
+        deviceInfo.power?.charging = array[0] > 0
+        deviceInfo.power?.complete = array[1] > 0
+        deviceInfo.power?.voltage = Float(array[2])/10
+        deviceInfo.power?.percent = Float(array[3])/100
+        if array[0] > 0 {
+            deviceInfo.error.power = false
+        }else{
+            deviceInfo.error.power = Float(array[2])/10 <= level_power_low
+        }
+    }
+    
+    func updateInfo0x71(_ array:[UInt8]) {
+        guard array.count >= 3, let type = AccInfo.AccType(rawValue: Int(array[0])) else {return}
+        switch (type){
+        case .fir, .color:
+            if array[2] == 1{
+                (0..<8).forEach{
+                    if (1 << $0 & array[1]) != 0{
+                        if accInfo.errors[type] == nil{
+                            accInfo.errors[type] = Set()
+                        }
+                        accInfo.errors[type]?.insert($0 + 1)
+                    }
+                }
+                sensorTimer?.invalidate()
+                delegate?.bluetoothDidUpdateAcc(accInfo, type: type)
+            }else if array[2] == 0{
+                sensorTimer?.invalidate()
+                if let _ = writeChar, sensorSwitches[type] == true, let ids = deviceInfo.accIds[type], !ids.isEmpty{
+                    let count = UInt8(ids.count)
+                    let t = array[0]
+                    let flag = ids.reduce(UInt8(0)){$0 | (1 << (UInt8($1) - 1))}
+                    sensorTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true){
+                        if self.sensorSwitches[type] == true{
+                            self.writeNow(0x7e, array: [count, t, flag])
+                        }else{
+                            $0.invalidate()
+                        }
+                    }
+                }
             }
+//        case .led:break
+        default:break
         }
     }
 }
@@ -624,31 +758,57 @@ extension Bluetooth:CBPeripheralDelegate
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        print("didWriteValueFor \(cmd), error: \(error )" )
+        if let data = characteristic.value {
+            print("didWriteValueFor \(data), error: \(error)" )
+        }
         onWrite(error == nil ? nil : .systemError)
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if error == nil{
             guard let data = characteristic.value else{return}
-            if data == Data(bytes:[0]){
+            if data == Data(bytes:[0]){//00
                 onRead(nil, error: .restarted)
             }else{
-                let arr = Bluetooth.devidePackage(data)
-                guard arr.count > 0 else{
+                buf += data
+                let tuple = Bluetooth.devidePackage(buf)
+                if tuple.0 < 0{
                     onRead(nil, error: .badResponse)
-                    return
-                }
-                arr.forEach{
-                    onRead($0, error: nil)
-                    if $0.0 == cmd{
-                        cmd = 0
-                        tryWriting()
+                }else{
+                    tuple.1.forEach{
+                        onRead($0, error: nil)
+                        if $0.0 == cmd{
+                            cmd = 0
+                            tryWriting()
+                        }
                     }
+                    buf = Data(buf[tuple.0...])
                 }
             }
         }else{
             onRead(nil, error: .systemError)
         }
     }
+}
+
+func infraredLevel(_ value:Int)->Int
+{
+    let realValue = value - 850;
+    var level = 0.0
+    if realValue < 0 {
+        level = 0
+    } else if realValue < 70 {
+        level = (Double(realValue - 15) / 13.5)
+    } else if realValue < 1210 {
+        level = Double(realValue + 1134) / 288.0
+    } else if realValue < 1565 {
+        level = Double(realValue + 206) / 177
+    } else if realValue < 1821 {
+        level = Double(realValue - 1033) / 53.75
+    } else if realValue < 2200 {
+        level = Double(realValue - 1462) / 22.75
+    } else {
+        level = 20 // 此值不可达,因为realValue最大值为2800左右
+    }
+    return Int(min(level, 20))
 }

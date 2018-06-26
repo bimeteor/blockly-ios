@@ -10,14 +10,10 @@ import Foundation
 import Blockly
 class BLKSimulatorViewController: BLKBaseViewController {
     fileprivate var simulatorCtr:SimulatorViewController?
-    override public init() {
-        super.init()
+    override func viewDidLoad() {
         libPath = Bundle.main.path(forResource: "turtle_blocks.json", ofType: nil)
         toolPath = Bundle.main.path(forResource: "turtle.xml", ofType: nil)
-    }
-    required init?(coder aDecoder: NSCoder) {
-        assertionFailure("Called unsupported initializer")
-        super.init(coder: aDecoder)
+        super.viewDidLoad()
     }
     override func ation(){
         if case _?? = try? workspace?.toXML(){
@@ -38,11 +34,6 @@ class BLKSimulatorViewController: BLKBaseViewController {
         codeCtr = nil
     }
     
-    override func onRead(_ ctr: UIViewController, obj: Any) {
-        if ctr is SimulatorViewController {
-            
-        }
-    }
     //run
     override func run(_ cmd:String, value:Any){
         print("\(#line) \(cmd) \(value)")

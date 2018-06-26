@@ -350,7 +350,7 @@ open class WorkbenchViewController: UIViewController {
       UITapGestureRecognizer(target: self, action: #selector(didTapWorkspaceView(_:)))
     return tapGesture
   }()
-
+    
   // MARK: - Initializers
 
   /**
@@ -1675,7 +1675,7 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
     } else if touchState == .changed || touchState == .ended {
         addUIStateValue(.draggingBlock)
         _dragger.continueDraggingBlockLayout(blockLayout, touchPosition: workspacePosition)
-        
+
         if isGestureTouchingTrashCan(gesture) && blockLayout.block.deletable {
             if !toolboxCategoryListViewController.view.isHidden {
                 toolboxCategoryListViewController.view.isHidden = true // 显示垃圾筐
@@ -1691,45 +1691,45 @@ extension WorkbenchViewController: BlocklyPanGestureRecognizerDelegate {
     }
 
     if touchState == .ended {
-      let touchTouchingTrashCan = isTouchTouchingTrashCan(touchPosition,
-                                                          fromView: workspaceView.scrollView)
-      if touchTouchingTrashCan && blockLayout.block.deletable {
-        // This block is being "deleted" -- cancel the drag and copy the block into the trash can
-        _dragger.cancelDraggingBlockLayout(blockLayout)
-        
-        do {
-          // Keep a reference of all blocks that are getting transferred over so they don't go
-          // out of memory.
-          var allBlocksToRemove = blockLayout.block.allBlocksForTree()
-          
-          try _workspaceLayoutCoordinator?.removeBlockTree(blockLayout.block)
-          try trashCanViewController.workspaceLayoutCoordinator?.addBlockTree(blockLayout.block)
-          
-          allBlocksToRemove.removeAll()
-        } catch let error {
-          bky_assertionFailure("Could not copy block to trash can: \(error)")
-        }
-      } else {
-        _dragger.finishDraggingBlockLayout(blockLayout)
-      }
-      
-      if toolboxCategoryListViewController.view.isHidden {
-        toolboxCategoryListViewController.view.isHidden = false // // 隐藏垃圾筐
-      }
-      
-      if _dragger.numberOfActiveDrags == 0 {
-        // Update the UI state
-        removeUIStateValue(.draggingBlock)
-        if !isGestureTouchingTrashCan(gesture) {
-          removeUIStateValue(.trashCanHighlighted)
+        let touchTouchingTrashCan = isTouchTouchingTrashCan(touchPosition,
+                                                            fromView: workspaceView.scrollView)
+        if touchTouchingTrashCan && blockLayout.block.deletable {
+            // This block is being "deleted" -- cancel the drag and copy the block into the trash can
+            _dragger.cancelDraggingBlockLayout(blockLayout)
+            
+            do {
+                // Keep a reference of all blocks that are getting transferred over so they don't go
+                // out of memory.
+                var allBlocksToRemove = blockLayout.block.allBlocksForTree()
+                
+                try _workspaceLayoutCoordinator?.removeBlockTree(blockLayout.block)
+                try trashCanViewController.workspaceLayoutCoordinator?.addBlockTree(blockLayout.block)
+                
+                allBlocksToRemove.removeAll()
+            } catch let error {
+                bky_assertionFailure("Could not copy block to trash can: \(error)")
+            }
+        } else {
+            _dragger.finishDraggingBlockLayout(blockLayout)
         }
         
-        EventManager.shared.popGroup()
-      }
+        if toolboxCategoryListViewController.view.isHidden {
+            toolboxCategoryListViewController.view.isHidden = false // 隐藏垃圾筐
+        }
       
-      // Always fire pending events after a finger has been lifted. All grouped events will
-      // eventually get grouped together regardless if they were fired in batches.
-      EventManager.shared.firePendingEvents()
+        if _dragger.numberOfActiveDrags == 0 {
+            // Update the UI state
+            removeUIStateValue(.draggingBlock)
+            if !isGestureTouchingTrashCan(gesture) {
+                removeUIStateValue(.trashCanHighlighted)
+            }
+            
+            EventManager.shared.popGroup()
+        }
+        
+        // Always fire pending events after a finger has been lifted. All grouped events will
+        // eventually get grouped together regardless if they were fired in batches.
+        EventManager.shared.firePendingEvents()
     }
   }
 }

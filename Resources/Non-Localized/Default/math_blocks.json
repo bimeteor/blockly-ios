@@ -27,11 +27,10 @@
         "type": "field_dropdown",
         "name": "OP",
         "options": [
-          ["%{BKY_MATH_ADDITION_SYMBOL}", "ADD"],
-          ["%{BKY_MATH_SUBTRACTION_SYMBOL}", "MINUS"],
-          ["%{BKY_MATH_MULTIPLICATION_SYMBOL}", "MULTIPLY"],
-          ["%{BKY_MATH_DIVISION_SYMBOL}", "DIVIDE"],
-          ["%{BKY_MATH_POWER_SYMBOL}", "POWER"]
+          ["%{BKY_MATH_ADDITION_SYMBOL}", "+"],
+          ["%{BKY_MATH_SUBTRACTION_SYMBOL}", "-"],
+          ["%{BKY_MATH_MULTIPLICATION_SYMBOL}", "*"],
+          ["%{BKY_MATH_DIVISION_SYMBOL}", "/"],
         ]
       },
       {
@@ -241,7 +240,7 @@
     "helpUrl": "%{BKY_MATH_CONSTRAIN_HELPURL}"
   },
   {
-    "type": "math_random_int",
+    "type": "math_random_limit",
     "message0": "%{BKY_MATH_RANDOM_INT_TITLE}",
     "args0": [
       {
@@ -262,7 +261,7 @@
     "helpUrl": "%{BKY_MATH_RANDOM_INT_HELPURL}"
   },
   {
-    "type": "math_random_float",
+    "type": "math_random",
     "message0": "%{BKY_MATH_RANDOM_FLOAT_TITLE_RANDOM}",
     "output": "Number",
     "colour": "%{BKY_MATH_HUE}",

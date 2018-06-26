@@ -83,6 +83,9 @@ extension ConnectViewControler:BluetoothManagerDelegate{
 }
 
 extension ConnectViewControler:BluetoothDelegate{
+    func bluetoothDidUpdateAcc(_ info: AccInfo, type: AccInfo.AccType){
+        print("bluetoothDidUpdateAcc \(!info.errors.isEmpty)")
+    }
 
     func bluetoothDidVerify(_ error: VerifyError?) {
         if let e = error {
@@ -112,8 +115,8 @@ extension ConnectViewControler:BluetoothDelegate{
         }
     }
     
-    func bluetoothDidUpdateInfo(_ info: DeviceInfo) {
-        print("bluetoothDidUpdateInfo \(info)")
+    func bluetoothDidUpdateDevice(_ info: DeviceInfo) {
+        print("bluetoothDidUpdateDevice \(info)")
     }
 }
 

@@ -244,7 +244,7 @@ open class LayoutConfig: NSObject {
     setDouble(0.3, for: LayoutConfig.ViewAnimationDuration)
 
     setStringArray(["variables_get"], for: LayoutConfig.VariableBlocks)
-    setStringArray(["variables_set", "math_change"], for: LayoutConfig.UniqueVariableBlocks)
+    setStringArray(["variables_set"], for: LayoutConfig.UniqueVariableBlocks)
 
     setFontCreator({ scale in
       return UIFont.boldSystemFont(ofSize: 16 * scale)

@@ -14,78 +14,33 @@
  */
 
 import Blockly
-import CoreMotion
 import AEXML
 
-func infraredLevel(_ value:Int)->Int
-{
-    let realValue = value - 850;
-    var level = 0.0
-    
-    if realValue < 0 {
-        level = 0
-    } else if realValue < 70 {
-        level = (Double(realValue - 15) / 13.5)
-    } else if realValue < 1210 {
-        level = Double(realValue + 1134) / 288.0
-    } else if realValue < 1565 {
-        level = Double(realValue + 206) / 177
-    } else if realValue < 1821 {
-        level = Double(realValue - 1033) / 53.75
-    } else if realValue < 2200 {
-        level = Double(realValue - 1462) / 22.75
-    } else {
-        level = 20 // 此值不可达,因为realValue最大值为2800左右
-    }
-    
-    if(level>20)
-    {
-        level=20
-    }
-    
-    return Int(level)
-}
-
 class BLKDeviceViewController: BLKBaseViewController {
-    override init() {
-        super.init()
-        libPath = Bundle.main.path(forResource: "rover.json", ofType: nil)
-        toolPath = Bundle.main.path(forResource: "rover.xml", ofType: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        assertionFailure("Called unsupported initializer")
-        super.init(coder: aDecoder)
-    }
-    
     let bleManager = BluetoothManager()
     var ble:Bluetooth?
     var cmds = [(UInt8, [UInt8])]()
     var cmd = UInt8(0)
-    var sensorTimer:Timer?
-    
+    let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.width - 250, y: 150, width: 200, height: 20))
     var connectCtr:ConnectViewControler?
     
-    lazy var motionManager:CMMotionManager = CMMotionManager()
     override func viewDidLoad() {
+        libPath = Bundle.main.path(forResource: "rover.json", ofType: nil)
+        toolPath = Bundle.main.path(forResource: "rover.xml", ofType: nil)
         super.viewDidLoad()
+        view.addSubview(label)
+        label.textColor = .red
+        label.text = "0"
     }
     override func start() {
         cmds = []
         cmd = 0
-        ble?.startSensor([1], type: .fir)
-        sensorTimer?.invalidate()
-        sensorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true){_ in
-            self.ble?.write(0x72, array: [1, 1, 0])
-        }
+        ble?.startAcc()
         super.start()
-        monitorTilt()
     }
-    override func _stop() {
-        super._stop()
-        motionManager.stopAccelerometerUpdates()
-        sensorTimer?.invalidate()
-    }
+//    override func _stop() {
+//        super._stop()
+//    }
     //btn
     override func ation(){
         let ctr = ConnectViewControler(bleManager)
@@ -111,11 +66,12 @@ class BLKDeviceViewController: BLKBaseViewController {
         codeCtr = nil
     }
     
-    override func onRead(_ ctr: UIViewController, obj: Any) {
+    override func onOther(_ ctr: UIViewController, obj: Any) {
         if ctr is SimulatorViewController {
 
         }
     }
+    
     func tryWriting() {
         if ble?.state == .connected, ble?.handshaked == true{
             if cmds.count > 0{
@@ -157,6 +113,41 @@ class BLKDeviceViewController: BLKBaseViewController {
                 tryWriting()
             default:vm?.performer.continue()
             }
+        case "light_left_right"://TODO:frank
+            cmds = [(0x78, [4, 3, 12, 0, 1, 0, 0, 0])]
+            self.cmd = 0
+            tryWriting()
+            vm?.performer.continue()
+        case "move_speed_duration"://TODO:frank
+            cmds = [(0x78, [4, 3, 12, 0, 1, 0, 0, 0])]
+            self.cmd = 0
+            tryWriting()
+        case "move_stop"://TODO:frank
+            cmds = [(0x78, [4, 3, 12, 0, 1, 0, 0, 0])]
+            self.cmd = 0
+            tryWriting()
+        case "move_myaction_duration"://TODO:frank
+            cmds = [(0x78, [4, 3, 12, 0, 1, 0, 0, 0])]
+            self.cmd = 0
+            tryWriting()
+        case "move_machine_rotate_duration"://TODO:frank
+            cmds = [(0x78, [4, 3, 12, 0, 1, 0, 0, 0])]
+            self.cmd = 0
+            tryWriting()
+        case "move_machine_rotate_speed"://TODO:frank
+            cmds = [(0x78, [4, 3, 12, 0, 1, 0, 0, 0])]
+            self.cmd = 0
+            tryWriting()
+        case "light_playvoice_pat"://TODO:frank
+            break
+        case "light_play_sound":
+            break
+        case "light_myvoice":
+            break
+        case "light_stop":
+            break
+        case "light_color_duration":
+            break
         default:
             vm?.performer.continue()
         }

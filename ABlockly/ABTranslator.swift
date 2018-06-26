@@ -70,11 +70,19 @@ extension ABTranslator{
         return ""
     }
     private func code(_ node:XMLNode)->String{
-        guard let type = node.attributes["type"], var str = rules[type] else {return ""}
+        guard let type = node.attributes["type"], let rule = rules[type] else {return ""}
+        var str = rule
+        var values = 0   //number of paras, to determine whether '()' is needed
+        var other = 0   //number of other symbols, to determine whether '()' is needed
         var offset = str.startIndex
         while true{ //repeat: find \(name[id=value]) and replace it
             if let range = str.range(of: "\\\\\\([a-zA-Z0-9\\[=\\]$]*\\)", options: .regularExpression, range: offset..<str.endIndex){
                 var path = String(str[str.index(range.lowerBound, offsetBy: 2)..<str.index(before: range.upperBound)])
+                if path.hasPrefix("value"){
+                    values += 1
+                }else{
+                    other += 1
+                }
                 let split = path.split(separator: "$")  //default value
                 var def = ""
                 if split.count>1{
@@ -113,6 +121,9 @@ extension ABTranslator{
         }
         if !type.hasPrefix("start") {   //next
             node["|block.next.block"].map{str += "\n" + code($0)}
+        }
+        if node.parent?.name == "value" && values >= 2 && other >= 1{//placed in '()' if a expr has 2 or more paras
+            str = "(" + str + ")"
         }
         return str
     }

@@ -86,16 +86,16 @@ extension ABPerformer{
             timer = Timer.scheduledTimer(withTimeInterval: max(Double(itv) ?? 0, timeInterval), repeats: false){[unowned self] _ in
                 self.continueSoon()
             }
-        case "control_wait_until":break//TODO:frank
-//            timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true){
-//                [unowned self] t in
-//                if true{
-//                    t.invalidate()
-//                    self.continueSoon()
-//                }
-//            }
-        case "control_repeat_times", "control_repeat_until", "control_repeat_always", "control_if", "control_if_else", "restart":
+        case "control_repeat_ext", "control_repeat_forever", "control_repeat_until", "control_if", "control_if_else", "restart":
             `continue`()
+        case "control_wait_until":
+            guard let n = node["|block.value[name=IF0].block"] else {return}
+            timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true){
+                if self.evaluate(n) == "true"{
+                    $0.invalidate()
+                    self.continueSoon()
+                }
+            }
         case "turtle_move":
             guard let n = node["|block.value[name=VALUE].block"] else {`continue`(); return}
             delegate?.run("turtle_move", value: Int(evaluate(n)) ?? 0)
@@ -106,8 +106,47 @@ extension ABPerformer{
             guard let n = node["|block.value[name=COLOUR].block"] else {`continue`(); return}
             delegate?.run("turtle_color", value: Int(evaluate(n)) ?? 0)
         case "move_action":
-            guard let n = node["|block.field[name=DIR]"] else {`continue`(); return}
+            guard let n = node["|block.field[name=ACTION]"] else {`continue`(); return}
             delegate?.run("move_action", value: evaluate(n))
+        case "variables_set":
+            guard let n = node["|block.value[name=VALUE].block"], let num = Int(evaluate(n)), let f = node["|block.field[name=VAR]"] else {`continue`(); return}
+            update(num, type: evaluate(f), id: 1)
+            `continue`()
+        case "math_change":
+            guard let n = node["|block.value[name=DELTA].block"], let num = Int(evaluate(n)), let f = node["|block.field[name=VAR]"] else {`continue`(); return}
+            update(num, type: evaluate(f), id: 1)
+            `continue`()
+        case "light_left_right"://TODO:frank
+            delegate?.run("light_left_right", value: "")
+        case "move_speed_duration":
+            guard let dir = node["|block.field[name=DIR]"], let speed = node["|block.field[name=SPEED]"], let num = node["|block.field[name=number]"] else {`continue`(); return}
+            delegate?.run("move_speed_duration", value: (evaluate(dir), evaluate(speed), Int(evaluate(num)) ?? 0))
+        case "move_speed":
+            guard let dir = node["|block.field[name=DIR]"], let speed = node["|block.field[name=SPEED]"] else {`continue`(); return}
+            delegate?.run("move_speed", value: (evaluate(dir), evaluate(speed)))
+        case "move_stop":
+            delegate?.run("move_stop", value: 0)
+        case "move_myaction_duration"://TODO:frank
+            delegate?.run("move_myaction_duration", value: 0)
+        case "move_machine_rotate_duration":
+            guard let id = node["|block.field[name=ID]"], let speed = node["|block.field[name=SPEED]"], let num = node["|block.field[name=number]"] else {`continue`(); return}
+            delegate?.run("move_machine_rotate_duration", value: (Int(evaluate(id)) ?? 0, evaluate(speed), Int(evaluate(num)) ?? 0))
+        case "move_machine_rotate_speed":
+            guard let id = node["|block.field[name=ID]"], let speed = node["|block.field[name=SPEED]"], let dir = node["|block.field[name=DIR]"] else {`continue`(); return}
+            delegate?.run("move_machine_rotate_speed", value: (Int(evaluate(id)) ?? 0, evaluate(dir), evaluate(speed)))
+        case "light_playvoice_pat":
+            guard let tune = node["|block.field[name=TUNE]"], let time = node["|block.field[name=TIME]"] else {`continue`(); return}
+            delegate?.run("light_playvoice_pat", value: (evaluate(tune), Double(evaluate(time)) ?? 1))
+        case "light_play_sound":
+            guard let n = node["|block.field[name=SOUND]"] else {`continue`(); return}
+            delegate?.run("light_play_sound", value: evaluate(n))
+        case "light_myvoice":
+            guard let n = node["|block.field[name=ID]"] else {`continue`(); return}
+            delegate?.run("light_play_sound", value: Int(evaluate(n)) ?? 0)
+        case "light_stop":
+            delegate?.run("move_stop", value: 0)
+        case "light_color_duration":
+            break
         default:
             `continue`()
         }
@@ -123,6 +162,7 @@ extension ABPerformer{
             guard let a = node["|block.value[name=A].block"], let b = node["|block.value[name=B].block"], let op = node["|block.field"] else {return "false"}
             switch evaluate(op){
             case "=":return String(evaluate(a) == evaluate(b))
+            case "!=":return String(evaluate(a) != evaluate(b))
             case ">":return String(Int(evaluate(a)) ?? 0 > Int(evaluate(b)) ?? 1)
             case ">=":return String(Int(evaluate(a)) ?? 0 >= Int(evaluate(b)) ?? 1)
             case "<":return String(Int(evaluate(a)) ?? 1 < Int(evaluate(b)) ?? 0)
@@ -161,10 +201,44 @@ extension ABPerformer{
             }
             return "false"
         case "start_barrier":
-            if let val = variables["fir_space"]?[1], val > 0{
-                return String(val <= 20)
+            if let val = variables["\(AccInfo.AccType.fir)"]?[1], val > 0{
+                return String(val <= 14)
             }
             return "false"
+        case "start_barrier_space":
+            if let val = variables["\(AccInfo.AccType.fir)"]?[1], val > 0{
+                guard let op = node["|block.field[name=OP]"], let n = node["|block.field[name=number]"], let num = Int(evaluate(n)) else {return "false"}
+                return String(evaluate(op) == "<" ? val < num : val > num)
+            }
+            return "false"
+        case "math_modulo":
+            guard let m = node["|block.value[name=DIVIDEND].block"], let n = node["|block.value[name=DIVISOR].block"] else {return "0"}
+            let mm = Int(evaluate(m)) ?? 0
+            var nn = Int(evaluate(n)) ?? 1
+            nn = nn == 0 ? 1 : nn
+            return "\(mm % nn)"
+        case "math_random_limit":
+            guard let m = node["|block.value[name=FROM].block"], let n = node["|block.value[name=TO].block"] else {return "0"}
+            let mm = Int(evaluate(m)) ?? 0
+            let nn = Int(evaluate(n)) ?? 0
+            let max1 = max(mm, nn, Int(Int32.min))
+            let min1 = min(mm, nn, Int(Int32.max))
+            if max1 == min1{
+                return "\(max1)"
+            }
+            return "\(Int(arc4random()) % (max1 - min1) + min1)"
+        case "math_random":
+            return "\(arc4random()%1000)"
+        case "math_round":
+            guard let m = node["|block.value[name=NUM].block"] else {return "0"}
+            let mm = Double(evaluate(m)) ?? 0
+            return "\(Int(mm + 0.5))"
+        case "logic_negate":
+            guard let m = node["|block.value[name=BOOL].block"] else {return "true"}
+            return evaluate(m) == "true" ? "false" : "true"
+        case "variables_get":
+            guard let f = node["|block.field[name=VAR]"] else {return "0"}
+            return "\(variables[evaluate(f)]?[1] ?? 0)"
         default:
             return ""
         }

@@ -65,15 +65,15 @@
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "OP",
             "options": [
                         [
-                         "≤",
-                         "lessOrEqual"
+                         "<",
+                         "<"
                          ],
                         [
                          ">",
-                         "largerThan"
+                         ">"
                          ]
                         ]
             },
@@ -107,29 +107,29 @@
             "options": [
                         [
                          "前进",
-                         "moveForward"
+                         "forward"
                          ],
                         [
                          "后退",
-                         "moveBack"
+                         "backward"
                          ]
                         ]
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "SPEED",
             "options": [
                         [
                          "中速",
-                         "midleSpeed"
+                         "middle"
                          ],
                         [
                          "高速",
-                         "highSpeed"
+                         "high"
                          ],
                         [
                          "慢速",
-                         "slowSpeed"
+                         "slow"
                          ]
                         ]
             },
@@ -164,29 +164,29 @@
             "options": [
                         [
                          "前进",
-                         "moveForward"
+                         "forward"
                          ],
                         [
                          "后退",
-                         "moveBack"
+                         "backward"
                          ]
                         ]
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "SPEED",
             "options": [
                         [
                          "中速",
-                         "midleSpeed"
+                         "middle"
                          ],
                         [
                          "高速",
-                         "highSpeed"
+                         "high"
                          ],
                         [
                          "慢速",
-                         "slowSpeed"
+                         "slow"
                          ]
                         ]
             }
@@ -210,7 +210,7 @@
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "ACTION",
             "options": [
                         [
                          "前进",
@@ -296,7 +296,7 @@
   },
   {
   "type": "move_machine_rotate_duration",
-  "message0": "%1 舵机%2，转动 %3度，时长%4毫秒",
+  "message0": "%1 舵机%2，转动 %3，时长%4毫秒",
   "args0": [
             {
             "type": "field_image",
@@ -307,35 +307,21 @@
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "ID",
             "options": [
                         [
                          "ID-1",
-                         "moveForward"
+                         "1"
                          ],
                         [
                          "ID-2",
-                         "moveBack"
+                         "2"
                          ]
                         ]
             },
             {
-            "type": "field_dropdown",
-            "name": "DIR",
-            "options": [
-                        [
-                         "90",
-                         "midleSpeed"
-                         ],
-                        [
-                         "180",
-                         "highSpeed"
-                         ],
-                        [
-                         "360",
-                         "slowSpeed"
-                         ]
-                        ]
+            "type": "input_value",
+            "name": "VALUE"
             },
             {
             "type": "field_number",
@@ -345,6 +331,7 @@
             "value": 10
             }
             ],
+  "inputsInline": true,
   "previousStatement": null,
   "nextStatement": null,
   "colour": "#009688",
@@ -364,15 +351,15 @@
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "ID",
             "options": [
                         [
                          "ID-1",
-                         "moveForward"
+                         "1"
                          ],
                         [
                          "ID-2",
-                         "moveBack"
+                         "2"
                          ]
                         ]
             },
@@ -382,29 +369,29 @@
             "options": [
                         [
                          "顺时针",
-                         "midleSpeed"
+                         "clock"
                          ],
                         [
                          "逆时针",
-                         "highSpeed"
+                         "anti-clock"
                          ]
                         ]
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "SPEED",
             "options": [
                         [
                          "中速",
-                         "midleSpeed"
+                         "middle"
                          ],
                         [
                          "高速",
-                         "highSpeed"
+                         "high"
                          ],
                         [
                          "慢速",
-                         "slowSpeed"
+                         "slow"
                          ]
                         ]
             }
@@ -416,7 +403,7 @@
   "blockFactoryUrl": "https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#metkk9"
   },
   {
-  "type": "controls_wait",
+  "type": "control_wait",
   "message0": "等待%1秒",
   "args0": [
             {
@@ -470,7 +457,7 @@
   "helpUrl": "%{BKY_CONTROLS_WHILEUNTIL_HELPURL}"
   },
   {
-  "type": "controls_if",
+  "type": "control_if",
   "message0": "如果 %1",
   "args0": [
             {
@@ -493,7 +480,7 @@
   "tooltip": "If a value is true, then do some statements."
   },
   {
-  "type": "controls_if_else",
+  "type": "control_if_else",
   "message0": "如果 %1",
   "args0": [
             {
@@ -523,20 +510,36 @@
   "tooltip": "If a value is true, then do some statements."
   },
   {
-  "type": "controls_wait_until",
-  "message0": "重复%1",
+  "type": "control_wait_until",
+  "message0": "等待直到%1",
   "args0": [
-            {
-            "type": "input_statement",
-            "name": "DO"
-            }
-            ],
-  "message1": "直到%1",
-  "args1": [
             {
             "type": "input_value",
             "name": "IF0",
             "check": "Boolean"
+            }
+            ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": "%{BKY_LOOPS_HUE}",
+  "tooltip": "While a value is false, then do some statements.",
+  "helpUrl": "%{BKY_CONTROLS_WHILEUNTIL_HELPURL}"
+  },
+  {
+  "type": "control_repeat_until",
+  "message0": "重复执行直到%1",
+  "args0": [
+            {
+            "type": "input_value",
+            "name": "IF0",
+            "check": "Boolean"
+            }
+            ],
+  "message1": "%1",
+  "args1": [
+            {
+            "type": "input_statement",
+            "name": "DO"
             }
             ],
   "previousStatement": null,
@@ -558,29 +561,49 @@
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "TUNE",
             "options": [
                         [
-                         "c5",
-                         "moveForward"
+                         "C5",
+                         "C5"
                          ],
                         [
-                         "c4",
-                         "moveBack"
+                         "C4",
+                         "C4"
+                         ],
+                        [
+                         "C3",
+                         "C3"
+                         ],
+                        [
+                         "C2",
+                         "C2"
                          ]
                         ]
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "TIME",
             "options": [
                         [
-                         "四分之一",
-                         "midleSpeed"
+                         "2/1",
+                         "2"
                          ],
                         [
-                         "八分之一",
-                         "highSpeed"
+                         "1/1",
+                         "1"
+                         ],
+                        [
+                         "1/2",
+                         "0.5"
+                         ],
+                        [
+                         "1/4",
+                         "0.25"
+                         ],
+                        [
+                         "1/8",
+                         "0.125"
                          ]
                         ]
             }
@@ -593,7 +616,7 @@
   },
   {
   "type": "light_play_sound",
-  "message0": "%1 播放音效%2， %3",
+  "message0": "%1 播放音效%2",
   "args0": [
             {
             "type": "field_image",
@@ -604,29 +627,15 @@
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
-            "options": [
-                        [
-                         "动物",
-                         "moveForward"
-                         ],
-                        [
-                         "机械",
-                         "moveBack"
-                         ]
-                        ]
-            },
-            {
-            "type": "field_dropdown",
-            "name": "DIR",
+            "name": "SOUND",
             "options": [
                         [
                          "大象",
-                         "midleSpeed"
+                         "elephant"
                          ],
                         [
                          "企鹅",
-                         "highSpeed"
+                         "penguin"
                          ]
                         ]
             }
@@ -650,15 +659,15 @@
             },
             {
             "type": "field_dropdown",
-            "name": "DIR",
+            "name": "ID",
             "options": [
                         [
                          "#1",
-                         "moveForward"
+                         "1"
                          ],
                         [
                          "#2",
-                         "moveBack"
+                         "2"
                          ]
                         ]
             }
@@ -894,6 +903,32 @@
   "colour": "#009688",
   "tooltip": "Move the turtle forward or backward",
   "blockFactoryUrl": "https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#metkk9"
+  },
+  {
+  "type": "move_set_servos",
+  "message0": "%1 舵机 %2 ，时间 %3 毫秒",
+  "args0": [
+            {
+            "type": "field_image",
+            "src": "28.png",
+            "width": 15,
+            "height": 15,
+            "alt": "*"
+            },
+            {
+            "type": "field_input",
+            "name": "TEXT",
+            "text": ""
+            },
+            {
+            "type": "field_input",
+            "name": "TIME",
+            "text": ""
+            }
+            ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": "#009688",
   }
   ]
 

@@ -11,6 +11,26 @@
 		800F0D571F6150E800E1DB70 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D561F6150E800E1DB70 /* SystemConfiguration.framework */; };
 		800F0D5A1F61518E00E1DB70 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D581F61518E00E1DB70 /* Fabric.framework */; };
 		800F0D5B1F61518E00E1DB70 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800F0D591F61518E00E1DB70 /* Crashlytics.framework */; };
+		805836911FAAC6E200C93AC4 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836831FAAC6E200C93AC4 /* Action.swift */; };
+		805836921FAAC6E200C93AC4 /* Actor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836841FAAC6E200C93AC4 /* Actor.swift */; };
+		805836931FAAC6E200C93AC4 /* ActorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836851FAAC6E200C93AC4 /* ActorType.swift */; };
+		805836941FAAC6E200C93AC4 /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836861FAAC6E200C93AC4 /* Asset.swift */; };
+		805836951FAAC6E200C93AC4 /* AssetCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836871FAAC6E200C93AC4 /* AssetCache.swift */; };
+		805836961FAAC6E200C93AC4 /* CAAnimation+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836881FAAC6E200C93AC4 /* CAAnimation+Blocks.swift */; };
+		805836971FAAC6E200C93AC4 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836891FAAC6E200C93AC4 /* Color.swift */; };
+		805836981FAAC6E200C93AC4 /* Coordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8058368A1FAAC6E200C93AC4 /* Coordinate.swift */; };
+		805836991FAAC6E200C93AC4 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8058368B1FAAC6E200C93AC4 /* Direction.swift */; };
+		8058369A1FAAC6E200C93AC4 /* EventGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8058368C1FAAC6E200C93AC4 /* EventGroup.swift */; };
+		8058369B1FAAC6E200C93AC4 /* HelperExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8058368D1FAAC6E200C93AC4 /* HelperExtensions.swift */; };
+		8058369C1FAAC6E200C93AC4 /* SceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8058368E1FAAC6E200C93AC4 /* SceneSource.swift */; };
+		8058369D1FAAC6E200C93AC4 /* WorldConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8058368F1FAAC6E200C93AC4 /* WorldConfiguration.swift */; };
+		8058369E1FAAC6E200C93AC4 /* WorldNodeIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836901FAAC6E200C93AC4 /* WorldNodeIdentifier.swift */; };
+		805836A11FAAC74E00C93AC4 /* Characters.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 8058369F1FAAC74D00C93AC4 /* Characters.scnassets */; };
+		805836A21FAAC74E00C93AC4 /* WorldResources.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 805836A01FAAC74E00C93AC4 /* WorldResources.scnassets */; };
+		805836A41FAAC78300C93AC4 /* GameLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805836A31FAAC78300C93AC4 /* GameLoader.swift */; };
+		80F656371FAC0E1E00C2C764 /* AudioComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F6562F1FAC0E1E00C2C764 /* AudioComponent.swift */; };
+		80F6563B1FAC7A1300C2C764 /* SS1_CONGR_1h.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 80F6563A1FAC7A1300C2C764 /* SS1_CONGR_1h.m4a */; };
+		80F6563D1FAC7EE600C2C764 /* SS1_PUZL_1b.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 80F6563C1FAC7EE600C2C764 /* SS1_PUZL_1b.m4a */; };
 		D60E430F1F9A142900423F47 /* CodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E430E1F9A142900423F47 /* CodeViewController.swift */; };
 		D60E43181F9A262F00423F47 /* CodeViewControler.xib in Resources */ = {isa = PBXBuildFile; fileRef = D60E43171F9A262F00423F47 /* CodeViewControler.xib */; };
 		D60E431A1F9A768600423F47 /* rules_python in Resources */ = {isa = PBXBuildFile; fileRef = D60E43191F9A768600423F47 /* rules_python */; };
@@ -45,6 +65,8 @@
 		D6C8AF931FA200F200A7D7E5 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C8AF911FA200F100A7D7E5 /* BluetoothManager.swift */; };
 		D6C8AF981FA2D97300A7D7E5 /* rover.json in Resources */ = {isa = PBXBuildFile; fileRef = D6C8AF951FA2D97300A7D7E5 /* rover.json */; };
 		D6C8AF991FA2D97300A7D7E5 /* rover.xml in Resources */ = {isa = PBXBuildFile; fileRef = D6C8AF961FA2D97300A7D7E5 /* rover.xml */; };
+		D6FD18311FBBE8AE00B4899B /* square.json in Resources */ = {isa = PBXBuildFile; fileRef = D6FD182F1FBBE8AD00B4899B /* square.json */; };
+		D6FD18321FBBE8AE00B4899B /* square.xml in Resources */ = {isa = PBXBuildFile; fileRef = D6FD18301FBBE8AD00B4899B /* square.xml */; };
 		FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */; };
 		FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA2F45261E9C6A910071C1A3 /* LaunchScreen.xib */; };
 		FAA7BEE31EC13BB600CA88CA /* AEXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAA7BED61EC13BA400CA88CA /* AEXML.framework */; };
@@ -157,6 +179,26 @@
 		800F0D561F6150E800E1DB70 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		800F0D581F61518E00E1DB70 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		800F0D591F61518E00E1DB70 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		805836831FAAC6E200C93AC4 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		805836841FAAC6E200C93AC4 /* Actor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actor.swift; sourceTree = "<group>"; };
+		805836851FAAC6E200C93AC4 /* ActorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorType.swift; sourceTree = "<group>"; };
+		805836861FAAC6E200C93AC4 /* Asset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
+		805836871FAAC6E200C93AC4 /* AssetCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetCache.swift; sourceTree = "<group>"; };
+		805836881FAAC6E200C93AC4 /* CAAnimation+Blocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAAnimation+Blocks.swift"; sourceTree = "<group>"; };
+		805836891FAAC6E200C93AC4 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		8058368A1FAAC6E200C93AC4 /* Coordinate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinate.swift; sourceTree = "<group>"; };
+		8058368B1FAAC6E200C93AC4 /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
+		8058368C1FAAC6E200C93AC4 /* EventGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventGroup.swift; sourceTree = "<group>"; };
+		8058368D1FAAC6E200C93AC4 /* HelperExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelperExtensions.swift; sourceTree = "<group>"; };
+		8058368E1FAAC6E200C93AC4 /* SceneSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneSource.swift; sourceTree = "<group>"; };
+		8058368F1FAAC6E200C93AC4 /* WorldConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldConfiguration.swift; sourceTree = "<group>"; };
+		805836901FAAC6E200C93AC4 /* WorldNodeIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldNodeIdentifier.swift; sourceTree = "<group>"; };
+		8058369F1FAAC74D00C93AC4 /* Characters.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = Characters.scnassets; sourceTree = "<group>"; };
+		805836A01FAAC74E00C93AC4 /* WorldResources.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = WorldResources.scnassets; sourceTree = "<group>"; };
+		805836A31FAAC78300C93AC4 /* GameLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoader.swift; sourceTree = "<group>"; };
+		80F6562F1FAC0E1E00C2C764 /* AudioComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioComponent.swift; sourceTree = "<group>"; };
+		80F6563A1FAC7A1300C2C764 /* SS1_CONGR_1h.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SS1_CONGR_1h.m4a; sourceTree = "<group>"; };
+		80F6563C1FAC7EE600C2C764 /* SS1_PUZL_1b.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SS1_PUZL_1b.m4a; sourceTree = "<group>"; };
 		D60E430E1F9A142900423F47 /* CodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeViewController.swift; sourceTree = "<group>"; };
 		D60E43171F9A262F00423F47 /* CodeViewControler.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CodeViewControler.xib; sourceTree = "<group>"; };
 		D60E43191F9A768600423F47 /* rules_python */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rules_python; sourceTree = "<group>"; };
@@ -191,6 +233,8 @@
 		D6C8AF911FA200F100A7D7E5 /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		D6C8AF951FA2D97300A7D7E5 /* rover.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = rover.json; path = "Non-Localized/rover.json"; sourceTree = "<group>"; };
 		D6C8AF961FA2D97300A7D7E5 /* rover.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = rover.xml; path = "Non-Localized/rover.xml"; sourceTree = "<group>"; };
+		D6FD182F1FBBE8AD00B4899B /* square.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = square.json; path = "Non-Localized/square.json"; sourceTree = "<group>"; };
+		D6FD18301FBBE8AD00B4899B /* square.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = square.xml; path = "Non-Localized/square.xml"; sourceTree = "<group>"; };
 		FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Non-Localized/Images.xcassets"; sourceTree = "<group>"; };
 		FA2F45271E9C6A910071C1A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Localized/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		FA2F45291E9C6A9D0071C1A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localized/en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -273,6 +317,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		805836821FAAC6E200C93AC4 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				80F6562F1FAC0E1E00C2C764 /* AudioComponent.swift */,
+				805836831FAAC6E200C93AC4 /* Action.swift */,
+				805836841FAAC6E200C93AC4 /* Actor.swift */,
+				805836851FAAC6E200C93AC4 /* ActorType.swift */,
+				805836861FAAC6E200C93AC4 /* Asset.swift */,
+				805836871FAAC6E200C93AC4 /* AssetCache.swift */,
+				805836881FAAC6E200C93AC4 /* CAAnimation+Blocks.swift */,
+				805836891FAAC6E200C93AC4 /* Color.swift */,
+				8058368A1FAAC6E200C93AC4 /* Coordinate.swift */,
+				8058368B1FAAC6E200C93AC4 /* Direction.swift */,
+				8058368C1FAAC6E200C93AC4 /* EventGroup.swift */,
+				8058368D1FAAC6E200C93AC4 /* HelperExtensions.swift */,
+				8058368E1FAAC6E200C93AC4 /* SceneSource.swift */,
+				8058368F1FAAC6E200C93AC4 /* WorldConfiguration.swift */,
+				805836901FAAC6E200C93AC4 /* WorldNodeIdentifier.swift */,
+				805836A31FAAC78300C93AC4 /* GameLoader.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
 		D61409DF1F62681600B2012E /* ABlockly */ = {
 			isa = PBXGroup;
 			children = (
@@ -315,6 +382,8 @@
 				D6C8AF961FA2D97300A7D7E5 /* rover.xml */,
 				D61409FA1F62AC6200B2012E /* turtle.xml */,
 				D63F06BE1F5FF3A600050C2D /* turtle_blocks.json */,
+				D6FD182F1FBBE8AD00B4899B /* square.json */,
+				D6FD18301FBBE8AD00B4899B /* square.xml */,
 				FA2F444E1E9C6A2D0071C1A3 /* Images.xcassets */,
 			);
 			name = "Non-Localized";
@@ -411,6 +480,10 @@
 		FAE2A62D1C756A750085D36B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				80F6563A1FAC7A1300C2C764 /* SS1_CONGR_1h.m4a */,
+				80F6563C1FAC7EE600C2C764 /* SS1_PUZL_1b.m4a */,
+				8058369F1FAAC74D00C93AC4 /* Characters.scnassets */,
+				805836A01FAAC74E00C93AC4 /* WorldResources.scnassets */,
 				FA2F44551E9C6A300071C1A3 /* Localized */,
 				FA2F444C1E9C6A1C0071C1A3 /* Non-Localized */,
 			);
@@ -420,6 +493,7 @@
 		FAE2A6431C756AA20085D36B /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				805836821FAAC6E200C93AC4 /* Game */,
 				D6C8AF8F1FA200F100A7D7E5 /* Bluetooth */,
 				D61409DF1F62681600B2012E /* ABlockly */,
 				FAE2A6461C756AA20085D36B /* SampleObjCObject.h */,
@@ -633,22 +707,28 @@
 			buildActionMask = 2147483647;
 			files = (
 				D60E43271F9CFE2A00423F47 /* rules_kotlin in Resources */,
+				805836A11FAAC74E00C93AC4 /* Characters.scnassets in Resources */,
 				D6C8AF981FA2D97300A7D7E5 /* rover.json in Resources */,
 				FA2F44521E9C6A2D0071C1A3 /* Images.xcassets in Resources */,
 				D6C8AF881FA1CE9800A7D7E5 /* RootViewController.xib in Resources */,
 				D60E43261F9CFE2A00423F47 /* rules_typescript in Resources */,
 				D61409F51F62685300B2012E /* src2.xml in Resources */,
 				D61AEDBB1F8B9F5C00604DA0 /* src4.xml in Resources */,
+				D6FD18321FBBE8AE00B4899B /* square.xml in Resources */,
 				D61409FB1F62AC6200B2012E /* turtle.xml in Resources */,
+				80F6563D1FAC7EE600C2C764 /* SS1_PUZL_1b.m4a in Resources */,
 				D60E43581FA189C100423F47 /* SimulatorViewController.xib in Resources */,
 				D61409F61F62685300B2012E /* src1.xml in Resources */,
 				D60E43371F9E09D000423F47 /* ConnectViewControler.xib in Resources */,
 				FA2F45281E9C6A910071C1A3 /* LaunchScreen.xib in Resources */,
 				D61409EE1F62681600B2012E /* rules_swift in Resources */,
 				D60E43181F9A262F00423F47 /* CodeViewControler.xib in Resources */,
+				80F6563B1FAC7A1300C2C764 /* SS1_CONGR_1h.m4a in Resources */,
 				D6140A081F6599C400B2012E /* schedule.md in Resources */,
 				D61409F71F62685300B2012E /* src3.xml in Resources */,
 				D61409F41F62685300B2012E /* src.xml in Resources */,
+				D6FD18311FBBE8AE00B4899B /* square.json in Resources */,
+				805836A21FAAC74E00C93AC4 /* WorldResources.scnassets in Resources */,
 				D60E431A1F9A768600423F47 /* rules_python in Resources */,
 				D6140A061F63C41F00B2012E /* translator.md in Resources */,
 				D63F06C01F5FF3A700050C2D /* turtle_blocks.json in Resources */,
@@ -680,22 +760,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6C8AF921FA200F200A7D7E5 /* Bluetooth.swift in Sources */,
+				805836931FAAC6E200C93AC4 /* ActorType.swift in Sources */,
+				805836911FAAC6E200C93AC4 /* Action.swift in Sources */,
 				D61409EA1F62681600B2012E /* ABPerformer.swift in Sources */,
 				FAE2A6491C756AA20085D36B /* BLKDeviceViewController.swift in Sources */,
+				805836971FAAC6E200C93AC4 /* Color.swift in Sources */,
 				D61409E91F62681600B2012E /* ABParser.swift in Sources */,
+				80F656371FAC0E1E00C2C764 /* AudioComponent.swift in Sources */,
 				FAE2A6481C756AA20085D36B /* AppDelegate.swift in Sources */,
+				805836921FAAC6E200C93AC4 /* Actor.swift in Sources */,
 				D61409EC1F62681600B2012E /* ABTranslator.swift in Sources */,
 				D6C8AF7F1FA1CE5E00A7D7E5 /* RootViewController.swift in Sources */,
 				D6C8AF931FA200F200A7D7E5 /* BluetoothManager.swift in Sources */,
 				D6C8AF8A1FA1D34800A7D7E5 /* BLKSimulatorViewController.swift in Sources */,
 				D61409E81F62681600B2012E /* ABColorLexer.swift in Sources */,
 				D61458C01F99EF6B00DB22DE /* ConnectViewControler.swift in Sources */,
+				8058369C1FAAC6E200C93AC4 /* SceneSource.swift in Sources */,
 				D60E430F1F9A142900423F47 /* CodeViewController.swift in Sources */,
+				8058369A1FAAC6E200C93AC4 /* EventGroup.swift in Sources */,
+				805836941FAAC6E200C93AC4 /* Asset.swift in Sources */,
 				D61409ED1F62681600B2012E /* ABVirtulMachine.swift in Sources */,
 				D61409F91F6268B400B2012E /* BLKDeviceViewController+Addition.swift in Sources */,
+				805836981FAAC6E200C93AC4 /* Coordinate.swift in Sources */,
+				8058369B1FAAC6E200C93AC4 /* HelperExtensions.swift in Sources */,
 				D60E43561FA189B200423F47 /* SimulatorViewController.swift in Sources */,
 				D6C8AF8C1FA1D54100A7D7E5 /* BLKBaseViewController.swift in Sources */,
+				805836961FAAC6E200C93AC4 /* CAAnimation+Blocks.swift in Sources */,
 				D61409EF1F62681600B2012E /* XMLNode.swift in Sources */,
+				805836951FAAC6E200C93AC4 /* AssetCache.swift in Sources */,
+				805836A41FAAC78300C93AC4 /* GameLoader.swift in Sources */,
+				805836991FAAC6E200C93AC4 /* Direction.swift in Sources */,
+				8058369D1FAAC6E200C93AC4 /* WorldConfiguration.swift in Sources */,
+				8058369E1FAAC6E200C93AC4 /* WorldNodeIdentifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -879,10 +975,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = BlocklySample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ubtechinc.bly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -890,6 +986,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
+				VALID_ARCHS = arm64;
 			};
 			name = Debug;
 		};
@@ -906,6 +1003,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = BlocklySample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -916,6 +1014,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
+				VALID_ARCHS = arm64;
 			};
 			name = Release;
 		};

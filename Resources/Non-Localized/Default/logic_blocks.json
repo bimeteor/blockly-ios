@@ -1,6 +1,6 @@
 [
   {
-    "type": "controls_if",
+    "type": "control_if",
     "message0": "%{BKY_CONTROLS_IF_MSG_IF} %1",
     "args0": [
       {
@@ -16,7 +16,7 @@
         "name": "DO0"
       }
     ],
-    "mutator": "controls_if_mutator",
+    "mutator": "control_if_mutator",
     "previousStatement": null,
     "nextStatement": null,
     "colour": "%{BKY_LOGIC_HUE}",
@@ -29,19 +29,25 @@
     "args0": [
       {
         "type": "input_value",
-        "name": "A"
+        "name": "A",
+              "check": "Number"
       },
       {
         "type": "field_dropdown",
         "name": "OP",
         "options": [
-          ["=", "EQ"],
-          ["\u2260", "NEQ"]
+          ["=", "="],
+          ["!=", "!="],
+                    ["<", "<"],
+                    ["<=", "<="],
+                    [">", ">"],
+                    [">=", ">="],
         ]
       },
       {
         "type": "input_value",
-        "name": "B"
+              "name": "B",
+              "check": "Number"
       }
     ],
     "inputsInline": true,

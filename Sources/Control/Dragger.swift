@@ -172,8 +172,7 @@ public final class Dragger: NSObject {
       {
         workspaceLayoutCoordinator.connectPair(connectionPair)
 
-        clearGestureData(
-          forUUID: layout.uuid, moveConnectionsToGroup: connectionPair.fromConnectionManagerGroup)
+        clearGestureData(forUUID: layout.uuid, moveConnectionsToGroup: connectionPair.fromConnectionManagerGroup)
       } else {
         clearGestureData(forUUID: layout.uuid)
 

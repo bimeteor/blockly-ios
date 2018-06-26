@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <xml xmlns="http://www.w3.org/1999/xhtml">
-    <block x="7" type="controls_if" id="91BCFF42-EF89-4520-8C26-245A29304D7B" y="67">
+    <block x="7" type="control_if" id="91BCFF42-EF89-4520-8C26-245A29304D7B" y="67">
         <mutation else="1" elseif="0" />
         <value name="IF0">
             <block type="logic_compare" id="77AF2EFC-AAAE-44E8-8AA8-E8D60024E917">

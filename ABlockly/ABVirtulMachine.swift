@@ -8,7 +8,9 @@
 
 import Foundation
 
-fileprivate let stackTypes = ["controls_if", "controls_if_else", "controls_repeat_ext", "procedures_callnoreturn", "procedures_defnoreturn"]
+fileprivate let stackTypes = ["control_if", "control_if_else", "control_repeat_forever", "control_repeat_ext", "control_repeat_until", "procedures_callnoreturn", "procedures_defnoreturn"]
+
+fileprivate let loopTypes = ["control_repeat_forever", "control_repeat_ext", "control_repeat_until"]
 
 public final class ABVirtulMachine: ABParser {
     public private(set) var performer:ABPerformer!
@@ -48,18 +50,12 @@ public final class ABVirtulMachine: ABParser {
 }
 
 extension ABVirtulMachine{
-    enum StackOperate {
-        case push, update, pop
-    }
-    class StackContext: NSObject {
+    class StackContext {
         let node:XMLNode
-        var status = StackOperate.push
         var int0 = 0
         init(_ node:XMLNode) {
             self.node = node
-            super.init()
         }
-        var type:String{return node.attributes["type"] ?? ""}
     }
     func `continue`(){
         if running && !paused{
@@ -107,85 +103,75 @@ extension ABVirtulMachine{
         }
         return nil   //first time on trunk
     }
-    //inside or outside
+    /*
+     Loops enter several times, and others enter only once
+     1. start types: judge and traverse
+     2. struct types: return stmt if it exists, otherwise traverse
+     3. others: traverse
+     */
     private func next(_ node:XMLNode, stack:inout[StackContext]) -> XMLNode? {
         guard let type = node.attributes["type"] else { return nil }
-        var next = node
         if stackTypes.contains(type) || type == "procedures_defnoreturn"{
             guard let context = stack.last else {return nil}
-            next = context.node
-            if type == "controls_if" || type == "controls_if_else"{
-                if context.status == .push{
-                    if let value = node["|block.value[name=IF0].block"], let stmt = node[performer.evaluate(value) == "true" ? "|block.statement[name=DO0].block" : "|block.statement[name=ELSE].block"]{
-                        stack.last?.status = .update
-                        tryPush(stmt, stack: &stack)
-                        return stmt
-                    }
+            if type == "control_if" || type == "control_if_else"{
+                if let value = node["|block.value[name=IF0].block"], let stmt = node[performer.evaluate(value) == "true" ? "|block.statement[name=DO0].block" : "|block.statement[name=ELSE].block"]{
+                    tryPush(stmt, stack: &stack)
+                    return stmt
                 }
-            }else if type == "controls_repeat_ext"{
-                if context.status == .push || context.status == .update{//TODO:frank <field name="number">10</field>
-                    if let limit = node["|block.value[name=TIMES].block"], Int(performer.evaluate(limit)) ?? 0 > context.int0, let stmt = node["|block.statement[name=DO].block"]{
-                        stack.last?.status = .update
-                        stack.last?.int0 += 1
-                        tryPush(stmt, stack: &stack)
-                        return stmt
-                    }
+            }else if type == "control_repeat_ext"{
+                guard let limit = node["|block.value[name=TIMES].block"] else {return nil}
+                if Int(performer.evaluate(limit)) ?? 0 > context.int0{
+                    stack.last?.int0 += 1
+                    return node["|block.statement[name=DO].block"].map{tryPush($0, stack: &stack); return $0} ?? node
                 }
             }else if type == "control_repeat_until"{
-                
-            }else if type == "control_repeat_always"{
-                
-            }else if type == "procedures_callnoreturn"{
-                if context.status == .push{
-                    if let name = node["field[name=NAME]"], let def = funtions.first(where: {$0["field[name=NAME]"]?.value == name.value}){
-                        return def
+                if let expr = node["|block.value[name=IF0].block"]{
+                    if performer.evaluate(expr) == "false"{
+                        return node["|block.statement[name=DO].block"].map{tryPush($0, stack: &stack); return $0} ?? node
                     }
+                }else{
+                    return node["|block.statement[name=DO].block"].map{tryPush($0, stack: &stack); return $0} ?? node
+                }
+            }else if type == "control_repeat_forever"{
+                return node["|block.statement[name=DO].block"].map{tryPush($0, stack: &stack); return $0 } ?? node
+            }else if type == "procedures_callnoreturn"{
+                if let name = node["field[name=NAME]"], let def = funtions.first(where: {$0["field[name=NAME]"]?.value == name.value}){
+                    return def
                 }
             }else if type == "procedures_defnoreturn"{
-                if let stmt = node["|block.statement[name=STACK].block"]{
-                    stack.last?.status = .update
+                if let stmt = node["|block.statement[name=DO].block"]{
                     tryPush(stmt, stack: &stack)
                     return stmt
                 }
             }
             stack.removeLast()
-        }else if type == "start_tilt"{
-            if performer.evaluate(node) == "true"{
-                return traverse(node, stack:&stack)
-            }
-            return nil
-        }else if type == "start_barrier"{
-            if performer.evaluate(node) == "true"{
-                return traverse(node, stack:&stack)
-            }
-            return nil
+            return traverse(context.node, stack: &stack)
+        }else if type != "start" && type.hasPrefix("start"){
+            return performer.evaluate(node) == "true" ? traverse(node, stack:&stack) : nil
         }else if type == "restart"{
             let root = (stack.first?.node ?? node).root
             stack.removeAll()
-            guard let n = root["|block.next.block"] else {return nil}
-            tryPush(n, stack: &stack)
-            return n
+            return traverse(root, stack:&stack)
         }
-        return traverse(next, stack: &stack)
+        return traverse(node, stack:&stack)
     }
-    //brother or parent
+    /*
+     1. return next if it exists, otherwise traverse from its parent
+     2. loop types are excluded, and need reentry to judge from times limit
+     */
     private func traverse(_ node:XMLNode, stack:inout[StackContext])->XMLNode?{
-        if let n = node["|block.next.block"]{   //find its own next
+        if let n = node["|block.next.block"]{
             tryPush(n, stack: &stack)
             return n
         }
-        if let context = stack.last {
-            switch context.node.attributes["type"] ?? ""{
-            case "":
-                return nil
-            case "controls_repeat_ext":
+        return stack.last.map{context->XMLNode? in
+            if loopTypes.contains(context.node.attributes["type"] ?? ""){
                 return context.node
-            default:
-                context.status = .pop
-                return next(context.node, stack:&stack)
+            }else{
+                stack.removeLast()
+                return self.traverse(context.node, stack:&stack)
             }
-        }
-        return nil
+        } ?? nil
     }
     private func tryPush(_ node:XMLNode, stack:inout[StackContext]){
         guard let type = node.attributes["type"] else{return}

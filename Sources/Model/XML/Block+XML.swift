@@ -275,6 +275,10 @@ extension Block {
       blockXML.attributes[XMLConstants.ATTRIBUTE_POSITION_X] = String(Int(floor(position.x)))
       blockXML.attributes[XMLConstants.ATTRIBUTE_POSITION_Y] = String(Int(floor(position.y)))
     }
+    
+    if !deletable {
+        blockXML.attributes[XMLConstants.TAG_DELETABLE] = "false"
+    }
 
     if let mutator = mutator {
       blockXML.addChild(mutator.toXMLElement())

@@ -2,7 +2,7 @@
 <xml xmlns="http://www.w3.org/1999/xhtml">
     <block x="27" y="79" type="start" id="386CF391-DAD4-42C8-B48F-6262AB23A3FD">
         <next>
-            <block type="controls_repeat_ext" id="386CF391-DAD4-42C8-B48F-6262AB22A3FD">
+            <block type="control_repeat_ext" id="386CF391-DAD4-42C8-B48F-6262AB22A3FD">
                 <value name="TIMES">
                     <shadow type="math_number" id="5276C42F-8354-435A-A350-288B9ED2C45E">
                         <field name="NUM">2</field>

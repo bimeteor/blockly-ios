@@ -309,8 +309,7 @@ open class WorkspaceLayoutCoordinator: NSObject {
     }
 
     let inferiorBlock = connection1.isInferior ? sourceBlock1 : sourceBlock2
-    try BlocklyEvent.Move.captureMoveEvent(
-      workspace: workspaceLayout.workspace, block: inferiorBlock) {
+    try BlocklyEvent.Move.captureMoveEvent(workspace: workspaceLayout.workspace, block: inferiorBlock) {
       let oldTarget1 = connection1.targetConnection
       let oldTarget2 = connection2.targetConnection
       try connection1.connectTo(connection2)

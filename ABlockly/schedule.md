@@ -51,7 +51,8 @@ Another Blockly is a visual coding module provided by Jimu team. It's based on G
 |蓝牙通信|一次问答需要web与原生语言交互两次|直接通信|
 |同时连接多个设备|不支持|支持|
 |语法高亮|难|简单|
-|自定义交互|难|简单|
+|自定义块样式|难|简单|
+|自定义交互及弹窗|难|简单|
 |自定义运行规则|难|简单|
 
 ### Language
@@ -68,3 +69,36 @@ Another Blockly is a visual coding module provided by Jimu team. It's based on G
     1. 更现代的语言，简单，高效
     2. 语法相似度高，一个人维护可以同时维护两个平台
     3. 直接跟界面和蓝牙交互
+
+### Supported Blocks
+1. event  [done]  
+    start  
+    start_tilt  
+    start_barrier  
+    start_barrier_space
+2. motion
+
+3. control  
+    control_wait
+    control_wait_until
+    control_repeat_ext
+    control_repeat_until
+    control_if  
+    control_if_else  
+    control_repeat_forever
+4. sound& light
+5. sensors
+6. math & logic  [done]  
+    logic_compare  
+    math_arithmetic  
+    logic_operation  
+    math_number  
+    math_modulo  
+    math_random_limit  
+    math_random  
+    math_round  
+    logic_negate
+7. variables  [done]
+    
+8. functions  [done]
+### Supported Fields
